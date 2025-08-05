@@ -1,0 +1,29 @@
+PODS:
+  - Google-Mobile-Ads-SDK (11.13.0):
+    - GoogleUserMessagingPlatform (>= 1.1)
+  - GoogleMobileAdsMediationVungle (7.4.3.0):
+    - Google-Mobile-Ads-SDK (~> 11.0)
+    - VungleAds (= 7.4.3)
+  - GoogleUserMessagingPlatform (2.7.0)
+  - VungleAds (7.4.3)
+
+DEPENDENCIES:
+  - Google-Mobile-Ads-SDK
+  - GoogleMobileAdsMediationVungle
+
+SPEC REPOS:
+  trunk:
+    - Google-Mobile-Ads-SDK
+    - GoogleMobileAdsMediationVungle
+    - GoogleUserMessagingPlatform
+    - VungleAds
+
+SPEC CHECKSUMS:
+  Google-Mobile-Ads-SDK: 14f57f2dc33532a24db288897e26494640810407
+  GoogleMobileAdsMediationVungle: e881f89d2819ef365d033be62abaf394c2ad0482
+  GoogleUserMessagingPlatform: a8b56893477f67212fbc8411c139e61d463349f5
+  VungleAds: 15e589a3e1c3a5d1ca4617154bcca3bc0b6c1167
+
+PODFILE CHECKSUM: cb939c209343aafa960417bd69b277870e27013d
+
+COCOAPODS: 1.16.2

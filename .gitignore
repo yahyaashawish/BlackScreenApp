@@ -1,0 +1,11 @@
+# Xcode user-specific settings (MUST ignore to avoid your error)
+*.xcuserstate
+*.xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Derived data and build
+DerivedData/
+build/
+
+# macOS junk
+.DS_Store

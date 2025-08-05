@@ -1,0 +1,1404 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		0E0BEB9BA42E723532A589374CB30C00 /* VungleAds */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 896161EBD0A7FD2C1B63E9888F1A7B66 /* Build configuration list for PBXAggregateTarget "VungleAds" */;
+			buildPhases = (
+				5355CA07FCF4A9F8340A325A5DD79F0A /* [CP] Copy XCFrameworks */,
+			);
+			dependencies = (
+				82286D9570E20CEDFE2436B84B28E7DA /* PBXTargetDependency */,
+			);
+			name = VungleAds;
+		};
+		29E423640B01394D183D6B91B0B634D6 /* GoogleMobileAdsMediationVungle */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = CB48B96E4C2527DE8B7282E3BEB3ACDA /* Build configuration list for PBXAggregateTarget "GoogleMobileAdsMediationVungle" */;
+			buildPhases = (
+				BFBA95B4026B800B79C513DDB085ECEC /* [CP] Copy XCFrameworks */,
+			);
+			dependencies = (
+				A86D477DB6A6BD05F738DEBFD05211FA /* PBXTargetDependency */,
+				BC4B39DD6FBA423B2563F6F2FDED1332 /* PBXTargetDependency */,
+			);
+			name = GoogleMobileAdsMediationVungle;
+		};
+		458B188365A307B3C128ABF524D1A3E3 /* GoogleUserMessagingPlatform */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 451337645AECDAA90B32FBD07132F238 /* Build configuration list for PBXAggregateTarget "GoogleUserMessagingPlatform" */;
+			buildPhases = (
+				2167753AA2570FC719FF040478C0A99A /* [CP] Copy XCFrameworks */,
+			);
+			dependencies = (
+				A2B0A2069035EE5146637323D8ECDD19 /* PBXTargetDependency */,
+			);
+			name = GoogleUserMessagingPlatform;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		1493DD91336DE7675C83360B987057DD /* GoogleMobileAdsPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47DD749B38FB1B8AC18184AC0ED48EF0 /* GoogleMobileAdsPlaceholder.swift */; };
+		3317DC9751692475C7BF6CA18EE999CE /* Google-Mobile-Ads-SDK-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B023ABFB0C42F530DC36076F253DDEB6 /* Google-Mobile-Ads-SDK-dummy.m */; };
+		43DD54A73E144F663132A58923C61122 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EE737F0FFD6C24A661E9CDCD9F26EEB3 /* PrivacyInfo.xcprivacy */; };
+		510E3750BD2A8E80DD85CF7549003D38 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 384DDA2CB25005BD6479B5987C619DD4 /* Foundation.framework */; };
+		5D8190EA68EA2A461F31C1840BFCB693 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D759EB22288D98B33025BAB6C00AF5A5 /* PrivacyInfo.xcprivacy */; };
+		619FBAF7EA39C90146DF78B4E65926F1 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 5584D37246436F4F51256B525CC856FD /* PrivacyInfo.xcprivacy */; };
+		891716300BA05F00D6ED54204FFDA108 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 384DDA2CB25005BD6479B5987C619DD4 /* Foundation.framework */; };
+		BD90468037AC7AC384A68A4EABE27F84 /* Google-Mobile-Ads-SDK-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7458497A976FA1264729056C1891643B /* Google-Mobile-Ads-SDK-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E3E85ACBC9CA9049A080353338774D49 /* Pods-BlackScreenVideo-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A50C60C2A40738E1D93CD1F20865D696 /* Pods-BlackScreenVideo-dummy.m */; };
+		F1C06F6A94DE59E8229C0B396F8C3104 /* Pods-BlackScreenVideo-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F0C945224B24168A15742049C2437D05 /* Pods-BlackScreenVideo-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3A35625B82EE3D05CEF1EC2BFF23E476 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29E423640B01394D183D6B91B0B634D6;
+			remoteInfo = GoogleMobileAdsMediationVungle;
+		};
+		45F8BEBA4528CBEFE3CA2E5E812D5C59 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9BE5552F971FDB3DB9B44ED4DE22D476;
+			remoteInfo = "VungleAds-VungleAds";
+		};
+		6B15EF32B1C0FA92E9D5414ECAA1723F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 458B188365A307B3C128ABF524D1A3E3;
+			remoteInfo = GoogleUserMessagingPlatform;
+		};
+		7B3B60AE26041E1AF41A490BC23CA100 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 63A7C675C13F87669AF56006D943998B;
+			remoteInfo = "GoogleUserMessagingPlatform-UserMessagingPlatformResources";
+		};
+		9F52535A9B030308F72BA07800063D54 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 458B188365A307B3C128ABF524D1A3E3;
+			remoteInfo = GoogleUserMessagingPlatform;
+		};
+		AB61666A98BE71CA532016B66FBF6B7F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FEA3B3A570634836C0457F3D7CEF1699;
+			remoteInfo = "Google-Mobile-Ads-SDK";
+		};
+		B5DD8F73DF7005B1D4803D61D162388C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36FD0958A0EC4A0FCF599E9B22719B03;
+			remoteInfo = "Google-Mobile-Ads-SDK-GoogleMobileAdsResources";
+		};
+		BB85AF387D98BE70F17A1033B54F26B3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0E0BEB9BA42E723532A589374CB30C00;
+			remoteInfo = VungleAds;
+		};
+		F311AD8BEAA691FA5D56F599997F922B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0E0BEB9BA42E723532A589374CB30C00;
+			remoteInfo = VungleAds;
+		};
+		F77ED1FBAC463DF694B510C66E3254F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FEA3B3A570634836C0457F3D7CEF1699;
+			remoteInfo = "Google-Mobile-Ads-SDK";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1357098D71DCE8AD4D504DD280B34D4A /* Pods-BlackScreenVideo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BlackScreenVideo.debug.xcconfig"; sourceTree = "<group>"; };
+		1A699255C02E7A2130017A8CF7C25244 /* VungleAds-VungleAds */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "VungleAds-VungleAds"; path = VungleAds.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D5B8C04110073C7F21D4B218DEDC295 /* ResourceBundle-VungleAds-VungleAds-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-VungleAds-VungleAds-Info.plist"; sourceTree = "<group>"; };
+		2270D1C877D80B8B62406B82CC1ED370 /* Google-Mobile-Ads-SDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Google-Mobile-Ads-SDK-prefix.pch"; sourceTree = "<group>"; };
+		314EDA8F601065BABBEB548D3CE3FA3C /* GoogleMobileAdsMediationVungle-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "GoogleMobileAdsMediationVungle-xcframeworks.sh"; sourceTree = "<group>"; };
+		32701B6252B7C2760A3FAD147039DC36 /* VungleAds-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "VungleAds-xcframeworks.sh"; sourceTree = "<group>"; };
+		384DDA2CB25005BD6479B5987C619DD4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		3998091512768CD07733CB4F02B4BD9F /* Google-Mobile-Ads-SDK-GoogleMobileAdsResources */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Google-Mobile-Ads-SDK-GoogleMobileAdsResources"; path = GoogleMobileAdsResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		4303AFBC2A52615493C2723434BD114A /* Pods-BlackScreenVideo-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BlackScreenVideo-Info.plist"; sourceTree = "<group>"; };
+		45092C6447096962F5A7849676EF0D40 /* ResourceBundle-GoogleMobileAdsResources-Google-Mobile-Ads-SDK-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-GoogleMobileAdsResources-Google-Mobile-Ads-SDK-Info.plist"; sourceTree = "<group>"; };
+		47DD749B38FB1B8AC18184AC0ED48EF0 /* GoogleMobileAdsPlaceholder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GoogleMobileAdsPlaceholder.swift; path = Sources/GoogleMobileAdsPlaceholder.swift; sourceTree = "<group>"; };
+		5584D37246436F4F51256B525CC856FD /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = "Frameworks/GoogleMobileAdsFramework/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		59EE60E9174116679DBC0947CC44F79F /* LiftoffMonetizeAdapter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = LiftoffMonetizeAdapter.xcframework; path = "LiftoffMonetizeAdapter-7.4.3.0/LiftoffMonetizeAdapter.xcframework"; sourceTree = "<group>"; };
+		62C1E017BD9C2C2C5E5544799F71E9FC /* VungleAds.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = VungleAds.debug.xcconfig; sourceTree = "<group>"; };
+		62F468B7B33142D991B1BF5740C5F4C1 /* GoogleMobileAds.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = GoogleMobileAds.xcframework; path = Frameworks/GoogleMobileAdsFramework/GoogleMobileAds.xcframework; sourceTree = "<group>"; };
+		6649DA12BA97472A8E4F391B13359493 /* Pods-BlackScreenVideo-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-BlackScreenVideo-acknowledgements.plist"; sourceTree = "<group>"; };
+		7458497A976FA1264729056C1891643B /* Google-Mobile-Ads-SDK-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Google-Mobile-Ads-SDK-umbrella.h"; sourceTree = "<group>"; };
+		7AA25C5D4E3DB4533F4ED958B4F75D3B /* Google-Mobile-Ads-SDK-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Google-Mobile-Ads-SDK-Info.plist"; sourceTree = "<group>"; };
+		7E08681B8DC042D7E56356C4DF342EA7 /* Pods-BlackScreenVideo-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-BlackScreenVideo-acknowledgements.markdown"; sourceTree = "<group>"; };
+		8A377C18F92A8A511869ADA54B5652D2 /* GoogleUserMessagingPlatform-UserMessagingPlatformResources */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "GoogleUserMessagingPlatform-UserMessagingPlatformResources"; path = UserMessagingPlatformResources.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D9C82EB143FED1091AF57C073145819 /* Google-Mobile-Ads-SDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Google-Mobile-Ads-SDK.release.xcconfig"; sourceTree = "<group>"; };
+		8E992D08513699B0F0F55A8D592CE936 /* GoogleMobileAdsMediationVungle.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = GoogleMobileAdsMediationVungle.debug.xcconfig; sourceTree = "<group>"; };
+		97AAD9FDA93D34ECB0086498CD307DD4 /* GoogleUserMessagingPlatform.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = GoogleUserMessagingPlatform.debug.xcconfig; sourceTree = "<group>"; };
+		97ECA441D633D8A8125D7C75E9DB6EC5 /* Google-Mobile-Ads-SDK-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Google-Mobile-Ads-SDK-xcframeworks.sh"; sourceTree = "<group>"; };
+		9B09DB623ACD970881FD2E6CA8A35892 /* GoogleMobileAdsMediationVungle.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = GoogleMobileAdsMediationVungle.release.xcconfig; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9DC6BC89141B836CD83E119480B84C09 /* Google-Mobile-Ads-SDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Google-Mobile-Ads-SDK.debug.xcconfig"; sourceTree = "<group>"; };
+		A357945E786858DC96C1C57E84C6C500 /* Google-Mobile-Ads-SDK.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Google-Mobile-Ads-SDK.modulemap"; sourceTree = "<group>"; };
+		A50C60C2A40738E1D93CD1F20865D696 /* Pods-BlackScreenVideo-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-BlackScreenVideo-dummy.m"; sourceTree = "<group>"; };
+		A76DFC3773CF2E230D2EC3DEB10C7F35 /* VungleAds.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = VungleAds.release.xcconfig; sourceTree = "<group>"; };
+		A993E8B54AEF56DBA53FBA8CD1FBEFF5 /* GoogleUserMessagingPlatform.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = GoogleUserMessagingPlatform.release.xcconfig; sourceTree = "<group>"; };
+		B023ABFB0C42F530DC36076F253DDEB6 /* Google-Mobile-Ads-SDK-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Google-Mobile-Ads-SDK-dummy.m"; sourceTree = "<group>"; };
+		BE1A4F418E75327B0F3B2D153EB415A4 /* VungleAdsSDK.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = VungleAdsSDK.xcframework; path = static/VungleAdsSDK.xcframework; sourceTree = "<group>"; };
+		CC8B2CBF6FDCD7CBA893F884058A58E5 /* Pods-BlackScreenVideo-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-BlackScreenVideo-resources.sh"; sourceTree = "<group>"; };
+		D018C09EE0D6156B7DB834C7A68B63B4 /* Pods-BlackScreenVideo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-BlackScreenVideo.release.xcconfig"; sourceTree = "<group>"; };
+		D2A4293ABDE2D322F05565901C03207A /* Pods-BlackScreenVideo.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-BlackScreenVideo.modulemap"; sourceTree = "<group>"; };
+		D759EB22288D98B33025BAB6C00AF5A5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = "Frameworks/Release/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		D79091D8611E6348A243DE996A4C389C /* Pods-BlackScreenVideo */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-BlackScreenVideo"; path = Pods_BlackScreenVideo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6D6481C76C4B0FE8B994EE124438410 /* UserMessagingPlatform.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = UserMessagingPlatform.xcframework; path = Frameworks/Release/UserMessagingPlatform.xcframework; sourceTree = "<group>"; };
+		EBB8A1213AA261540EB5CC58A9F5AF13 /* GoogleUserMessagingPlatform-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "GoogleUserMessagingPlatform-xcframeworks.sh"; sourceTree = "<group>"; };
+		EE737F0FFD6C24A661E9CDCD9F26EEB3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = "static/VungleAdsSDK.xcframework/ios-arm64/VungleAdsSDK.framework/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		F0C945224B24168A15742049C2437D05 /* Pods-BlackScreenVideo-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-BlackScreenVideo-umbrella.h"; sourceTree = "<group>"; };
+		F8ECCB3B4E33C0FDD00B394CC2C7EA2E /* Google-Mobile-Ads-SDK */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Google-Mobile-Ads-SDK"; path = Google_Mobile_Ads_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FEE3EC4E24FCB8B9C16AD6E3A64330A7 /* ResourceBundle-UserMessagingPlatformResources-GoogleUserMessagingPlatform-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-UserMessagingPlatformResources-GoogleUserMessagingPlatform-Info.plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4E37BA6190E07A749BD22E022108405B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5F384ACD7BC4CD151FBBB07471740A7E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7FAE2AEAF41033701F634CEB7C39A4CC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AAD84B30E2C97051DCF74675A166BD94 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				510E3750BD2A8E80DD85CF7549003D38 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D3BDC35BF535EC481AD9C31366F4F75F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				891716300BA05F00D6ED54204FFDA108 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1374F1A80A88FDD91D63048CA4C8E011 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				1D5B8C04110073C7F21D4B218DEDC295 /* ResourceBundle-VungleAds-VungleAds-Info.plist */,
+				32701B6252B7C2760A3FAD147039DC36 /* VungleAds-xcframeworks.sh */,
+				62C1E017BD9C2C2C5E5544799F71E9FC /* VungleAds.debug.xcconfig */,
+				A76DFC3773CF2E230D2EC3DEB10C7F35 /* VungleAds.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/VungleAds";
+			sourceTree = "<group>";
+		};
+		145231A13C9909019F01740800ED3CA8 /* Google-Mobile-Ads-SDK */ = {
+			isa = PBXGroup;
+			children = (
+				47DD749B38FB1B8AC18184AC0ED48EF0 /* GoogleMobileAdsPlaceholder.swift */,
+				45094D1DCCAF13A290E02651E864D6E8 /* Frameworks */,
+				5EC1DD570E97A6EBE85973B8BB2A2C67 /* Resources */,
+				A2032E45F027CD8809187CFB40BB2A8A /* Support Files */,
+			);
+			name = "Google-Mobile-Ads-SDK";
+			path = "Google-Mobile-Ads-SDK";
+			sourceTree = "<group>";
+		};
+		1D2BF31A7F02AA97715A672A1500F717 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				59EE60E9174116679DBC0947CC44F79F /* LiftoffMonetizeAdapter.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		20B8958B1553ED8C3A7A1E25483999F0 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EE737F0FFD6C24A661E9CDCD9F26EEB3 /* PrivacyInfo.xcprivacy */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		45094D1DCCAF13A290E02651E864D6E8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				62F468B7B33142D991B1BF5740C5F4C1 /* GoogleMobileAds.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5EC1DD570E97A6EBE85973B8BB2A2C67 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5584D37246436F4F51256B525CC856FD /* PrivacyInfo.xcprivacy */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		624DB8D1C8611C92299100B25FCB93BC /* GoogleMobileAdsMediationVungle */ = {
+			isa = PBXGroup;
+			children = (
+				1D2BF31A7F02AA97715A672A1500F717 /* Frameworks */,
+				8032CD490A22B0E5A5C004A913B2E9C5 /* Support Files */,
+			);
+			name = GoogleMobileAdsMediationVungle;
+			path = GoogleMobileAdsMediationVungle;
+			sourceTree = "<group>";
+		};
+		6D065B11F598900317B0B59ABFB224B0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F8ECCB3B4E33C0FDD00B394CC2C7EA2E /* Google-Mobile-Ads-SDK */,
+				3998091512768CD07733CB4F02B4BD9F /* Google-Mobile-Ads-SDK-GoogleMobileAdsResources */,
+				8A377C18F92A8A511869ADA54B5652D2 /* GoogleUserMessagingPlatform-UserMessagingPlatformResources */,
+				D79091D8611E6348A243DE996A4C389C /* Pods-BlackScreenVideo */,
+				1A699255C02E7A2130017A8CF7C25244 /* VungleAds-VungleAds */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8032CD490A22B0E5A5C004A913B2E9C5 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				314EDA8F601065BABBEB548D3CE3FA3C /* GoogleMobileAdsMediationVungle-xcframeworks.sh */,
+				8E992D08513699B0F0F55A8D592CE936 /* GoogleMobileAdsMediationVungle.debug.xcconfig */,
+				9B09DB623ACD970881FD2E6CA8A35892 /* GoogleMobileAdsMediationVungle.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/GoogleMobileAdsMediationVungle";
+			sourceTree = "<group>";
+		};
+		979B5F5850C16DB1B32BB7E50D921164 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BE1A4F418E75327B0F3B2D153EB415A4 /* VungleAdsSDK.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A2032E45F027CD8809187CFB40BB2A8A /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				A357945E786858DC96C1C57E84C6C500 /* Google-Mobile-Ads-SDK.modulemap */,
+				B023ABFB0C42F530DC36076F253DDEB6 /* Google-Mobile-Ads-SDK-dummy.m */,
+				7AA25C5D4E3DB4533F4ED958B4F75D3B /* Google-Mobile-Ads-SDK-Info.plist */,
+				2270D1C877D80B8B62406B82CC1ED370 /* Google-Mobile-Ads-SDK-prefix.pch */,
+				7458497A976FA1264729056C1891643B /* Google-Mobile-Ads-SDK-umbrella.h */,
+				97ECA441D633D8A8125D7C75E9DB6EC5 /* Google-Mobile-Ads-SDK-xcframeworks.sh */,
+				9DC6BC89141B836CD83E119480B84C09 /* Google-Mobile-Ads-SDK.debug.xcconfig */,
+				8D9C82EB143FED1091AF57C073145819 /* Google-Mobile-Ads-SDK.release.xcconfig */,
+				45092C6447096962F5A7849676EF0D40 /* ResourceBundle-GoogleMobileAdsResources-Google-Mobile-Ads-SDK-Info.plist */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/Google-Mobile-Ads-SDK";
+			sourceTree = "<group>";
+		};
+		B43E8F68D97EAFB785438FDA2CE8E980 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				EBB8A1213AA261540EB5CC58A9F5AF13 /* GoogleUserMessagingPlatform-xcframeworks.sh */,
+				97AAD9FDA93D34ECB0086498CD307DD4 /* GoogleUserMessagingPlatform.debug.xcconfig */,
+				A993E8B54AEF56DBA53FBA8CD1FBEFF5 /* GoogleUserMessagingPlatform.release.xcconfig */,
+				FEE3EC4E24FCB8B9C16AD6E3A64330A7 /* ResourceBundle-UserMessagingPlatformResources-GoogleUserMessagingPlatform-Info.plist */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/GoogleUserMessagingPlatform";
+			sourceTree = "<group>";
+		};
+		B98901D5025BE94529A3EB22B3DAF283 /* VungleAds */ = {
+			isa = PBXGroup;
+			children = (
+				979B5F5850C16DB1B32BB7E50D921164 /* Frameworks */,
+				20B8958B1553ED8C3A7A1E25483999F0 /* Resources */,
+				1374F1A80A88FDD91D63048CA4C8E011 /* Support Files */,
+			);
+			name = VungleAds;
+			path = VungleAds;
+			sourceTree = "<group>";
+		};
+		C51E4721806392EEBF5E39787E0A31D6 /* Pods-BlackScreenVideo */ = {
+			isa = PBXGroup;
+			children = (
+				D2A4293ABDE2D322F05565901C03207A /* Pods-BlackScreenVideo.modulemap */,
+				7E08681B8DC042D7E56356C4DF342EA7 /* Pods-BlackScreenVideo-acknowledgements.markdown */,
+				6649DA12BA97472A8E4F391B13359493 /* Pods-BlackScreenVideo-acknowledgements.plist */,
+				A50C60C2A40738E1D93CD1F20865D696 /* Pods-BlackScreenVideo-dummy.m */,
+				4303AFBC2A52615493C2723434BD114A /* Pods-BlackScreenVideo-Info.plist */,
+				CC8B2CBF6FDCD7CBA893F884058A58E5 /* Pods-BlackScreenVideo-resources.sh */,
+				F0C945224B24168A15742049C2437D05 /* Pods-BlackScreenVideo-umbrella.h */,
+				1357098D71DCE8AD4D504DD280B34D4A /* Pods-BlackScreenVideo.debug.xcconfig */,
+				D018C09EE0D6156B7DB834C7A68B63B4 /* Pods-BlackScreenVideo.release.xcconfig */,
+			);
+			name = "Pods-BlackScreenVideo";
+			path = "Target Support Files/Pods-BlackScreenVideo";
+			sourceTree = "<group>";
+		};
+		CF1408CF629C7361332E53B88F7BD30C = {
+			isa = PBXGroup;
+			children = (
+				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
+				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
+				E5682931CDC03F223F2B9253053CCF3D /* Pods */,
+				6D065B11F598900317B0B59ABFB224B0 /* Products */,
+				D6A0E0EA9805AFC47C28C87754263288 /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E4801F62A6B08CD9B5410329F1A18FDE /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D6A0E0EA9805AFC47C28C87754263288 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				C51E4721806392EEBF5E39787E0A31D6 /* Pods-BlackScreenVideo */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		E4801F62A6B08CD9B5410329F1A18FDE /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				384DDA2CB25005BD6479B5987C619DD4 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		E5682931CDC03F223F2B9253053CCF3D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				145231A13C9909019F01740800ED3CA8 /* Google-Mobile-Ads-SDK */,
+				624DB8D1C8611C92299100B25FCB93BC /* GoogleMobileAdsMediationVungle */,
+				ECBF32A8C2B459F2C807CC3EE3BAB8C9 /* GoogleUserMessagingPlatform */,
+				B98901D5025BE94529A3EB22B3DAF283 /* VungleAds */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		EA2BB3B0B002C1A5164586BE239196F3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D759EB22288D98B33025BAB6C00AF5A5 /* PrivacyInfo.xcprivacy */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		ECBF32A8C2B459F2C807CC3EE3BAB8C9 /* GoogleUserMessagingPlatform */ = {
+			isa = PBXGroup;
+			children = (
+				F40D4BA73247EBFAB6339A6F9735DCDB /* Frameworks */,
+				EA2BB3B0B002C1A5164586BE239196F3 /* Resources */,
+				B43E8F68D97EAFB785438FDA2CE8E980 /* Support Files */,
+			);
+			name = GoogleUserMessagingPlatform;
+			path = GoogleUserMessagingPlatform;
+			sourceTree = "<group>";
+		};
+		F40D4BA73247EBFAB6339A6F9735DCDB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E6D6481C76C4B0FE8B994EE124438410 /* UserMessagingPlatform.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		1313E42EB522607E1927249FF589C993 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F1C06F6A94DE59E8229C0B396F8C3104 /* Pods-BlackScreenVideo-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B23F9353E3148B809D4BA25A333D0F47 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD90468037AC7AC384A68A4EABE27F84 /* Google-Mobile-Ads-SDK-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		36FD0958A0EC4A0FCF599E9B22719B03 /* Google-Mobile-Ads-SDK-GoogleMobileAdsResources */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 280FD38FF9A7C32C99886AD3938DD6C8 /* Build configuration list for PBXNativeTarget "Google-Mobile-Ads-SDK-GoogleMobileAdsResources" */;
+			buildPhases = (
+				4DFB4850805C6459CE8D2753212214C7 /* Sources */,
+				5F384ACD7BC4CD151FBBB07471740A7E /* Frameworks */,
+				1E609D7BDDFEF5A3F8590A0B14DE3B9D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Google-Mobile-Ads-SDK-GoogleMobileAdsResources";
+			productName = GoogleMobileAdsResources;
+			productReference = 3998091512768CD07733CB4F02B4BD9F /* Google-Mobile-Ads-SDK-GoogleMobileAdsResources */;
+			productType = "com.apple.product-type.bundle";
+		};
+		63A7C675C13F87669AF56006D943998B /* GoogleUserMessagingPlatform-UserMessagingPlatformResources */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7B4444A2A90D41799B9A90B645E93BAE /* Build configuration list for PBXNativeTarget "GoogleUserMessagingPlatform-UserMessagingPlatformResources" */;
+			buildPhases = (
+				2E8931CD3F4C0032ED4F39620967F9BF /* Sources */,
+				4E37BA6190E07A749BD22E022108405B /* Frameworks */,
+				CE4D9A4DF08DBF9FF195A0D4BC317B20 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "GoogleUserMessagingPlatform-UserMessagingPlatformResources";
+			productName = UserMessagingPlatformResources;
+			productReference = 8A377C18F92A8A511869ADA54B5652D2 /* GoogleUserMessagingPlatform-UserMessagingPlatformResources */;
+			productType = "com.apple.product-type.bundle";
+		};
+		785B230796730F5A16070727D2723850 /* Pods-BlackScreenVideo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10718421853212BFA04A08293680A428 /* Build configuration list for PBXNativeTarget "Pods-BlackScreenVideo" */;
+			buildPhases = (
+				1313E42EB522607E1927249FF589C993 /* Headers */,
+				409C69D4A625D683135E9C2B030FD546 /* Sources */,
+				D3BDC35BF535EC481AD9C31366F4F75F /* Frameworks */,
+				E6BD644E8D459796DF856957E256423D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8F74D1E2CFA2A9FACC7250C8E408246F /* PBXTargetDependency */,
+				2EADFE924F09AB8177829C7B2DA1BA0F /* PBXTargetDependency */,
+				89E71A9288DF44E43522BF9F19495B1B /* PBXTargetDependency */,
+				665AB4A8FAAEAAB583CFE0987190298B /* PBXTargetDependency */,
+			);
+			name = "Pods-BlackScreenVideo";
+			productName = Pods_BlackScreenVideo;
+			productReference = D79091D8611E6348A243DE996A4C389C /* Pods-BlackScreenVideo */;
+			productType = "com.apple.product-type.framework";
+		};
+		9BE5552F971FDB3DB9B44ED4DE22D476 /* VungleAds-VungleAds */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9DF4DA7B4410F90DB52548AF82B47AE8 /* Build configuration list for PBXNativeTarget "VungleAds-VungleAds" */;
+			buildPhases = (
+				2B5569A0D2DBC70F9D5539746362FA15 /* Sources */,
+				7FAE2AEAF41033701F634CEB7C39A4CC /* Frameworks */,
+				92233ABFEDE404DE10107872A93C0489 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "VungleAds-VungleAds";
+			productName = VungleAds;
+			productReference = 1A699255C02E7A2130017A8CF7C25244 /* VungleAds-VungleAds */;
+			productType = "com.apple.product-type.bundle";
+		};
+		FEA3B3A570634836C0457F3D7CEF1699 /* Google-Mobile-Ads-SDK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0133F7ACE4F2664542B16D7BCEF4D52E /* Build configuration list for PBXNativeTarget "Google-Mobile-Ads-SDK" */;
+			buildPhases = (
+				B23F9353E3148B809D4BA25A333D0F47 /* Headers */,
+				62A1CB4E7755DF23F645AE7F4B214347 /* [CP] Copy XCFrameworks */,
+				DCEEB9F8EA09BB4BFEBDBD7594F8545D /* Sources */,
+				AAD84B30E2C97051DCF74675A166BD94 /* Frameworks */,
+				1CF44B3B9ECB7DB1FE1C8B3C244E4EAD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				856B1E79A46FBF951CBE04EF737D9AD9 /* PBXTargetDependency */,
+				44DDAA36E9860C3CC163F33281C2C3B0 /* PBXTargetDependency */,
+			);
+			name = "Google-Mobile-Ads-SDK";
+			productName = Google_Mobile_Ads_SDK;
+			productReference = F8ECCB3B4E33C0FDD00B394CC2C7EA2E /* Google-Mobile-Ads-SDK */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
+			minimizedProjectReferenceProxies = 0;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 6D065B11F598900317B0B59ABFB224B0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FEA3B3A570634836C0457F3D7CEF1699 /* Google-Mobile-Ads-SDK */,
+				36FD0958A0EC4A0FCF599E9B22719B03 /* Google-Mobile-Ads-SDK-GoogleMobileAdsResources */,
+				29E423640B01394D183D6B91B0B634D6 /* GoogleMobileAdsMediationVungle */,
+				458B188365A307B3C128ABF524D1A3E3 /* GoogleUserMessagingPlatform */,
+				63A7C675C13F87669AF56006D943998B /* GoogleUserMessagingPlatform-UserMessagingPlatformResources */,
+				785B230796730F5A16070727D2723850 /* Pods-BlackScreenVideo */,
+				0E0BEB9BA42E723532A589374CB30C00 /* VungleAds */,
+				9BE5552F971FDB3DB9B44ED4DE22D476 /* VungleAds-VungleAds */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1CF44B3B9ECB7DB1FE1C8B3C244E4EAD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E609D7BDDFEF5A3F8590A0B14DE3B9D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				619FBAF7EA39C90146DF78B4E65926F1 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		92233ABFEDE404DE10107872A93C0489 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43DD54A73E144F663132A58923C61122 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CE4D9A4DF08DBF9FF195A0D4BC317B20 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D8190EA68EA2A461F31C1840BFCB693 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E6BD644E8D459796DF856957E256423D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2167753AA2570FC719FF040478C0A99A /* [CP] Copy XCFrameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/GoogleUserMessagingPlatform/GoogleUserMessagingPlatform-xcframeworks-input-files.xcfilelist",
+			);
+			name = "[CP] Copy XCFrameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/GoogleUserMessagingPlatform/GoogleUserMessagingPlatform-xcframeworks-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/GoogleUserMessagingPlatform/GoogleUserMessagingPlatform-xcframeworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5355CA07FCF4A9F8340A325A5DD79F0A /* [CP] Copy XCFrameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/VungleAds/VungleAds-xcframeworks-input-files.xcfilelist",
+			);
+			name = "[CP] Copy XCFrameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/VungleAds/VungleAds-xcframeworks-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/VungleAds/VungleAds-xcframeworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		62A1CB4E7755DF23F645AE7F4B214347 /* [CP] Copy XCFrameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK-xcframeworks-input-files.xcfilelist",
+			);
+			name = "[CP] Copy XCFrameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK-xcframeworks-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK-xcframeworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BFBA95B4026B800B79C513DDB085ECEC /* [CP] Copy XCFrameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/GoogleMobileAdsMediationVungle/GoogleMobileAdsMediationVungle-xcframeworks-input-files.xcfilelist",
+			);
+			name = "[CP] Copy XCFrameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/GoogleMobileAdsMediationVungle/GoogleMobileAdsMediationVungle-xcframeworks-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/GoogleMobileAdsMediationVungle/GoogleMobileAdsMediationVungle-xcframeworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B5569A0D2DBC70F9D5539746362FA15 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2E8931CD3F4C0032ED4F39620967F9BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		409C69D4A625D683135E9C2B030FD546 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3E85ACBC9CA9049A080353338774D49 /* Pods-BlackScreenVideo-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DFB4850805C6459CE8D2753212214C7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCEEB9F8EA09BB4BFEBDBD7594F8545D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3317DC9751692475C7BF6CA18EE999CE /* Google-Mobile-Ads-SDK-dummy.m in Sources */,
+				1493DD91336DE7675C83360B987057DD /* GoogleMobileAdsPlaceholder.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2EADFE924F09AB8177829C7B2DA1BA0F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GoogleMobileAdsMediationVungle;
+			target = 29E423640B01394D183D6B91B0B634D6 /* GoogleMobileAdsMediationVungle */;
+			targetProxy = 3A35625B82EE3D05CEF1EC2BFF23E476 /* PBXContainerItemProxy */;
+		};
+		44DDAA36E9860C3CC163F33281C2C3B0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GoogleUserMessagingPlatform;
+			target = 458B188365A307B3C128ABF524D1A3E3 /* GoogleUserMessagingPlatform */;
+			targetProxy = 9F52535A9B030308F72BA07800063D54 /* PBXContainerItemProxy */;
+		};
+		665AB4A8FAAEAAB583CFE0987190298B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = VungleAds;
+			target = 0E0BEB9BA42E723532A589374CB30C00 /* VungleAds */;
+			targetProxy = BB85AF387D98BE70F17A1033B54F26B3 /* PBXContainerItemProxy */;
+		};
+		82286D9570E20CEDFE2436B84B28E7DA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "VungleAds-VungleAds";
+			target = 9BE5552F971FDB3DB9B44ED4DE22D476 /* VungleAds-VungleAds */;
+			targetProxy = 45F8BEBA4528CBEFE3CA2E5E812D5C59 /* PBXContainerItemProxy */;
+		};
+		856B1E79A46FBF951CBE04EF737D9AD9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Google-Mobile-Ads-SDK-GoogleMobileAdsResources";
+			target = 36FD0958A0EC4A0FCF599E9B22719B03 /* Google-Mobile-Ads-SDK-GoogleMobileAdsResources */;
+			targetProxy = B5DD8F73DF7005B1D4803D61D162388C /* PBXContainerItemProxy */;
+		};
+		89E71A9288DF44E43522BF9F19495B1B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GoogleUserMessagingPlatform;
+			target = 458B188365A307B3C128ABF524D1A3E3 /* GoogleUserMessagingPlatform */;
+			targetProxy = 6B15EF32B1C0FA92E9D5414ECAA1723F /* PBXContainerItemProxy */;
+		};
+		8F74D1E2CFA2A9FACC7250C8E408246F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Google-Mobile-Ads-SDK";
+			target = FEA3B3A570634836C0457F3D7CEF1699 /* Google-Mobile-Ads-SDK */;
+			targetProxy = F77ED1FBAC463DF694B510C66E3254F6 /* PBXContainerItemProxy */;
+		};
+		A2B0A2069035EE5146637323D8ECDD19 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "GoogleUserMessagingPlatform-UserMessagingPlatformResources";
+			target = 63A7C675C13F87669AF56006D943998B /* GoogleUserMessagingPlatform-UserMessagingPlatformResources */;
+			targetProxy = 7B3B60AE26041E1AF41A490BC23CA100 /* PBXContainerItemProxy */;
+		};
+		A86D477DB6A6BD05F738DEBFD05211FA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Google-Mobile-Ads-SDK";
+			target = FEA3B3A570634836C0457F3D7CEF1699 /* Google-Mobile-Ads-SDK */;
+			targetProxy = AB61666A98BE71CA532016B66FBF6B7F /* PBXContainerItemProxy */;
+		};
+		BC4B39DD6FBA423B2563F6F2FDED1332 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = VungleAds;
+			target = 0E0BEB9BA42E723532A589374CB30C00 /* VungleAds */;
+			targetProxy = F311AD8BEAA691FA5D56F599997F922B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		186F26CE5042FCF1DF72F2CFC72E5706 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 62C1E017BD9C2C2C5E5544799F71E9FC /* VungleAds.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		33E3C5082C3A71F55F7687A309FED7B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A993E8B54AEF56DBA53FBA8CD1FBEFF5 /* GoogleUserMessagingPlatform.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/GoogleUserMessagingPlatform";
+				IBSC_MODULE = GoogleUserMessagingPlatform;
+				INFOPLIST_FILE = "Target Support Files/GoogleUserMessagingPlatform/ResourceBundle-UserMessagingPlatformResources-GoogleUserMessagingPlatform-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_NAME = UserMessagingPlatformResources;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		4DD4E285BC100C717178E4F09B62A4EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8E992D08513699B0F0F55A8D592CE936 /* GoogleMobileAdsMediationVungle.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		519BD62B77479689868913098BD2C2E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A76DFC3773CF2E230D2EC3DEB10C7F35 /* VungleAds.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VungleAds";
+				IBSC_MODULE = VungleAds;
+				INFOPLIST_FILE = "Target Support Files/VungleAds/ResourceBundle-VungleAds-VungleAds-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_NAME = VungleAds;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		554109A2C08EFCD41405D7F11F2E2658 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8D9C82EB143FED1091AF57C073145819 /* Google-Mobile-Ads-SDK.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Google-Mobile-Ads-SDK";
+				IBSC_MODULE = Google_Mobile_Ads_SDK;
+				INFOPLIST_FILE = "Target Support Files/Google-Mobile-Ads-SDK/ResourceBundle-GoogleMobileAdsResources-Google-Mobile-Ads-SDK-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_NAME = GoogleMobileAdsResources;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+		5AAF890037D07A7E7DF6B6DA249EA8C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 97AAD9FDA93D34ECB0086498CD307DD4 /* GoogleUserMessagingPlatform.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/GoogleUserMessagingPlatform";
+				IBSC_MODULE = GoogleUserMessagingPlatform;
+				INFOPLIST_FILE = "Target Support Files/GoogleUserMessagingPlatform/ResourceBundle-UserMessagingPlatformResources-GoogleUserMessagingPlatform-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_NAME = UserMessagingPlatformResources;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		612A771FEC74E5BC5C4888D1C8CEEDAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9DC6BC89141B836CD83E119480B84C09 /* Google-Mobile-Ads-SDK.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_PREFIX_HEADER = "Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK-prefix.pch";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK.modulemap";
+				PRODUCT_MODULE_NAME = Google_Mobile_Ads_SDK;
+				PRODUCT_NAME = Google_Mobile_Ads_SDK;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_VERSION = 5.3;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		623439F3C825085F7F4BA01EFBA92297 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A993E8B54AEF56DBA53FBA8CD1FBEFF5 /* GoogleUserMessagingPlatform.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8E2531CDBF32794567CB3D493D55FE25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 62C1E017BD9C2C2C5E5544799F71E9FC /* VungleAds.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VungleAds";
+				IBSC_MODULE = VungleAds;
+				INFOPLIST_FILE = "Target Support Files/VungleAds/ResourceBundle-VungleAds-VungleAds-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_NAME = VungleAds;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		8F8FEEAE9B21358D19F14F70B726ED32 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A76DFC3773CF2E230D2EC3DEB10C7F35 /* VungleAds.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A2C2EA250E63CB051386DB4AA6F2B370 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9DC6BC89141B836CD83E119480B84C09 /* Google-Mobile-Ads-SDK.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Google-Mobile-Ads-SDK";
+				IBSC_MODULE = Google_Mobile_Ads_SDK;
+				INFOPLIST_FILE = "Target Support Files/Google-Mobile-Ads-SDK/ResourceBundle-GoogleMobileAdsResources-Google-Mobile-Ads-SDK-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_NAME = GoogleMobileAdsResources;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		B86D71A5E7AB53EB2C08DEA39FBD2050 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		BA2AB6FB0451A4F73DDA8150E1858BF7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8D9C82EB143FED1091AF57C073145819 /* Google-Mobile-Ads-SDK.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_PREFIX_HEADER = "Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK-prefix.pch";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Google-Mobile-Ads-SDK/Google-Mobile-Ads-SDK.modulemap";
+				PRODUCT_MODULE_NAME = Google_Mobile_Ads_SDK;
+				PRODUCT_NAME = Google_Mobile_Ads_SDK;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_VERSION = 5.3;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		BD5E84F7B72D348654A4D58B6BA51118 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		C6D5249F6F6B22D3D9FD87200E1EC5BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D018C09EE0D6156B7DB834C7A68B63B4 /* Pods-BlackScreenVideo.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = "Target Support Files/Pods-BlackScreenVideo/Pods-BlackScreenVideo-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-BlackScreenVideo/Pods-BlackScreenVideo.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		DEEA9C023920435F0DF50A3B2DEFA50E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9B09DB623ACD970881FD2E6CA8A35892 /* GoogleMobileAdsMediationVungle.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E2EF191C4E70837F80FB5C89938B986F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 97AAD9FDA93D34ECB0086498CD307DD4 /* GoogleUserMessagingPlatform.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F1E5A83B25B7CBE2C0F3788C9F961790 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1357098D71DCE8AD4D504DD280B34D4A /* Pods-BlackScreenVideo.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = "Target Support Files/Pods-BlackScreenVideo/Pods-BlackScreenVideo-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-BlackScreenVideo/Pods-BlackScreenVideo.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0133F7ACE4F2664542B16D7BCEF4D52E /* Build configuration list for PBXNativeTarget "Google-Mobile-Ads-SDK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				612A771FEC74E5BC5C4888D1C8CEEDAF /* Debug */,
+				BA2AB6FB0451A4F73DDA8150E1858BF7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		10718421853212BFA04A08293680A428 /* Build configuration list for PBXNativeTarget "Pods-BlackScreenVideo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F1E5A83B25B7CBE2C0F3788C9F961790 /* Debug */,
+				C6D5249F6F6B22D3D9FD87200E1EC5BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		280FD38FF9A7C32C99886AD3938DD6C8 /* Build configuration list for PBXNativeTarget "Google-Mobile-Ads-SDK-GoogleMobileAdsResources" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A2C2EA250E63CB051386DB4AA6F2B370 /* Debug */,
+				554109A2C08EFCD41405D7F11F2E2658 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		451337645AECDAA90B32FBD07132F238 /* Build configuration list for PBXAggregateTarget "GoogleUserMessagingPlatform" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2EF191C4E70837F80FB5C89938B986F /* Debug */,
+				623439F3C825085F7F4BA01EFBA92297 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD5E84F7B72D348654A4D58B6BA51118 /* Debug */,
+				B86D71A5E7AB53EB2C08DEA39FBD2050 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7B4444A2A90D41799B9A90B645E93BAE /* Build configuration list for PBXNativeTarget "GoogleUserMessagingPlatform-UserMessagingPlatformResources" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5AAF890037D07A7E7DF6B6DA249EA8C0 /* Debug */,
+				33E3C5082C3A71F55F7687A309FED7B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		896161EBD0A7FD2C1B63E9888F1A7B66 /* Build configuration list for PBXAggregateTarget "VungleAds" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				186F26CE5042FCF1DF72F2CFC72E5706 /* Debug */,
+				8F8FEEAE9B21358D19F14F70B726ED32 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9DF4DA7B4410F90DB52548AF82B47AE8 /* Build configuration list for PBXNativeTarget "VungleAds-VungleAds" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E2531CDBF32794567CB3D493D55FE25 /* Debug */,
+				519BD62B77479689868913098BD2C2E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB48B96E4C2527DE8B7282E3BEB3ACDA /* Build configuration list for PBXAggregateTarget "GoogleMobileAdsMediationVungle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DD4E285BC100C717178E4F09B62A4EA /* Debug */,
+				DEEA9C023920435F0DF50A3B2DEFA50E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+}
