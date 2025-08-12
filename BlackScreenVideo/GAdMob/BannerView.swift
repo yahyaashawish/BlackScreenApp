@@ -14,7 +14,7 @@ struct BannerView: UIViewRepresentable {
     let adSize: GADAdSize
     let isCollapsed: Bool
     let isTop : Bool
-    let bannerVM : BannerAdVM
+    var bannerVM : BannerAdVM? = nil
     
     func makeUIView(context: Context) -> UIView {
         // Wrap the GADBannerView in a UIView. GADBannerView automatically reloads a new ad when its
@@ -71,12 +71,14 @@ struct BannerView: UIViewRepresentable {
         // MARK: - GADBannerViewDelegate methods
         
         func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
-            parent.bannerVM.didReceiveAd()
+            print("Banner ad received!")
+            parent.bannerVM?.didReceiveAd()
             
         }
         
         func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {
-            parent.bannerVM.didNotReceiveAd()
+            print("Banner Ad failed to load: \(error)")
+            parent.bannerVM?.didNotReceiveAd()
             
         }
     }

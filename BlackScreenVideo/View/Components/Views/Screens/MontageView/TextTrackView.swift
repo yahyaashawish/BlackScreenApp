@@ -21,7 +21,7 @@ struct TextTrackView: View {
 
                             }
                         }
-                        .frame(height: viewModel.textSegmentSelectedID != nil ? 35 : 25) // fixed height for each track
+                        .frame(height: viewModel.textSegmentSelectedID != nil ? 45 : 35) // fixed height for each track
                     }
                 }
                 
@@ -29,7 +29,7 @@ struct TextTrackView: View {
                     Color.clear
                         .contentShape(Rectangle())
                         .frame(height:180)
-                    
+
                         .onTapGesture(coordinateSpace: .named("timelineScroll")) { location in
                             guard !viewModel.isPreviewPlaying else {return}
                             
@@ -42,7 +42,8 @@ struct TextTrackView: View {
                 )
                 .onChange(of: viewModel.textTracks) { _, newTrackData in
                      
-                    if let lastSegmentId = newTrackData.last?.last?.id {
+                    if let lastSegmentId = viewModel.lastSegmentID {
+                        guard viewModel.textSegmentSelectedID == nil else {return}
                         proxy.scrollTo("text_segment_\(lastSegmentId)", anchor: .leading)
                     }
                 }
@@ -68,4 +69,14 @@ struct TextTrackView: View {
         
         
     }
+}
+
+
+#Preview {
+    NavigationStack{
+        MontageView(videoSize: .portrait9_16, initialSong: LocalSong(name: "test", duration: 20, url: URL.homeDirectory))
+    }
+    .environment(\.locale, .init(identifier: "ar"))
+    .environment(\.layoutDirection,  .rightToLeft )
+    
 }

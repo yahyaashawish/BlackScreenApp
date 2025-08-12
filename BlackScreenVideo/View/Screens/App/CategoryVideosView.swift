@@ -7,6 +7,8 @@
 
 
 import SwiftUI
+import GoogleMobileAds
+
 struct CategoryVideosView: View {
     @Environment(\.layoutDirection) var layoutDirection
     @ObservedObject var appPath = AppPath.shared
@@ -21,30 +23,41 @@ struct CategoryVideosView: View {
                         ScrollView(.vertical) {
                             VStack{
                                 VStack{
-                                    VideosCard(localizedTitle: "Most Popular",videos: viewModel.selectedCategory?.videos ?? [])
-                                        .environment(\.layoutDirection,  layoutDirection)
-
-                                    if viewModel.selectedCategory == nil || viewModel.selectedCategory?.videos.count ?? 0 == 0{
-                                        Text("No Videos Available")
-                                            .font(Font.medium14)
-                                            .foregroundStyle(Color("9191A8"))
+                                    if !viewModel.isFetchingVideos && viewModel.selectedCategory != nil{
+                                        VideosCard(localizedTitle: "Most Popular",videos: viewModel.selectedCategory?.videos ?? [])
+                                            .environment(\.layoutDirection,  layoutDirection)
                                     }
-                                }
-                                .padding(.vertical,20)
-
-                                VStack{
-                                    VideosCard(localizedTitle: "Recently Added",videos: viewModel.selectedCategoryVideos,isGrid: true)
                                     
+                                   
                                     if viewModel.isFetchingVideos{
-                                        VideosCardSkeleton(isGrid: true,isForHome: true,isDoubleTitle: false)
+                                        VideosCardSkeleton(isGrid: false,isForHome: false,isDoubleTitle: false)
                                             .environment(\.layoutDirection, layoutDirection)
                                         
                                     }
-                                    if !viewModel.isFetchingVideos && viewModel.selectedCategoryVideos.isEmpty && !viewModel.isThereAnError{
-                                        Text("No Videos Available")
-                                            .font(Font.medium14)
-                                            .foregroundStyle(Color("9191A8"))
+                                }
+                                .padding(.vertical,20)
+                                GeometryReader { adGeo in
+                                    let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
+                                    BannerView(adSize: adSize,isCollapsed: true, isTop: true)
+                                }
+                                .frame(height: 80)
+                                VStack{
+                                    if !viewModel.isFetchingVideos && !viewModel.selectedCategoryVideos.isEmpty{
+                                        VideosCard(localizedTitle: "Recently Added",videos: viewModel.selectedCategoryVideos,isGrid: true)
+                                        
+                                        
                                     }
+                                    
+                                    if viewModel.isFetchingVideos{
+                                           
+                                            
+                                            VideosCardSkeleton(isGrid: true,isForHome: true,isDoubleTitle: false)
+                                                .environment(\.layoutDirection, layoutDirection)
+                                        
+                                        
+                                        
+                                    }
+                                    
                                 }
                                 .padding(.vertical,20)
 
@@ -52,6 +65,7 @@ struct CategoryVideosView: View {
                             }
                             
                         }
+                        .scrollIndicators(.hidden)
                     }
                     .padding(.top,10)
                     
@@ -61,7 +75,7 @@ struct CategoryVideosView: View {
 
                     
                 }
-                .padding(.horizontal,25)
+//                .padding(.horizontal,25)
             }
             .onAppear {
                 viewModel.fetchVideosForSelectedCategory()
@@ -74,15 +88,7 @@ struct CategoryVideosView: View {
         .titleToolbar(staticTitle: viewModel.selectedCategory?.name ?? "All Videos")
         
         .navigationBarBackButtonHidden(true)
-        .safeAreaInset(edge: .bottom,alignment: .trailing) {
-            if viewModel.isThereAnError{
-                ErrorToastView(message: "Something went wrong!") {
-                    viewModel.fetchVideosForSelectedCategory()
-                }
-                .padding(20)
-                
-            }
-        }
+
     }
     
     

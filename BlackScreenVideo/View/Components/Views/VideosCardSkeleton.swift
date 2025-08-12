@@ -30,19 +30,23 @@ struct VideosCardSkeleton: View {
                     }
                     
                 }
+                .padding(.horizontal,20)
             }
             
             
             if isGrid {
                 VStack{
                     ScrollView(.vertical) {
-                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 140)), count: 2), spacing: 10) {
-                            ForEach(0..<4, id: \.self) { _ in
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 140))], spacing: 10) {
+                            ForEach(0..<10, id: \.self) { _ in
                                 skeletonVideoItem
                                 
                             }
                         }
                     }
+                    .padding(.horizontal,2)
+                    .scrollIndicators(.hidden)
+
                 }
                 .environment(\.layoutDirection,  LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight)
                 
@@ -50,7 +54,7 @@ struct VideosCardSkeleton: View {
                 HStack{
                     ScrollView(.horizontal) {
                         HStack(spacing: 12) {
-                            ForEach(0..<3, id: \.self) { _ in
+                            ForEach(0..<10, id: \.self) { _ in
                                 skeletonVideoItem
                                 
                             }
@@ -58,6 +62,8 @@ struct VideosCardSkeleton: View {
                         
                     }
                     .scrollIndicators(.hidden)
+                    .padding(.leading,20)
+
                 }
                 .environment(\.layoutDirection,  LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight)
             }
@@ -153,5 +159,5 @@ struct SkeletonView<S : Shape>: View {
 }
 
 #Preview(body: {
-    VideosCardSkeleton(isGrid: false,isForHome: true,isDoubleTitle: true)
+    VideosCardSkeleton(isGrid: true,isForHome: false,isDoubleTitle: true)
 })

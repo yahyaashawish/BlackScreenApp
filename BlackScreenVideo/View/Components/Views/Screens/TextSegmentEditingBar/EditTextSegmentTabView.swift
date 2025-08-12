@@ -37,7 +37,7 @@ struct EditTextSegmentTabView: View {
                         }
                     } label: {
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(Color("primary-color"))
+                            .fill(Color("4A4AFF"))
                             .frame(width: 60, height: 40)
                             .overlay {
                                 Image(systemName: "checkmark")
@@ -61,7 +61,7 @@ struct EditTextSegmentTabView: View {
                                 Image(systemName: alignment.icon)
                                     .resizable()
                                     .frame(width: 25, height: 25)
-                                    .foregroundColor(textSegment.alignment == alignment ? Color("primary-color") : Color("9191A8"))
+                                    .foregroundColor(textSegment.alignment == alignment ? Color("4A4AFF") : Color("9191A8"))
                             }
 
                             
@@ -85,7 +85,7 @@ struct EditTextSegmentTabView: View {
                         .frame(width: 150, alignment: .leading)
                     HStack{
                         Slider(value: $fontSize, in: 6...PropertiesConstants.MaximumFontSize)
-                            .accentColor(Color("primary-color"))
+                            .accentColor(Color("4A4AFF"))
                         Text(String(Int(fontSize)))
                             .foregroundStyle(.white)
                             .font(.medium14)

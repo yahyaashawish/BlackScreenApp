@@ -20,7 +20,7 @@ struct VideosCard: View {
     @State var selectedVideoToPlay : BlackScreenVideo? = nil
     @State var showPlayer : Bool = false
     var body: some View {
-        VStack{
+        VStack(alignment:.center){
             HStack{
                 if let title{
                     Text(title)
@@ -54,21 +54,29 @@ struct VideosCard: View {
                 }
                 
             }
+            .padding(.horizontal,20)
             if !isGrid {
                 ScrollView(.horizontal) {
                     HStack{
+                        
                         ForEach(videos, id: \.id){ video in
                             VideoItemView(video: video){
                                 selectedVideoToPlay = video
                                 showPlayer = true
                             }
                         }
+                       
                         
                     }
                 }
+                .scrollIndicators(.hidden)
+
+                .padding(.leading,20)
+
             }else{
                 ScrollView(.vertical) {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 140)), count: 2), spacing: 10){
+                    
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 140))], spacing: 10) {
                         ForEach(videos, id: \.id){ video in
                             VideoItemView(video: video){
                                 selectedVideoToPlay = video
@@ -76,14 +84,29 @@ struct VideosCard: View {
 
                             }
                         }
+                        
                     }
                 }
+                .scrollIndicators(.hidden)
+
+                .padding(.horizontal,2)
+
+            }
+            
+            if videos.isEmpty {
+                Text("No Videos Available")
+                    .font(Font.medium16)
+                    .foregroundStyle(Color("9191A8"))
+                    .padding(.top,20)
             }
             
         }
         .navigationDestination(isPresented: $showPlayer) {
-            BlackScreenVideoPlayerView(videos: videos, startVideoID: selectedVideoToPlay?.id ?? videos[0].id)
-                .environment(\.layoutDirection, layoutDirection)
+            if !videos.isEmpty{
+                BlackScreenVideoPlayerView(videos: videos, startVideoID: selectedVideoToPlay?.id ?? videos[0].id)
+                    .environment(\.layoutDirection, layoutDirection)
+            }
+            
         }
     }
     

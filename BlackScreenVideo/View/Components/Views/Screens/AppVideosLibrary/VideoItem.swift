@@ -89,6 +89,7 @@ struct VideoItem: View {
             
             
         }
+        .contentShape(Rectangle())
         
         .onTapGesture {
             action()

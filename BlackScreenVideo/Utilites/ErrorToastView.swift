@@ -7,43 +7,75 @@
 
 import SwiftUI
 struct ErrorToastView: View {
-    let message: LocalizedStringKey
-    let retryAction: () -> Void
+    let error : AppError?
+    let retryAction: (() -> Void)?
 
     var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.yellow)
-
-            Text(message)
-                .font(.medium12)
-                .foregroundColor(.white)
-                .font(.footnote)
-                .lineLimit(2)
-            
-            
-            Button{
-                retryAction()
-            }label: {
-                Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
-                    .font(.bold13)
-                    .foregroundStyle(Color("primary-color"))
+        if let error  = error {
+            HStack(spacing: 10) {
+                
+                error.icon
+                
+                VStack(alignment:.center){
+                    HStack{
+                        Text(error.title)
+                            .font(.medium12)
+                            .foregroundColor(.black)
+                            .font(.footnote)
+                            .lineLimit(1)
+                        
+                        if let retryAction {
+                            Button{
+                                retryAction()
+                            }label: {
+                                Text("Retry")
+                                    .font(.medium14)
+                                    .foregroundStyle(Color("4A4AFF"))
+                                    .underline(true, color: Color("4A4AFF"))
+                                
+                            }
+                        }
+                        
+                        
+                    }
+                    if error.message != "" {
+                        Text(error.message)
+                            .font(.medium10)
+                            .foregroundColor(.black)
+                            .font(.footnote)
+                            .lineLimit(1)
+                    }
+                    
+                    
+                }
+                
+                
+                Button{
+                    ErrorHandler.shared.dismissError()
+                }label: {
+                    Image(systemName: "xmark")
+                        .font(.medium14)
+                        .foregroundStyle(.black)
+                }
+                
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Color.gray.opacity(0.1))
+                .clipShape(.circle)
             }
-            
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Color.white.opacity(0.3))
-            .clipShape(.circle)
+            .padding(12)
+            .background(Color.white.opacity(0.9))
+            .cornerRadius(12)
+            .shadow(color: .white,radius: 3)
         }
-        .padding(12)
-        .background(Color("FF385C").opacity(0.9))
-        .cornerRadius(12)
-        .shadow(color: .white,radius: 3)
+        else{
+            EmptyView()
+        }
         
     }
 }
 #Preview {
-    ErrorToastView(message: "Test error mesage") {
+    ErrorToastView(error:.fetchVideosFailed) {
         
     }
 }

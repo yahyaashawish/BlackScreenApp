@@ -12,7 +12,7 @@ struct CustomSlider: View {
     var range: ClosedRange<CGFloat> = 1...20
     var thumbSize: CGFloat = 24
     var trackHeight: CGFloat = 4
-    var fillColor: Color = Color("primary-color")
+    var fillColor: Color = Color("4A4AFF")
     var body: some View {
         GeometryReader { geo in
             let width = geo.size.width

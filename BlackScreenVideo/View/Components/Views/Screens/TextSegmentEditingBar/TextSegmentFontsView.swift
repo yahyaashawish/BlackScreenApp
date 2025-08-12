@@ -18,6 +18,7 @@ struct TextSegmentFontsView: View {
     @StateObject var viewModel : FontViewModel = FontViewModel()
     
     
+    
     var body: some View {
         VStack{
             VStack(alignment:.center){
@@ -36,59 +37,82 @@ struct TextSegmentFontsView: View {
                     
                 }
                 
-               
+                HStack{
+                    ForEach(FontType.allCases,id:\.self){ type in
+                        Button{
+                            viewModel.changeFontType(type)
+                        }label: {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(viewModel.selectedFontType == type ? Color("4A4AFF") : .clear)
+                                .stroke(Color("27272F"), lineWidth: viewModel.selectedFontType == type ? 0 : 1)
+                                .frame(height: 30)
+                                .overlay {
+                                    Text(type.title)
+                                        .font(Font.hevay14)
+                                        .foregroundStyle(viewModel.selectedFontType == type  ? Color("main-background") : Color("9191A8"))
+                                }
+
+                        }
+                    }
+                }
                 
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(viewModel.localFonts, id: \.id) { font in
-                            
-                            Button {
-                                selectFont(font)
-                            } label: {
-                                HStack{
-                                    Text(font.fontName ?? "name not found")
-                                        .foregroundStyle( textSegment.font?.id == font.id  ? .white : Color("9191A8"))
-                                        .font(Font.custom(font.fontName ?? "not_found", size: 14))
-                                    
-                                    
-                                    
-                                }
-                                .frame(width: 98,height: 36)
-                                .background(textSegment.font?.id == font.id ? Color("primary-color") : Color("474755"))
-                                .clipShape(RoundedRectangle(cornerRadius: 5))
-                            }
-                                .onAppear{
-                                    if font.id == viewModel.localFonts.last?.id {
-                                        viewModel.fetchFontsForNextPage()
+                VStack{
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 16) {
+                            ForEach(viewModel.downLoadedFonts, id: \.id) { font in
+                                    Button {
+                                        selectFont(font)
+                                    } label: {
+                                        HStack{
+                                            Text(font.fontName ?? "name not found")
+                                                .foregroundStyle( textSegment.font?.id == font.id  ? .white : Color("9191A8"))
+                                                .font(Font.custom(font.fontName ?? "not_found", size: 14))
+                                            
+                                            
+                                            
+                                        }
+                                        .frame(width: 98,height: 36)
+                                        .background(textSegment.font?.id == font.id ? Color("4A4AFF") : Color("474755"))
+                                        .clipShape(RoundedRectangle(cornerRadius: 5))
                                     }
-                                    
-                                }
+                                    .onAppear{
+                                        if font.id == viewModel.downLoadedFonts.last?.id {
+                                            print("last font appears")
+                                            viewModel.fetchFontsForNextPage(isNewType: false)
+                                        }
+                                        
+                                    }
+                                
+                            }
+                            
+                            if viewModel.isFetching {
+                                Spinner()
+                            }
+                            
                         }
-                        
-                        
-                        
+                        .padding(.vertical,10)
                     }
-                    .padding(.top,20)
+                    if viewModel.localFonts.isEmpty && !viewModel.isFetching && viewModel.fetchedFontsCount == 0{
+                        VStack(spacing: 10){
+                            Text("There is no font available")
+                                .font(Font.medium10)
+                                .foregroundStyle(Color("9191A8"))
+                            
+                            Button("Try Again!") {
+                                viewModel.fetchFontsForNextPage(isNewType: false)
+                            }
+                            .font(Font.medium12)
+                            .foregroundStyle(.cyan)
+                        }
+                    }
                 }
+                
+                
                 .onAppear {
-                    viewModel.fetchFontsForNextPage()
-                    
+                    viewModel.fetchFontsForNextPage(isNewType: true)
+
                 }
-                if viewModel.isFetching {
-                        Spinner()
-                }else if viewModel.localFonts.isEmpty {
-                    VStack(spacing: 10){
-                        Text("There is no font available")
-                            .font(Font.medium10)
-                            .foregroundStyle(Color("9191A8"))
-                        
-                        Button("Try Again!") {
-                            viewModel.fetchFontsForNextPage()
-                        }
-                        .font(Font.medium12)
-                        .foregroundStyle(.cyan)
-                    }
-                }
+                
                 
                 
                 
@@ -100,7 +124,7 @@ struct TextSegmentFontsView: View {
             
         }
         .background(Color("27272F"))
-        .frame(height:250)
+        .frame(height:300)
        
     }
     

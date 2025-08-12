@@ -49,7 +49,7 @@ struct TextSegmentWrappingView: View {
                         .frame(width: 80,alignment: .leading)
                     
                     Slider(value: $width, in: 0...100)
-                        .accentColor(Color("primary-color"))
+                        .accentColor(Color("4A4AFF"))
                     HStack(spacing:0){
                         Text(String(Int(width)))
                             .foregroundStyle(.white)

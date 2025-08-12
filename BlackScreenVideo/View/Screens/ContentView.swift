@@ -3,6 +3,9 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var appPath = AppPath.shared
+    @ObservedObject var errorHandler = ErrorHandler.shared
+    @StateObject private var networkMonitor = NetworkMonitor.shared
+
     @Environment(LanguageSetting.self) private var languageSetting
     var body: some View {
         NavigationStack(path: $appPath.path) {
@@ -59,7 +62,7 @@ struct ContentView: View {
                                     
                                 }
                                 .padding(10)
-                                .background(Color("primary-color"))
+                                .background(Color("4A4AFF"))
                                 .clipShape(RoundedRectangle(cornerRadius: 15))
                                 .frame(width: 130)
                                 
@@ -82,6 +85,24 @@ struct ContentView: View {
                  languageSetting.setLocaleArabic()
             
         }
+         .safeAreaInset(edge: .bottom,alignment: .trailing) {
+             if errorHandler.isThereAnError{
+                 ErrorToastView(error:errorHandler.error ,retryAction: errorHandler.errorAction)
+                     .padding(20)
+                     .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .bottom)))
+                    
+                 
+             }
+         }
+         
+         .onChange(of: networkMonitor.isConnected) { oldStatus,newStatus in
+             if !newStatus {
+                 errorHandler.presentError(error: .noInternet)
+             }
+             if newStatus {
+                     errorHandler.pushAlert(alert: .internetBecomeActive)
+             }
+         }
     }
     
     

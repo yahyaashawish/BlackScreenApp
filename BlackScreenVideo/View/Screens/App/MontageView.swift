@@ -1,4 +1,6 @@
 import SwiftUI
+import GoogleMobileAds
+
 struct MontageView: View {
     @Environment(\.layoutDirection) var layoutDirection
     @Environment(\.dismiss) var dismiss
@@ -20,6 +22,7 @@ struct MontageView: View {
     }
     var body: some View {
         GeometryReader{ geometry in
+            
             ZStack(alignment:.bottom){
                 AppBackground()
                 VStack{
@@ -31,6 +34,32 @@ struct MontageView: View {
                             }label:{
                                 Image("close-rect")
                             }
+                            
+                            HStack(spacing:0){
+                                Button{
+                                    montageVM.undo()
+                                }label:{
+                                    Image("undoicon")
+                                        .foregroundStyle(montageVM.undoStackIsEmpty ? Color("474755") : Color("9191A8"))
+
+                                        .flipsForRightToLeftLayoutDirection(true)
+                                }
+                                .disabled(montageVM.undoStackIsEmpty)
+
+                                .frame(width:40,height:40)
+                                Button{
+                                    montageVM.redo()
+                                }label:{
+                                    Image("redoicon")
+                                        .foregroundStyle(montageVM.redoStackIsEmpty ? Color("474755") : Color("9191A8"))
+                                        .flipsForRightToLeftLayoutDirection(true)
+                                }
+                                .disabled(montageVM.redoStackIsEmpty)
+
+                                .frame(width:40,height:40)
+
+                            }
+                            .padding(.horizontal,30)
                             Spacer()
                             
                             Button{
@@ -133,9 +162,14 @@ struct MontageView: View {
 
 
                 }
-
+                GeometryReader { adGeo in
+                    let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
+                    BannerView(adSize: adSize,isCollapsed: true, isTop: false)
+                }
+                .frame(height: 50)
                 SegmentsEditingBar(viewModel: montageVM)
 
+                
 
             }
             .frame(height: geometry.size.height)
@@ -145,6 +179,7 @@ struct MontageView: View {
             montageVM.addAudioSegment(song: initialSong)
             montageVM.videoSize = videoSize
         }
+        
         .sheet(isPresented: $showAddNewTextSheet, content: {
             AddNewTextSegmentView { text in
                 montageVM.addTextSegment(with: text)

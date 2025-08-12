@@ -39,6 +39,7 @@ class AppLibraryVM: ObservableObject {
         }
     }
     
+    
     func deleteVideo(_ video: Video) {
         do {
             try videoFileManager.deleteVideo(key: video.name ?? "")

@@ -1,4 +1,6 @@
 import SwiftUI
+import GoogleMobileAds
+
 struct VideoCategoriesView: View {
     @Environment(\.layoutDirection) var layoutDirection
     @ObservedObject var appPath = AppPath.shared
@@ -7,7 +9,7 @@ struct VideoCategoriesView: View {
     @State private var showCategoryDetails : Bool = false
     var body: some View {
         GeometryReader{ geometry in
-            ZStack{
+            ZStack(alignment: .bottom){
                 AppBackground()
                 VStack(spacing: 35){
                     VStack{
@@ -28,23 +30,33 @@ struct VideoCategoriesView: View {
                                     Spacer()
                                     
                                     
+                                    
                                 }
                                 
-                                ForEach(viewModel.categories, id: \.id){ category in
+                                let adPlacment = 3
+                                
+                                
+                                ForEach(Array(viewModel.categories.enumerated()), id: \.element.id) { index, category in
                                     VStack{
-                                        VideosCard(title: category.name, btnTitle: "All",videos: category.videos){
-                                            viewModel.selectedCategory = category
-                                            showCategoryDetails = true
-                                        }
                                         
-                                        if category.videos.isEmpty && !viewModel.isFetchingCategories && !viewModel.isThereAnError{
-                                            Text("No Videos Available")
-                                                .font(Font.medium14)
-                                                .foregroundStyle(Color("9191A8"))
-                                        }
+                                            VideosCard(title: category.name, btnTitle: "All",videos: category.videos){
+                                                viewModel.selectedCategory = category
+                                                showCategoryDetails = true
+                                            }
+                                            
+                                        
+                                        
+                                        
+                                       
                                     }
                                     .padding(.vertical,10)
-
+                                    if index % adPlacment == 0 {
+                                        GeometryReader { adGeo in
+                                            let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
+                                            BannerView(adSize: adSize,isCollapsed: false, isTop: false)
+                                        }
+                                        .frame(height: 80)
+                                    }
                                     
                                 }
                                 
@@ -62,11 +74,12 @@ struct VideoCategoriesView: View {
                 
                     
                 }
-                .padding(.horizontal,25)
+                
             }
             .onAppear {
                 viewModel.fetchCategories()
             }
+            
         }
         
         .titleToolbar(title: "Ready-made videos")
@@ -77,15 +90,7 @@ struct VideoCategoriesView: View {
                 .environment(\.layoutDirection,  layoutDirection)
 
         })
-        .safeAreaInset(edge: .bottom,alignment: .trailing) {
-            if viewModel.isThereAnError{
-                ErrorToastView(message: "Something went wrong!") {
-                    viewModel.fetchCategories()
-                }
-                .padding(20)
-                
-            }
-        }
+        
     }
     
     

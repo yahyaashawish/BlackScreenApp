@@ -62,7 +62,7 @@ struct TextSegmentShadowView: View {
                                         changeAngle(angle)
                                     } label: {
                                         RoundedRectangle(cornerRadius: 5)
-                                            .fill(textSegment.shadow?.angle == angle ? Color("primary-color") : Color("474755"))
+                                            .fill(textSegment.shadow?.angle == angle ? Color("4A4AFF") : Color("474755"))
                                             .frame(width: 24, height: 24)
                                             .overlay(alignment: angle.alignment) {
                                                 Circle()
@@ -98,7 +98,7 @@ struct TextSegmentShadowView: View {
                         .font(.medium16)
                         .frame(width: 70,alignment: .leading)
                     Slider(value: $opacity, in: 0...100)
-                        .accentColor(Color("primary-color"))
+                        .accentColor(Color("4A4AFF"))
                     HStack(spacing:0){
                         Text(String(Int(opacity)))
                             .foregroundStyle(.white)
@@ -115,7 +115,7 @@ struct TextSegmentShadowView: View {
                         .font(.medium16)
                         .frame(width: 70,alignment: .leading)
                     Slider(value: $radius, in: 0...100)
-                        .accentColor(Color("primary-color"))
+                        .accentColor(Color("4A4AFF"))
                     HStack(spacing:0){
                         Text(String(Int(radius)))
                             .foregroundStyle(.white)
@@ -133,7 +133,7 @@ struct TextSegmentShadowView: View {
                         .frame(width: 70,alignment: .leading)
                     
                     Slider(value: $offset, in: 0...100)
-                        .accentColor(Color("primary-color"))
+                        .accentColor(Color("4A4AFF"))
                     HStack(spacing:0){
                         Text(String(Int(offset)))
                             .foregroundStyle(.white)

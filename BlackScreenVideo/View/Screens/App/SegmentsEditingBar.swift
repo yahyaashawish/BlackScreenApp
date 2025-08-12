@@ -13,7 +13,7 @@ struct SegmentsEditingBar: View {
     @ObservedObject var viewModel : MontageVM
    
     var body: some View {
-        VStack{
+        VStack(alignment:.center){
             if viewModel.textSegmentSelectedID != nil && viewModel.audioSegmentSelectedID == nil{
                 withAnimation {
                     TextSegmentsEditingBar(viewModel: viewModel)

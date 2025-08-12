@@ -8,6 +8,7 @@
 
 import SwiftUI
 enum TextEditingTab : LocalizedStringKey , CaseIterable{
+    case split = "Split"
     case delete = "Delete"
     case edit = "Text"
     case transition = "Transition"
@@ -20,6 +21,8 @@ enum TextEditingTab : LocalizedStringKey , CaseIterable{
     
     var icon : String {
         switch self {
+        case .split:
+            return "split-icon"
         case .transition:
             return "transition-icon"
         case .fontType:
@@ -68,6 +71,8 @@ struct TextSegmentsEditingBar: View {
                                     .frame(height: 2)
                                 
                                 switch selectedTab {
+                                case .split:
+                                    EmptyView()
                                 case .transition:
                                     TransitionTabView(textSegment: segment,applyOnAll: viewModel.applyTransitionOnAllTextSegments)
                                 case .fontType:
@@ -132,23 +137,28 @@ struct TextSegmentsEditingBar: View {
                             HStack(alignment:.top,spacing:5){
                                 ForEach(TextEditingTab.allCases, id: \.self) { tab in
                                     Button {
-                                        if selectedTab == tab {
-                                            withAnimation {
-                                                selectedTab = nil
-                                            }
-                                            
+                                        if tab == .split {
+                                            viewModel.splitSelectedTextSegment()
                                         }else{
-                                            withAnimation(.bouncy) {
-                                                selectedTab = tab
+                                            if selectedTab == tab {
+                                                withAnimation {
+                                                    selectedTab = nil
+                                                }
+                                                
+                                            }else{
+                                                withAnimation(.bouncy) {
+                                                    selectedTab = tab
+                                                }
                                             }
                                         }
+                                       
                                     } label: {
                                         VStack{
                                             Image(tab.icon)
-                                                .foregroundStyle(selectedTab == tab ?  Color("primary-color"):Color("9191A8"))
+                                                .foregroundStyle(selectedTab == tab ?  Color("4A4AFF"):Color("9191A8"))
                                             Spacer()
                                             Text(tab.rawValue)
-                                                .foregroundStyle(selectedTab == tab ? Color("primary-color"):Color("6C6C7B"))
+                                                .foregroundStyle(selectedTab == tab ? Color("4A4AFF"):Color("6C6C7B"))
                                                 .font(.medium10)
                                         }
                                         
@@ -156,6 +166,7 @@ struct TextSegmentsEditingBar: View {
                                     .frame(width: 60, height: 50)
                                     
                                 }
+
                             }
                             
                         }

@@ -31,7 +31,7 @@ struct AudioFadersTabView: View {
                     .font(.medium16)
                     .frame(width: 100,alignment: .leading)
                 Slider(value: $fadeIn, in: 0...PropertiesConstants.MaximumFadeInOut)
-                    .accentColor(Color("primary-color"))
+                    .accentColor(Color("4A4AFF"))
                 HStack(spacing:0){
                     Text(String(format: "%.1f", fadeIn))
                         .foregroundStyle(.white)
@@ -52,7 +52,7 @@ struct AudioFadersTabView: View {
                     .frame(width: 100,alignment: .leading)
 
                 Slider(value: $fadeOut, in: 0...PropertiesConstants.MaximumFadeInOut)
-                    .accentColor(Color("primary-color"))
+                    .accentColor(Color("4A4AFF"))
                 HStack(spacing:0){
                     Text(String(format: "%.1f", fadeOut))
                         .foregroundStyle(.white)

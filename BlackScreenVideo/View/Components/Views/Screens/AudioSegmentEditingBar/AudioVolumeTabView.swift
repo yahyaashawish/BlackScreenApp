@@ -27,7 +27,7 @@ struct AudioVolumeTabView: View {
             HStack{
                 
                 Slider(value: $volume, in: 0...100)
-                    .accentColor(Color("primary-color"))
+                    .accentColor(Color("4A4AFF"))
                 Text(String(Int(volume)))
                     .foregroundStyle(.white)
                     .font(.medium14)

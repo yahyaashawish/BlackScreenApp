@@ -9,7 +9,7 @@ import SwiftUI
 struct TextSegmentView: View {
     @ObservedObject var vm: MontageVM
     @Binding var seg: TextSegment                         // real model
-    let trackY: CGFloat = 16                               // y-center for this row
+    let trackY: CGFloat = 21                               // y-center for this row
     let isSelected: Bool
     // live preview
     @State private var dragDX: CGFloat = 0                // whole-segment move
@@ -43,7 +43,7 @@ struct TextSegmentView: View {
             if isSelected {
                 SingleCornerRoundedRectangle(cornerRadius: 5, corners: [.topLeft,.bottomLeft])
                     .fill(Color("01B5FF"))
-                    .frame(width: handle, height: 32)
+                    .frame(width: handle, height: 42)
                     .overlay(Image("chev-left"))
                     .gesture(
                         DragGesture(coordinateSpace: .global)
@@ -73,31 +73,28 @@ struct TextSegmentView: View {
             
             
             //  main body  ─────────────────────────────────────────────────────────────
-            Rectangle()
-                .fill(Color("01B5FF").opacity(0.25))
-                .overlay(
-                    HStack{
-                        Text(seg.content)
-                            .font(.medium12)
-                            .foregroundColor(Color("01B5FF"))
-                            .padding(.leading,4)
-                        
-                        Spacer()
-                        if seg.transitionType != .none {
-                            Image(seg.transitionType.icon)
-                                .resizable()
-                                .frame(width: 9,height: 9)
-                                .foregroundStyle(Color("01B5FF"))
-                                .padding(.trailing,4)
-                        }
-                        
-                    }
-                    , alignment: .leading)
+            HStack{
+                Text(seg.content)
+                    .font(.medium12)
+                    .foregroundColor(Color("01B5FF"))
+                    .padding(.leading,4)
+                
+                Spacer()
+                if seg.transitionType != .none {
+                    Image(seg.transitionType.icon)
+                        .resizable()
+                        .frame(width: 15,height: 15)
+                        .foregroundStyle(Color("01B5FF"))
+                        .padding(.trailing,4)
+                }
+            }
+            .contentShape(Rectangle())
+            .frame(width: max(width,0), height: isSelected ? 40 : 30)
+            .background(Color("01B5FF").opacity(0.25))
                 .overlay(
                     RoundedRectangle(cornerRadius: 0)
                         .stroke(Color("01B5FF"), lineWidth: isSelected ? 2 : 0)
                 )
-                .contentShape(Rectangle())
                 .gesture(
                     DragGesture(coordinateSpace: .global)
                         .onChanged { g in
@@ -123,14 +120,13 @@ struct TextSegmentView: View {
 
                         }
                 )
-                .frame(width: max(width,0), height: isSelected ? 30 : 20)
 
             
             //  right handle  ──────────────────────────────────────────────────────────
             if isSelected {
                 SingleCornerRoundedRectangle(cornerRadius: 5, corners: [.topRight,.bottomRight])
                     .fill(Color("01B5FF"))
-                    .frame(width: handle, height: 32)
+                    .frame(width: handle, height: 42)
                     .overlay(Image("chev-right"))
                     .gesture(
                         DragGesture(coordinateSpace: .global)
@@ -170,4 +166,14 @@ struct TextSegmentView: View {
         .animation(nil, value: leftDX)
         .animation(nil, value: rightDX)
     }
+}
+
+
+#Preview {
+    NavigationStack{
+        MontageView(videoSize: .portrait9_16, initialSong: LocalSong(name: "test", duration: 20, url: URL.homeDirectory))
+    }
+    .environment(\.locale, .init(identifier: "ar"))
+    .environment(\.layoutDirection,  .rightToLeft )
+    
 }

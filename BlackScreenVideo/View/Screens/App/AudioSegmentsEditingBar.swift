@@ -6,6 +6,7 @@
 //
 
 
+
 import SwiftUI
 enum AudioEditingTab : LocalizedStringKey , CaseIterable{
     case split = "Split"
@@ -65,7 +66,7 @@ struct AudioSegmentsEditingBar: View {
                             
                             switch selectedTab {
                             case .split:
-                                VStack{}
+                                EmptyView()
                             case .volume:
                                 AudioVolumeTabView(audioSegment: segment)
                                 
@@ -75,7 +76,7 @@ struct AudioSegmentsEditingBar: View {
                             case .cutter:
                                 AudioCutterTabView(segment: segment)
                             case .exchange:
-                                VStack{}
+                                EmptyView()
                             case .delete:
                                 DeleteSegmentTabView(segmentType: .audio) {
                                     viewModel.deleteSelectedAudioSegment(segmentIndex: segmentIndex)
@@ -109,50 +110,52 @@ struct AudioSegmentsEditingBar: View {
                         )
                         
                     }
-                    ScrollView(.horizontal, showsIndicators: false){
-                        HStack(alignment:.top,spacing:5){
-                            ForEach(AudioEditingTab.allCases, id: \.self) { tab in
-                                Button {
-                                    if tab == .split {
-                                        viewModel.splitAudioSegment(at: viewModel.currentTime)
-                                    }else if tab == .exchange{
-                                        showMusicPicker = true
-                                    }
-                                    else{
-                                        if selectedTab == tab {
-                                            withAnimation {
-                                                selectedTab = nil
-                                            }
-                                        }else{
-                                            withAnimation(.bouncy) {
-                                                selectedTab = tab
+                   
+                        ScrollView(.horizontal, showsIndicators: false){
+                            HStack(alignment:.top,spacing:5){
+                                ForEach(AudioEditingTab.allCases, id: \.self) { tab in
+                                    Button {
+                                        if tab == .split {
+                                            viewModel.splitAudioSegment(at: viewModel.currentTime)
+                                        }else if tab == .exchange{
+                                            showMusicPicker = true
+                                        }
+                                        else{
+                                            if selectedTab == tab {
+                                                withAnimation {
+                                                    selectedTab = nil
+                                                }
+                                            }else{
+                                                withAnimation(.bouncy) {
+                                                    selectedTab = tab
+                                                }
                                             }
                                         }
+                                        
+                                    } label: {
+                                        VStack{
+                                            Image(tab.icon)
+                                                .foregroundStyle(selectedTab == tab ?  Color("4A4AFF"):Color("9191A8"))
+                                            Spacer()
+                                            Text(tab.rawValue)
+                                                .foregroundStyle(selectedTab == tab ? Color("4A4AFF"):Color("6C6C7B"))
+                                                .font(.medium10)
+                                        }
+                                        
                                     }
-                                    
-                                } label: {
-                                    VStack{
-                                        Image(tab.icon)
-                                            .foregroundStyle(selectedTab == tab ?  Color("primary-color"):Color("9191A8"))
-                                        Spacer()
-                                        Text(tab.rawValue)
-                                            .foregroundStyle(selectedTab == tab ? Color("primary-color"):Color("6C6C7B"))
-                                            .font(.medium10)
-                                    }
+                                    .frame(width: 60, height: 50)
                                     
                                 }
-                                .frame(width: 60, height: 50)
                                 
                             }
+                            
                         }
+                        .frame(height: 60)
+                        .padding(.vertical,10)
+                        .padding(.leading,10)
+                        .background(Color("27272F"))
                         
-                    }
-                    
-                    .frame(height: 60)
-                    .padding(.vertical,10)
-                    .padding(.leading,10)
-                    .background(Color("27272F"))
-                    
+                      
                     
                 }
                 

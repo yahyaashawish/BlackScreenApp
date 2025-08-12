@@ -44,22 +44,22 @@ class FontManager {
     }
     
     
-    func downloadAndRegisterFont(from fontURLString: String, fontName: String, completion: @escaping (Bool, URL?) -> Void) {
+    func downloadAndRegisterFont(from fontURLString: String, fontName: String, completion: @escaping (Bool, URL?) -> Void) -> URLSessionDownloadTask? {
         let fileName = fontName + ".ttf"
                 let fileURL = getLocalFontURL(fontName: fileName)
         
                 if FileManager.default.fileExists(atPath: fileURL.path) {
                     let register = registerFontIfNeeded(for: fontName)
                     completion(register, fileURL)
-                    return
+                    return nil
                 }
         
                 guard let url = URL(string: fontURLString) else {
                     completion(false, nil)
-                    return
+                    return nil
                 }
         
-                URLSession.shared.downloadTask(with: url) { location, _, _ in
+                let task = URLSession.shared.downloadTask(with: url) { location, _, _ in
                     guard let location = location else {
                         completion(false,nil)
                         return
@@ -75,7 +75,9 @@ class FontManager {
                         print("Error saving font: \(error)")
                         completion(false,nil)
                     }
-                }.resume()
+                }
+                task.resume()
+                return task
     }
     
         func getLocalFontURL(fontName: String) -> URL {

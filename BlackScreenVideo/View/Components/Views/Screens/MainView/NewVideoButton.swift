@@ -2,7 +2,7 @@ import SwiftUI
 struct NewVideoButton: View {
     @Environment(\.layoutDirection) var layoutDirection
     @Environment(\.dismiss) var dismiss
-
+    
     let isForLibraryView : Bool
     @State var showVideoSizePicker : Bool = false
     @State var selectedVideoSize : VideoSize?
@@ -47,7 +47,7 @@ struct NewVideoButton: View {
                 .padding(.horizontal,25)
                 .padding(.top,25)
                 .frame(height: 114)
-                .background(Color("primary-color"))
+                .background(Color("4A4AFF"))
                 .clipShape(RoundedRectangle(cornerRadius: 15))
             }
             

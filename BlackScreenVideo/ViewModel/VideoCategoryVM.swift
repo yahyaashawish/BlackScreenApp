@@ -15,13 +15,13 @@ class VideoCategoryVM: ObservableObject {
     @Published var selectedCategory : VideoCategory? = nil
     @Published var isFetchingCategories : Bool = false
     @Published var isFetchingVideos : Bool = false
-    @Published var isThereAnError : Bool = false
     var currentTask : URLSessionDataTask? = nil
-    
+    let errorHandler = ErrorHandler.shared
+
     
     func fetchCategories()  {
         isFetchingCategories = true
-        isThereAnError = false
+        errorHandler.resetError()
         currentTask = VideoCategoryRequest.shared.fetchCatgories { result in
             switch result {
             case .success(let categories):
@@ -31,7 +31,7 @@ class VideoCategoryVM: ObservableObject {
                 }
             case .failure(_):
                 DispatchQueue.main.async {
-                    self.isThereAnError = true
+                    self.errorHandler.presentError(error: .fetchVideosFailed,action: self.fetchCategories)
                     self.isFetchingCategories = false
                 }
             }
@@ -40,7 +40,7 @@ class VideoCategoryVM: ObservableObject {
     func fetchVideosForSelectedCategory()  {
         if let selectedCategory {
             isFetchingVideos = true
-            isThereAnError = false
+            errorHandler.resetError()
             currentTask = VideoCategoryRequest.shared.fetchCatgoryVideos(for: selectedCategory.id) { result in
                 switch result {
                 case .success(let videos):
@@ -50,7 +50,7 @@ class VideoCategoryVM: ObservableObject {
                     }
                 case .failure(_):
                     DispatchQueue.main.async {
-                        self.isThereAnError = true
+                        self.errorHandler.presentError(error: .fetchVideosFailed,action: self.fetchVideosForSelectedCategory)
                         self.isFetchingVideos = false
                     }
                 }

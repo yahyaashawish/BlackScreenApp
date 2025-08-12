@@ -5,6 +5,7 @@ struct AudioPickerView: View {
 
     @ObservedObject var appPath = AppPath.shared
     let onSelectSong: (LocalSong) -> Void
+    @StateObject var settingsVM : SettingsVM = SettingsVM()
     @State var showAppLibrary : Bool = false
     @State var showICloudPicker : Bool = false
     @State var showGalleryPicker : Bool = false
@@ -24,23 +25,26 @@ struct AudioPickerView: View {
                 }
                 
                 HStack(spacing:15){
-                    Button{
-                        showAppLibrary = true
-
-                    }label: {
-                        VStack{
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(Color("27272F"))
-                                .frame(height: 72)
-                                .overlay {
-                                    Image("music-library")
-                                }
+                    if settingsVM.showApplibrary{
+                        Button{
+                            showAppLibrary = true
                             
-                            Text("App Library")
-                                .font(.regular16)
-                                .foregroundStyle(Color("A1A1B9"))
+                        }label: {
+                            VStack{
+                                RoundedRectangle(cornerRadius: 15)
+                                    .fill(Color("27272F"))
+                                    .frame(height: 72)
+                                    .overlay {
+                                        Image("music-library")
+                                    }
+                                
+                                Text("App Library")
+                                    .font(.regular16)
+                                    .foregroundStyle(Color("A1A1B9"))
+                            }
                         }
                     }
+                   
                     
                     
                     Button{

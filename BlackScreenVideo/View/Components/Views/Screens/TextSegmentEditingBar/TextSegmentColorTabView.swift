@@ -47,7 +47,7 @@ struct TextSegmentColorTabView: View {
                         .foregroundStyle(Color("9191A8"))
                         .font(.medium16)
                     Slider(value: $opacity, in: 0...100)
-                        .accentColor(Color("primary-color"))
+                        .accentColor(Color("4A4AFF"))
                     Text(String(Int(opacity)))
                         .foregroundStyle(.white)
                         .font(.medium14)

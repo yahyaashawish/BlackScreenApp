@@ -10,8 +10,10 @@ struct ICloudAudioPicker: UIViewControllerRepresentable {
     }
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.audio])
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.audio], asCopy: true)
         picker.delegate = context.coordinator
+        picker.directoryURL = .homeDirectory// Ensures it starts at the Browse screen
+        picker.allowsMultipleSelection = false
         return picker
     }
     
@@ -50,3 +52,5 @@ struct ICloudAudioPicker: UIViewControllerRepresentable {
         }
     }
 }
+
+

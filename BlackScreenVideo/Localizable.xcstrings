@@ -57,6 +57,16 @@
     "%.2f%%" : {
       "shouldTranslate" : false
     },
+    "Adding Like Failed!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشلت عملية إضافة الإعجاب!"
+          }
+        }
+      }
+    },
     "All" : {
       "localizations" : {
         "ar" : {
@@ -370,6 +380,16 @@
         }
       }
     },
+    "Fetching Videos Failed!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خطأ أثناء جلب الفيديوهات!"
+          }
+        }
+      }
+    },
     "Filling" : {
       "localizations" : {
         "ar" : {
@@ -440,12 +460,32 @@
         }
       }
     },
+    "Internet Connection Restored!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمت استعادة الاتصال بالانترنت!"
+          }
+        }
+      }
+    },
     "Make fun now" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "اصنع المرح الآن"
+          }
+        }
+      }
+    },
+    "Make Sure Your Internet Connection Is Active" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تأكد من أن اتصالك بالإنترنت فعال"
           }
         }
       }
@@ -506,6 +546,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "فيديو جديد 🚀"
+          }
+        }
+      }
+    },
+    "No Internet Connection!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يتوفر اتصال بالانترنت"
           }
         }
       }
@@ -606,6 +656,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جديد"
+          }
+        }
+      }
+    },
+    "Removing Like Failed!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فشلت عملية حذف الإعجاب!"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحديث"
           }
         }
       }

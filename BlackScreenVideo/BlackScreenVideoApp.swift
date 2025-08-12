@@ -11,7 +11,7 @@ import SwiftUI
 struct BlackScreenVideoApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @State var languageSettings = LanguageSetting.shared
-    
+
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
@@ -22,13 +22,18 @@ struct BlackScreenVideoApp: App {
                 .environment(\.layoutDirection,  languageSettings.isRightToLeft ? .rightToLeft : .leftToRight)
                 .environment(\.managedObjectContext,
                               CoreDataHelper.shared.persistentContainer.viewContext)
+                .environment(\.colorScheme, .dark)
 
-//                .onChange(of: scenePhase) { oldPhase,newPhase in
-//                    if newPhase == .active {
-//                        AppOpenAdManager.shared.showAdIfAvailable()
-//                    }
-//                    
-//                }
+                .onChange(of: scenePhase) { oldPhase,newPhase in
+                    if newPhase == .active {
+                        AppOpenAdManager.shared.showAdIfAvailable()
+                    }
+                    
+                }
+                .onAppear{
+                    UserIdentifier.shared.setIdentifier()
+                }
+                
         }
 
     }

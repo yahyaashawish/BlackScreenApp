@@ -81,7 +81,7 @@ class AudioWaveFormLoader: ObservableObject {
         let startRatio = max(0, audioStartTime / originalDuration)
         let endRatio = min(1, (audioStartTime + duration) / originalDuration)
         
-        var startIndex = Int(CGFloat(full.count) * CGFloat(startRatio))
+        let startIndex = Int(CGFloat(full.count) * CGFloat(startRatio))
         var endIndex = Int(CGFloat(full.count) * CGFloat(endRatio))
         
         if startIndex >= endIndex {

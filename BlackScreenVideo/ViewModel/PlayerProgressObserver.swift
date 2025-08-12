@@ -25,7 +25,6 @@ class PlayerProgressObserver: ObservableObject {
     }
     
     func loadNewPlayerItem(){
-        print("loaded new player item")
         if let timeObserver = timeObserver {
             player.removeTimeObserver(timeObserver)
         }
@@ -33,10 +32,8 @@ class PlayerProgressObserver: ObservableObject {
         timeObserver = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 600), queue: .main) { [weak self] time in
             guard let self = self else { return }
             self.currentTime = time.seconds
-            print("loaded new time \(time.seconds)")
-            print("player item \(player.currentItem)")
+
             if let dur = player.currentItem?.duration.seconds, dur.isFinite {
-                print("loaded new duration \(dur)")
                 self.duration = dur
             }
         }

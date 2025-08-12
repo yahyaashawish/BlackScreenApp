@@ -34,7 +34,7 @@ struct TransitionTabView: View {
                                 textSegment.transitionType = type
                             } label: {
                                 Image(type.icon)
-                                    .foregroundStyle(textSegment.transitionType == type ?  Color("primary-color"):Color(.white))
+                                    .foregroundStyle(textSegment.transitionType == type ?  Color("4A4AFF"):Color(.white))
                                 
                             }
                         }

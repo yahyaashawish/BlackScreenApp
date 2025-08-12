@@ -1,8 +1,8 @@
 import SwiftUI
+import GoogleMobileAds
+
 struct AppVideosLibrary: View {
     @Environment(\.layoutDirection) var layoutDirection
-    @ObservedObject var videoMakerPath = AppPath.shared
-    @StateObject private var adViewModel = BannerAdVM()
     @StateObject private var appLibraryVM = AppLibraryVM()
     @State var showDeleteConfirmation : Bool = false
     @State var showPlayer : Bool = false
@@ -11,22 +11,27 @@ struct AppVideosLibrary: View {
     
     var body: some View {
         GeometryReader{ geometry in
-            ZStack{
+            ZStack(alignment: .bottom){
                 AppBackground()
                 VStack{
                     VStack{
                         if appLibraryVM.saved_videos.isEmpty{
-                            Image("empty-library")
-                                .resizable()
-                                .frame(width: 125,height: 137)
-                            Text("You did not make any videos yet")
-                                .font(.regular16)
-                                .foregroundStyle(Color("A1A1B9"))
-                            Text("Make video now")
-                                .font(.regular16)
-                                .foregroundStyle(Color("A1A1B9"))
-                            
-                            NewVideoButton(isForLibraryView: true)
+                            Spacer()
+                            VStack{
+                                Image("empty-library")
+                                    .resizable()
+                                    .frame(width: 125,height: 137)
+                                Text("You did not make any videos yet")
+                                    .font(.regular16)
+                                    .foregroundStyle(Color("A1A1B9"))
+                                Text("Make video now")
+                                    .font(.regular16)
+                                    .foregroundStyle(Color("A1A1B9"))
+                                
+                                NewVideoButton(isForLibraryView: true)
+                            }
+                            Spacer()
+
                         }else{
                             List{
                                 ForEach(appLibraryVM.saved_videos, id: \.id){ video in
@@ -50,7 +55,14 @@ struct AppVideosLibrary: View {
                 }
                 .padding(.horizontal,10)
                 .padding(.top,10)
-                .frame(width: geometry.size.width,height: geometry.size.height)
+//                .frame(width: geometry.size.width,height: geometry.size.height)
+                
+                GeometryReader { adGeo in
+                    let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
+                    BannerView(adSize: adSize,isCollapsed: true, isTop: false)
+                }
+                .frame(height: 80)
+                .safeAreaPadding(.bottom)
             }
             
         }

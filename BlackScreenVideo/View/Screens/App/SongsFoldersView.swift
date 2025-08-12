@@ -92,7 +92,7 @@ struct FolderView: View {
         }
         .padding(.vertical,5)
         .padding(.horizontal,10)
-        .background(isSelected ? Color("primary-color") : .clear)
+        .background(isSelected ? Color("4A4AFF") : .clear)
         .cornerRadius(20)
         .overlay(
             RoundedRectangle(cornerRadius: 20)

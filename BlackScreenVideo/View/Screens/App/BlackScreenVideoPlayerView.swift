@@ -11,6 +11,7 @@ struct BlackScreenVideoPlayerView: View {
     @State private var playbackWorkItem: DispatchWorkItem?
     @State private var isPlaying: Bool = false
     @StateObject var playerObserver = AVPlayerObserver()
+    @StateObject var videoStatesVM = VideoStatesVM()
     
 
 
@@ -19,12 +20,12 @@ struct BlackScreenVideoPlayerView: View {
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 0) {
                         if let firstVideo = getFirstVideo(){
-                            VideoPageView(video: firstVideo, player: player,playerObserver: playerObserver,isPlaying: $isPlaying,showStates: showStates)
+                            VideoPageView(video: firstVideo, player: player,playerObserver: playerObserver,isPlaying: $isPlaying,showStates: showStates,videoStatesVM: videoStatesVM)
                                 .id(firstVideo.id)
                         }
                         ForEach(videos,id: \.id) { video in
                             if video.id != startVideoID{
-                                VideoPageView(video: video, player: player,playerObserver: playerObserver,isPlaying: $isPlaying,showStates: showStates)
+                                VideoPageView(video: video, player: player,playerObserver: playerObserver,isPlaying: $isPlaying,showStates: showStates,videoStatesVM: videoStatesVM)
                                     .id(video.id)
                             }
                             
@@ -114,9 +115,15 @@ struct VideoPageView: View {
     @Binding var isPlaying: Bool
 
     let showStates: Bool
+    @ObservedObject var videoStatesVM: VideoStatesVM
 
     @State var showPlayIcon : Bool = false
     @State var showPauseIcon : Bool = false
+    @State var isLiked: Bool = false
+    @State var likesCount: Int = 0
+    @State private var heartScale: CGFloat = 1.0
+
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             ZStack{
@@ -165,18 +172,32 @@ struct VideoPageView: View {
                     if showStates {
                         HStack{
                             VStack(spacing: 10){
-                                VStack(spacing:5){
-                                    Image(systemName: "heart")
-                                        .resizable()
-                                        .foregroundStyle(.white)
-                                        .frame(width: 21,height: 19)
-                                        .font(.bold20)
-                                    
-                                    Text(String(video.likes_count))
-                                        .font(.medium16)
-                                        .foregroundStyle(.white)
-                                    
+                                Button {
+                                    toggleVideoLike()
+                                    videoStatesVM.toggleVideoLike(videoId: video.id){ status in
+                                        if !status {
+                                            toggleVideoLike()
+                                        }
+                                    }
+                                } label: {
+                                    VStack(spacing:5){
+                                        Image(systemName: isLiked ? "heart.fill" : "heart"  )
+                                            .resizable()
+                                            .foregroundStyle(isLiked ? .red : .white)
+                                            .frame(width: 24,height: 21)
+                                            .scaleEffect(heartScale)
+                                            
+                                        Text(String(likesCount))
+                                            .font(.medium16)
+                                            .foregroundStyle(.white)
+                                        
+                                    }
                                 }
+                                .onAppear {
+                                    self.isLiked = videoStatesVM.checkIfLiked(videoId: video.id)
+                                    self.likesCount = video.likes_count
+                                }
+
                                 if let videoURL = URL(string: video.video_url),
                                    let thumbnailURL = URL(string: video.thumbnail_url) {
                                     
@@ -225,7 +246,36 @@ struct VideoPageView: View {
         
         
     }
-    
+    func toggleVideoLike() {
+        if isLiked {
+            // Unlike animation (shrink slightly then back)
+            withAnimation(.spring) {
+                heartScale = 0.8
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation(.spring) {
+                    heartScale = 1.0
+
+                }
+            }
+            likesCount -= 1
+            isLiked = false
+            
+        } else {
+            // Like animation (pop bigger then back)
+            withAnimation(.spring) {
+                heartScale = 1.4
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation(.spring) {
+                    heartScale = 1.0
+                    
+                }
+            }
+            likesCount += 1
+            isLiked = true
+        }
+    }
     func togglePlayback() {
         if player.timeControlStatus == .playing {
             player.pause()

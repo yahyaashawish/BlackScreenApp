@@ -36,7 +36,7 @@ struct AudioCutterTabView: View {
                     // Play Button
                     Button(action: togglePlay) {
                         Circle()
-                            .fill(Color("primary-color"))
+                            .fill(Color("4A4AFF"))
                             .frame(width: 35, height: 34)
                             .overlay(
                                 Image(systemName: isPlaying ? "pause.fill" : "play.fill")

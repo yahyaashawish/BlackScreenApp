@@ -8,11 +8,17 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="thumbnail" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="LikedVideo" representedClassName="LikedVideo" syncable="YES" codeGenerationType="class">
+        <attribute name="video_id" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="LocalFont" representedClassName="LocalFont" syncable="YES" codeGenerationType="class">
         <attribute name="fileName" attributeType="String"/>
+        <attribute name="fileURL" optional="YES" attributeType="String"/>
         <attribute name="fontName" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isDownloaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Video" representedClassName="Video" syncable="YES" codeGenerationType="class">
         <attribute name="created_at" attributeType="Date" usesScalarValueType="NO"/>

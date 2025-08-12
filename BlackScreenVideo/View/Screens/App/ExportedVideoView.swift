@@ -17,7 +17,6 @@ import SwiftUI
 import GoogleMobileAds
 
 struct ExportedVideoView: View {
-    @StateObject private var adViewModel = BannerAdVM()
     
     @Environment(\.requestReview) var requestReview
     
@@ -28,10 +27,8 @@ struct ExportedVideoView: View {
 //    var videoSize : VideoSize? = .square1_1
     var body: some View {
         GeometryReader { geometry in
-            //            let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(geometry.size.width)
             
-            
-            ZStack{
+            ZStack(alignment: .bottom){
                 AppBackground()
                 VStack(spacing: 30){
                     HStack{
@@ -91,7 +88,7 @@ struct ExportedVideoView: View {
                                             .overlay {
                                                 
                                                 Circle()
-                                                    .fill(Color("primary-color"))
+                                                    .fill(Color("4A4AFF"))
                                                     .frame(width: 35, height: 34)
                                                     .overlay(
                                                         Image(systemName: "play.fill")
@@ -117,7 +114,9 @@ struct ExportedVideoView: View {
                     .frame(height: 400)
                     
                     HStack{
-                        if let finalVideoURL = viewModel.outputURL,let thumbImage = viewModel.generateThumbnail(),!viewModel.isExportingVideo{
+                       
+                        if let finalVideoURL = viewModel.outputURL,let thumbImage = viewModel.outputThumbnail,!viewModel.isExportingVideo{
+                            
                         FinalVideoButton(title: "Save Video", icon: "save-icon") {
                             showSavingSheet = true
                         }
@@ -148,15 +147,20 @@ struct ExportedVideoView: View {
                                 requestReview()
                             }
                         }
-                       
-                        
-                        
-                        
                     }
+                    
                     Spacer()
                 }
                 .padding(20)
+                GeometryReader { adGeo in
+                    let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
+                    BannerView(adSize: adSize,isCollapsed: true, isTop: false)
+                }
+                .frame(height: 80)
+                .safeAreaPadding(.bottom)
+                
             }
+            
             
             
             
@@ -213,7 +217,8 @@ struct ExportedVideoView: View {
         .environment(\.layoutDirection,  LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight)
         .sheet(isPresented: $showSavingSheet) {
             AddNewTextSegmentView(placeholder: "Video Title") { title in
-                viewModel.saveVideo(with: title)
+                    viewModel.saveVideo(with: title)
+                
                 
             }
             .presentationCornerRadius(20)

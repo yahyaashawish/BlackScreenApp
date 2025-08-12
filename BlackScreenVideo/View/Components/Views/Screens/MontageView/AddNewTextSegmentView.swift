@@ -29,7 +29,7 @@ struct AddNewTextSegmentView: View {
                     }
                 } label: {
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(Color("primary-color"))
+                        .fill(Color("4A4AFF"))
                         .frame(width: 60, height: 40)
                         .overlay {
                             Image(systemName: "checkmark")

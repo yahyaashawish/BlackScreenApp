@@ -28,6 +28,16 @@ class MontageVM: ObservableObject {
 
     @Published var tapX: CGFloat? = 0
     @Published var scrollOffset: CGFloat = 0
+    
+    init(){
+        $rawTimeScale
+            .removeDuplicates()
+            .debounce(for: .milliseconds(150), scheduler: RunLoop.main)
+            .sink { [weak self] value in
+                self?.timeScale = value
+            }
+            .store(in: &cancellables)
+    }
     let pixelsPerSecond: CGFloat = 65
     let timeLineTimeOffset: TimeInterval = 20
     var maxDuration: TimeInterval {
@@ -44,16 +54,7 @@ class MontageVM: ObservableObject {
     var totalSeconds: Int {
         Int(ceil(maxDuration))
     }
-    
-    init() {
-        $rawTimeScale
-            .removeDuplicates()
-            .debounce(for: .milliseconds(150), scheduler: RunLoop.main)
-            .sink { [weak self] value in
-                self?.timeScale = value
-            }
-            .store(in: &cancellables)
-    }
+
     
     func clearSegmentsSelection() {
         textSegmentSelectedID = nil
@@ -295,15 +296,23 @@ class MontageVM: ObservableObject {
             fadeInDuration: 0,
             fadeOutDuration: 0
         )
-
         
-        audioSegments.append(newSegment)
+        if audioSegments.isEmpty{
+            audioSegments.append(newSegment)
+
+        }else{
+            applyChangeWithRecordOldState {
+                audioSegments.append(newSegment)
+            }
+        }
+        
     }
     
     func deleteSelectedAudioSegment( segmentIndex : Int){
-        self.audioSegments.remove(at: segmentIndex)
-        self.audioSegmentSelectedID = nil
-        
+        applyChangeWithRecordOldState {
+            self.audioSegments.remove(at: segmentIndex)
+            self.audioSegmentSelectedID = nil
+        }
         
     }
     func selectAudioSegment(segment : AudioSegment){
@@ -326,47 +335,49 @@ class MontageVM: ObservableObject {
         }) else {
             return
         }
-        
-        let segment = audioSegments[index]
-        let timeIntoSegment = time - segment.timeLineStartTime
-        
-        // Skip if trying to split at segment start or end
-        guard timeIntoSegment > 0, timeIntoSegment < segment.timeLineDuration else { return }
-        
-        // Remove the original segment
-        audioSegments.remove(at: index)
-        
-        // Create the two split segments
-        let firstAudio = AudioSegment(
-            name: segment.name,
-            fileURL: segment.fileURL,
-            audioOriginalDuration: segment.audioOriginalDuration,
-            audioDuration: segment.audioDuration,
-            audioStartTime: segment.audioStartTime,
-            timeLineStartTime: segment.timeLineStartTime,
-            timeLineDuration: timeIntoSegment,
-            fadeInDuration: segment.fadeInDuration,
-            fadeOutDuration: segment.fadeOutDuration,
-            amplitudes: segment.amplitudes
-        )
-
-        let secondAudio = AudioSegment(
-            name: segment.name,
-            fileURL: segment.fileURL,
-            audioOriginalDuration: segment.audioOriginalDuration,
-            audioDuration: segment.audioDuration,
-            audioStartTime: segment.audioStartTime + timeIntoSegment,
-            timeLineStartTime: time,
-            timeLineDuration: segment.timeLineDuration - timeIntoSegment,
-            fadeInDuration: segment.fadeInDuration,
-            fadeOutDuration: segment.fadeOutDuration,
-            amplitudes: segment.amplitudes
-        )
-
-
-        // Insert the new segments back in the correct order
-        audioSegments.insert(firstAudio, at: index)
-        audioSegments.insert(secondAudio, at: index)
+        applyChangeWithRecordOldState {
+            
+            let segment = audioSegments[index]
+            let timeIntoSegment = time - segment.timeLineStartTime
+            
+            // Skip if trying to split at segment start or end
+            guard timeIntoSegment > 0, timeIntoSegment < segment.timeLineDuration else { return }
+            
+            // Remove the original segment
+            audioSegments.remove(at: index)
+            
+            // Create the two split segments
+            let firstAudio = AudioSegment(
+                name: segment.name,
+                fileURL: segment.fileURL,
+                audioOriginalDuration: segment.audioOriginalDuration,
+                audioDuration: segment.audioDuration,
+                audioStartTime: segment.audioStartTime,
+                timeLineStartTime: segment.timeLineStartTime,
+                timeLineDuration: timeIntoSegment,
+                fadeInDuration: segment.fadeInDuration,
+                fadeOutDuration: segment.fadeOutDuration,
+                amplitudes: segment.amplitudes
+            )
+            
+            let secondAudio = AudioSegment(
+                name: segment.name,
+                fileURL: segment.fileURL,
+                audioOriginalDuration: segment.audioOriginalDuration,
+                audioDuration: segment.audioDuration,
+                audioStartTime: segment.audioStartTime + timeIntoSegment,
+                timeLineStartTime: time,
+                timeLineDuration: segment.timeLineDuration - timeIntoSegment,
+                fadeInDuration: segment.fadeInDuration,
+                fadeOutDuration: segment.fadeOutDuration,
+                amplitudes: segment.amplitudes
+            )
+            
+            
+            // Insert the new segments back in the correct order
+            audioSegments.insert(firstAudio, at: index)
+            audioSegments.insert(secondAudio, at: index)
+        }
     }
     
     func exchangeSelectedSegment(with song : LocalSong){
@@ -385,22 +396,23 @@ class MontageVM: ObservableObject {
                     fadeOutDuration: 0
                 )
                 var newSegmentsArray : [AudioSegment] = [newSegment]
-                for seg in audioSegments {
-                    guard seg.id != oldSegment.id else {
-                        continue
+                applyChangeWithRecordOldState {
+                    for seg in audioSegments {
+                        guard seg.id != oldSegment.id else {
+                            continue
+                        }
+                        if seg.timeLineStartTime >= oldSegment.timeLineEndTime {
+                            var updatedSegment = seg
+                            updatedSegment.timeLineStartTime = newSegment.timeLineEndTime + (seg.timeLineStartTime - oldSegment.timeLineEndTime)
+                            newSegmentsArray.append(updatedSegment)
+                        }else{
+                            newSegmentsArray.append(seg)
+                        }
+                        
+                        
                     }
-                    if seg.timeLineStartTime >= oldSegment.timeLineEndTime {
-                        var updatedSegment = seg
-                        updatedSegment.timeLineStartTime = newSegment.timeLineEndTime + (seg.timeLineStartTime - oldSegment.timeLineEndTime)
-                        newSegmentsArray.append(updatedSegment)
-                    }else{
-                        newSegmentsArray.append(seg)
-                    }
-                    
-                    
+                    self.audioSegments = newSegmentsArray
                 }
-                self.audioSegments = newSegmentsArray
-                
             }
         }
     }
@@ -408,6 +420,8 @@ class MontageVM: ObservableObject {
 
     
     //MARK: - Text Segments Functions
+    
+    var lastSegmentID: UUID? = nil
     func vacantTrackIndex(for start: TimeInterval,
                           end: TimeInterval,
                           ignoring segmentID: UUID? = nil) -> Int? {
@@ -426,6 +440,7 @@ class MontageVM: ObservableObject {
     func ensureTrack(_ index: Int) {
         while textTracks.count <= index { textTracks.append([]) }
     }
+    
     
     /// move a segment to a NEW track (creates it if needed)
     func move(_ segment: TextSegment, toTrack newIdx: Int) {
@@ -446,85 +461,180 @@ class MontageVM: ObservableObject {
         textTracks[newIdx].sort { $0.startTime < $1.startTime }
     }
     func addTextSegment(with text: String) {
+        
         if let previewSize = previewSize {
             let defaultDuration: TimeInterval = 10
             
-            let lastEndTime = textTracks[0].map { $0.startTime + $0.duration }.max() ?? 0
-            let startTime: TimeInterval = lastEndTime == 0 ? 0 : lastEndTime + 1
+//            let lastEndTime = textTracks[0].map { $0.startTime + $0.duration }.max() ?? 0
+//            let startTime: TimeInterval = lastEndTime == 0 ? 0 : lastEndTime + 1
+            let startTime: TimeInterval = currentTime
             let centerPosition: CGPoint = CGPoint(x: previewSize.width / 2, y: previewSize.height / 2)
             let newSegment = TextSegment(content: text, startTime: startTime , duration: defaultDuration,position: centerPosition)
             
-            textTracks[0].append(newSegment)
+            applyChangeWithRecordOldState {
+                textTracks[0].append(newSegment)
+                if let newTrack = vacantTrackIndex(for: startTime, end: newSegment.endTime,ignoring: newSegment.id) {
+                    if newTrack != newSegment.trackIndex {
+                        move(newSegment, toTrack: newTrack)
+                    }
+                } else {
+                    move(newSegment, toTrack: textTracks.count) // New track
+                }
+                
+                lastSegmentID = newSegment.id
+            }
+
+            
+        }
+        
+    }
+    func splitSelectedTextSegment() {
+        if let selectedSegmentId = textSegmentSelectedID{
+            if let trackIndex = textTracks.firstIndex(where: { $0.contains(where: { $0.id == selectedSegmentId }) }){
+                
+                if let segmentIndex = textTracks[trackIndex].firstIndex(where: { seg in
+                    seg.id == selectedSegmentId
+                }){
+                    let time = currentTime
+                   
+                    
+                    let segment = textTracks[trackIndex][segmentIndex]
+                    
+                    let timeIntoSegment = time - segment.startTime
+                    
+                    // Skip if trying to split at segment start or end
+                    guard timeIntoSegment > 0, timeIntoSegment < segment.duration else { return }
+                    applyChangeWithRecordOldState {
+
+                    // Remove the original segment
+                    textTracks[trackIndex].remove(at: segmentIndex)
+                    
+                    // Create the two split segments
+                    let firstSegment = TextSegment(
+                        content: segment.content,
+                        startTime: segment.startTime,
+                        duration: timeIntoSegment,
+                        trackIndex: segment.trackIndex,
+                        font: segment.font,
+                        alignment: segment.alignment,
+                        fontSize: segment.fontSize,
+                        textColor: segment.textColor,
+                        backgroundColor: segment.backgroundColor,
+                        opacity: segment.opacity,
+                        shadow: segment.shadow,
+                        textWrapping: segment.textWrapping,
+                        transitionType: segment.transitionType,
+                        position: segment.position
+                    
+                    )
+                    let secondSegment = TextSegment(
+                        content: segment.content,
+                        startTime: time,
+                        duration: segment.duration - timeIntoSegment,
+                        trackIndex: segment.trackIndex,
+                        font: segment.font,
+                        alignment: segment.alignment,
+                        fontSize: segment.fontSize,
+                        textColor: segment.textColor,
+                        backgroundColor: segment.backgroundColor,
+                        opacity: segment.opacity,
+                        shadow: segment.shadow,
+                        textWrapping: segment.textWrapping,
+                        transitionType: segment.transitionType,
+                        position: segment.position
+                        
+                    )
+                                        
+                    
+                                      
+                    // Insert the new segments back in the correct order
+                        textTracks[trackIndex].insert(firstSegment, at: segmentIndex)
+                        textTracks[trackIndex].insert(secondSegment, at: segmentIndex)
+                    }
+                    
+                }
+            }
+            
         }
         
     }
     
-    
     func applyTransitionOnAllTextSegments(_ transition: TextTransitionType){
-        for trackIndex in 0..<textTracks.count{
-            for segmentIndex in 0..<textTracks[trackIndex].count{
-                textTracks[trackIndex][segmentIndex].transitionType = transition
+        applyChangeWithRecordOldState {
+            
+            for trackIndex in 0..<textTracks.count{
+                for segmentIndex in 0..<textTracks[trackIndex].count{
+                    textTracks[trackIndex][segmentIndex].transitionType = transition
+                }
             }
         }
     }
     func applyBackgroundOnAllTextSegments(_ color: TextSegmentColor , _ type : SegmentColorType){
-        for trackIndex in 0..<textTracks.count{
-            for segmentIndex in 0..<textTracks[trackIndex].count{
-                switch type {
-                case .text:
-                    textTracks[trackIndex][segmentIndex].textColor = color
-
-                case .background:
-                    textTracks[trackIndex][segmentIndex].backgroundColor = color
+        applyChangeWithRecordOldState {
+            
+            for trackIndex in 0..<textTracks.count{
+                for segmentIndex in 0..<textTracks[trackIndex].count{
+                    switch type {
+                    case .text:
+                        textTracks[trackIndex][segmentIndex].textColor = color
+                        
+                    case .background:
+                        textTracks[trackIndex][segmentIndex].backgroundColor = color
+                    }
                 }
             }
         }
     }
     
     func applyShadowOnAllTextSegments(_ shadow: TextSegmentShadow){
-        for trackIndex in 0..<textTracks.count{
-            for segmentIndex in 0..<textTracks[trackIndex].count{
-                textTracks[trackIndex][segmentIndex].shadow = shadow
+        applyChangeWithRecordOldState {
+            
+            for trackIndex in 0..<textTracks.count{
+                for segmentIndex in 0..<textTracks[trackIndex].count{
+                    textTracks[trackIndex][segmentIndex].shadow = shadow
+                }
             }
         }
     }
     func applySurroundOnAllTextSegments(_ surround: TextSegmentWrapping){
-        for trackIndex in 0..<textTracks.count{
-            for segmentIndex in 0..<textTracks[trackIndex].count{
-                textTracks[trackIndex][segmentIndex].textWrapping = surround
+        applyChangeWithRecordOldState {
+            
+            for trackIndex in 0..<textTracks.count{
+                for segmentIndex in 0..<textTracks[trackIndex].count{
+                    textTracks[trackIndex][segmentIndex].textWrapping = surround
+                }
             }
         }
     }
     func applyFontOnAllTextSegments(_ font: LocalFont){
-        for trackIndex in 0..<textTracks.count{
-            for segmentIndex in 0..<textTracks[trackIndex].count{
-                textTracks[trackIndex][segmentIndex].font = font
+        applyChangeWithRecordOldState {
+            
+            for trackIndex in 0..<textTracks.count{
+                for segmentIndex in 0..<textTracks[trackIndex].count{
+                    textTracks[trackIndex][segmentIndex].font = font
+                }
             }
         }
     }
     func updateTextSegmentPosition(id: UUID, to newPosition: CGPoint) {
-        for (trackIndex, track) in textTracks.enumerated() {
-            if let segmentIndex = track.firstIndex(where: { $0.id == id }) {
-                textTracks[trackIndex][segmentIndex].position = newPosition
-                return
+        applyChangeWithRecordOldState {
+            
+            for (trackIndex, track) in textTracks.enumerated() {
+                if let segmentIndex = track.firstIndex(where: { $0.id == id }) {
+                    textTracks[trackIndex][segmentIndex].position = newPosition
+                    return
+                }
             }
         }
     }
     func deleteSelectedTextSegment( trackIndex : Int , segmentIndex : Int){
+        applyChangeWithRecordOldState {
             self.textTracks[trackIndex].remove(at: segmentIndex)
             self.textSegmentSelectedID = nil
+        }
         
     }
-    func deleteTextSegment(withId id: UUID) {
-        for (trackIndex, track) in textTracks.enumerated() {
-            if let index = track.firstIndex(where: { $0.id == id }) {
-                textTracks[trackIndex].remove(at: index)
-                break
-            }
-        }
-        self.textSegmentSelectedID = nil
 
-    }
     
     func selectTextSegment(segment : TextSegment){
         if !isPreviewPlaying{
@@ -539,11 +649,65 @@ class MontageVM: ObservableObject {
 
     }
     
+    //MARK: - UnDo / ReDo System functions
+    
+    
+    var undoStackIsEmpty: Bool { undoStack.isEmpty }
+    var redoStackIsEmpty: Bool { redoStack.isEmpty }
+    private var undoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment])] = []
+    private var redoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment])] = []
+    private let maxHistory = 5
+    
+    func applyChangeWithRecordOldState(_ action : () -> Void) {
+        // Save current state before the change
+        recordStateForUndo()
+        
+        action()
+    }
+    func recordStateForUndo() {
+        print("un do record , AudioSegment count : \(audioSegments.count) , TextSegment count : \(textTracks.count)")
+        undoStack.append((textTracks: textTracks, audioSegments: audioSegments))
+        if undoStack.count > maxHistory {
+            undoStack.removeFirst()
+        }
+        redoStack.removeAll() // once we make a change, redo history is invalid
+    }
+    
+    func undo() {
+        guard let lastState = undoStack.popLast() else { return }
+        redoStack.append((textTracks: textTracks, audioSegments: audioSegments))
+        print("redoStack count : \(redoStack.count)")
+        if redoStack.count > maxHistory {
+            redoStack.removeFirst()
+        }
+        textTracks = lastState.textTracks
+        print("last state textTracks count : \(textTracks)")
+        audioSegments = lastState.audioSegments
+        print("undo did made , AudioSegment count : \(audioSegments.count) , TextSegment count : \(textTracks.compactMap(\.count).reduce(0, +))")
+
+    }
+    
+    func redo() {
+        guard let nextState = redoStack.popLast() else { return }
+        undoStack.append((textTracks: textTracks, audioSegments: audioSegments))
+        if undoStack.count > maxHistory {
+            undoStack.removeFirst()
+        }
+        textTracks = nextState.textTracks
+        audioSegments = nextState.audioSegments
+    }
+    func resetUnDoHistory() {
+        undoStack.removeAll()
+        redoStack.removeAll()
+    }
+    
     //MARK: - Export Video Section
     @Published var exportProgress: Double = 0
     @Published var isExportingVideo: Bool = false
     @Published var outputURL: URL? = nil
+    @Published var outputThumbnail: UIImage? = nil
     var exportManager: VideoExportManager? = nil
+    
     @MainActor
     func exportVideo() async{
         
@@ -558,11 +722,12 @@ class MontageVM: ObservableObject {
                 } completion: { result in
                     switch result{
                     case .success(let url):
-                        DispatchQueue.main.async {
+                        Task { @MainActor in
                             self.outputURL = url
+                            self.outputThumbnail = await self.generateThumbnail()
                             self.isExportingVideo = false
                         }
-                    case .failure(let error):
+                    case .failure(_):
                         DispatchQueue.main.async {
                             self.savingVideoAlert = .videoExtractingError
                             self.presentAlert = true
@@ -592,7 +757,7 @@ class MontageVM: ObservableObject {
     @Published var savingVideoAlert : ExtractedVideoAlert = .none
     @Published var presentAlert: Bool = false
     
-    func saveVideo(with title: String){
+    func saveVideo(with title: String)  {
         presentAlert = false
 
         guard title.isEmpty == false else {
@@ -600,7 +765,7 @@ class MontageVM: ObservableObject {
             presentAlert = true
             return
         }
-        if let videoURL = outputURL , let thumbImage = generateThumbnail(){
+        if let videoURL = outputURL , let thumbImage = outputThumbnail{
             let id = UUID()
             let key = "\(title)-\(getFileNameDateString())"
             do {
@@ -634,23 +799,30 @@ class MontageVM: ObservableObject {
         
         return formatter.string(from: now)
     }
-    func generateThumbnail(at time: CMTime = CMTime(seconds: 1, preferredTimescale: 60)) -> UIImage? {
-        if let outputURL{
-            let asset = AVURLAsset(url: outputURL)
-            let imageGenerator = AVAssetImageGenerator(asset: asset)
-            imageGenerator.appliesPreferredTrackTransform = true // correct orientation
+
+    
+    func generateThumbnail(
+        at time: CMTime = CMTime(seconds: 1, preferredTimescale: 60)
+    ) async -> UIImage? {
+        if let url = outputURL{
             
-            do {
-                let cgImage = try imageGenerator.copyCGImage(at: time, actualTime: nil)
-                return UIImage(cgImage: cgImage)
-            } catch {
-                print("❌ Failed to generate thumbnail: \(error)")
-                return nil
+            let asset = AVURLAsset(url: url)
+            let imageGenerator = AVAssetImageGenerator(asset: asset)
+            imageGenerator.appliesPreferredTrackTransform = true // Fix orientation
+            
+            return await withCheckedContinuation { continuation in
+                imageGenerator.generateCGImagesAsynchronously(forTimes: [NSValue(time: time)]) { _, cgImage, actualTime, result, error in
+                    if let cgImage = cgImage {
+                        continuation.resume(returning: UIImage(cgImage: cgImage))
+                    } else {
+                        print("❌ Failed to generate thumbnail: \(error?.localizedDescription ?? "unknown error")")
+                        continuation.resume(returning: nil)
+                    }
+                }
             }
         }else{
             return nil
         }
-       
     }
 }
 

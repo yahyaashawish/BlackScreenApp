@@ -89,8 +89,16 @@ struct VideoPreviewView: View {
             
         }
         .environment(\.layoutDirection,  .leftToRight )
-        .frame(height: 380)
+        .frame(height: 350)
         
         
     }
+}
+#Preview {
+    NavigationStack{
+        MontageView(videoSize: .portrait9_16, initialSong: LocalSong(name: "test", duration: 20, url: URL.homeDirectory))
+    }
+    .environment(\.locale, .init(identifier: "ar"))
+    .environment(\.layoutDirection,  .rightToLeft )
+    
 }
