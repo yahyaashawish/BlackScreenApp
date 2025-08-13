@@ -71,13 +71,11 @@ struct BannerView: UIViewRepresentable {
         // MARK: - GADBannerViewDelegate methods
         
         func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
-            print("Banner ad received!")
             parent.bannerVM?.didReceiveAd()
             
         }
         
         func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {
-            print("Banner Ad failed to load: \(error)")
             parent.bannerVM?.didNotReceiveAd()
             
         }

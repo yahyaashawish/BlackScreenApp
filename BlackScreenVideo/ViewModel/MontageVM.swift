@@ -29,7 +29,21 @@ class MontageVM: ObservableObject {
     @Published var tapX: CGFloat? = 0
     @Published var scrollOffset: CGFloat = 0
     
+    init(initialSong: LocalSong, videoSize: VideoSize){
+        
+        self.addAudioSegment(song: initialSong)
+        self.videoSize = videoSize
+        $rawTimeScale
+            .removeDuplicates()
+            .debounce(for: .milliseconds(150), scheduler: RunLoop.main)
+            .sink { [weak self] value in
+                self?.timeScale = value
+            }
+            .store(in: &cancellables)
+    }
     init(){
+        
+        
         $rawTimeScale
             .removeDuplicates()
             .debounce(for: .milliseconds(150), scheduler: RunLoop.main)
@@ -665,7 +679,6 @@ class MontageVM: ObservableObject {
         action()
     }
     func recordStateForUndo() {
-        print("un do record , AudioSegment count : \(audioSegments.count) , TextSegment count : \(textTracks.count)")
         undoStack.append((textTracks: textTracks, audioSegments: audioSegments))
         if undoStack.count > maxHistory {
             undoStack.removeFirst()

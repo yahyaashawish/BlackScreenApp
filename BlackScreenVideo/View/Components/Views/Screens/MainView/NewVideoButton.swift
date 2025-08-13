@@ -2,7 +2,6 @@ import SwiftUI
 struct NewVideoButton: View {
     @Environment(\.layoutDirection) var layoutDirection
     @Environment(\.dismiss) var dismiss
-    
     let isForLibraryView : Bool
     @State var showVideoSizePicker : Bool = false
     @State var selectedVideoSize : VideoSize?
@@ -53,6 +52,14 @@ struct NewVideoButton: View {
             
             
         }
+        .onChange(of: showMontageView, { oldValue, newValue in
+            if newValue{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    InterstitialAd.shared.loadAdAndShow()
+                }
+            }
+        })
+        
         .navigationDestination(isPresented: $showMontageView, destination: {
             if let videoSize = selectedVideoSize , let song = selectedSong{
                 MontageView(videoSize: videoSize, initialSong: song)
@@ -72,7 +79,6 @@ struct NewVideoButton: View {
                 showMusicPickerView = false
 
                 selectedSong = song
-                print("selected song : \(String(describing: selectedSong))")
                 showMontageView = true
                 
             }
@@ -85,7 +91,8 @@ struct NewVideoButton: View {
                 showMusicPickerView = true
             }
         }
-       
+        
+        
         
         
         

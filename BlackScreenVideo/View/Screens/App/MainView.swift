@@ -6,7 +6,9 @@ struct MainView: View {
     @Environment(\.requestReview) var requestReview
     @Environment(\.layoutDirection) var layoutDirection
     @ObservedObject var appPath = AppPath.shared
-//    @StateObject private var adViewModel = BannerAdVM()
+    var interstitialAdsManager = InterstitialAd.shared
+    @StateObject private var adViewModel = BannerAdVM()
+
     @StateObject private var homeVideosVM = HomeReadyVideosVM()
     @State var showVideoCategories : Bool = false
     let developerURL = URL(string: "https://apps.apple.com/om/developer/ibrahim-shaqoura/id1254072921")!
@@ -80,6 +82,15 @@ struct MainView: View {
                                 }
                                 .padding(.horizontal,20)
                                 
+                                if adViewModel.isAdReceived {
+                                    GeometryReader { adGeo in
+                                        let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
+                                        BannerView(adSize: adSize,isCollapsed: true, isTop: true,bannerVM : adViewModel)
+                                    }
+                                    .frame(height: 50)
+                                    .padding(.vertical,20)
+
+                                }
                                 
                                 // videos card
                                 VStack{
@@ -170,11 +181,7 @@ struct MainView: View {
                 
                 
                    
-                GeometryReader { adGeo in
-                    let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
-                    BannerView(adSize: adSize,isCollapsed: true, isTop: false)
-                }
-                .frame(height: 80)
+                
                 .safeAreaPadding(.bottom)
                 
             }
@@ -187,10 +194,18 @@ struct MainView: View {
             homeVideosVM.fetchHomeVideos()
         }
         
-        
+        .onChange(of: showVideoCategories, { oldValue, newValue in
+            if newValue {
+                interstitialAdsManager.showAd()
+            }
+        })
         .navigationDestination(isPresented: $showVideoCategories, destination: {
             VideoCategoriesView()
         })
+        .onAppear{
+            interstitialAdsManager.loadAd()
+        }
+        
         
     }
         

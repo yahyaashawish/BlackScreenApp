@@ -103,6 +103,7 @@ struct ContentView: View {
                      errorHandler.pushAlert(alert: .internetBecomeActive)
              }
          }
+        
     }
     
     

@@ -51,11 +51,13 @@ struct VideoCategoriesView: View {
                                     }
                                     .padding(.vertical,10)
                                     if index % adPlacment == 0 {
-                                        GeometryReader { adGeo in
-                                            let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
-                                            BannerView(adSize: adSize,isCollapsed: false, isTop: false)
+                                        if adViewModel.isAdReceived {
+                                            GeometryReader { adGeo in
+                                                let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
+                                                BannerView(adSize: adSize,isCollapsed: false, isTop: false,bannerVM : adViewModel)
+                                            }
+                                            .frame(height: 80)
                                         }
-                                        .frame(height: 80)
                                     }
                                     
                                 }

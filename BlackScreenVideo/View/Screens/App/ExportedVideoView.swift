@@ -19,8 +19,9 @@ import GoogleMobileAds
 struct ExportedVideoView: View {
     
     @Environment(\.requestReview) var requestReview
-    
     @Environment(\.dismiss) var dismiss
+    var interstitialAdsManager = InterstitialAd.shared
+
     @ObservedObject var viewModel : MontageVM
     @State var presentVideoPlayer : Bool = false
     @State var showSavingSheet : Bool = false
@@ -168,20 +169,28 @@ struct ExportedVideoView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onAppear{
-            Task {
-                await viewModel.exportVideo()
-
+            if viewModel.outputURL == nil{
+                Task {
+                    await viewModel.exportVideo()
+                }
             }
+            
         }
+        .onChange(of: viewModel.outputURL, { oldValue, newValue in
+            if newValue != nil{
+                interstitialAdsManager.loadAdAndShow()
+            }
+        })
         .onDisappear {
             viewModel.cancelVideoExporting()
         }
+        
         .fullScreenCover(isPresented: $presentVideoPlayer) {
             if let url = viewModel.outputURL , let size = viewModel.videoSize?.size{
                 ExportedVideoPlayerView(videoURL: url, videoSize: size )
             }
         }
-        
+       
         .alert(viewModel.savingVideoAlert.title, isPresented: $viewModel.presentAlert, actions: {
             if viewModel.savingVideoAlert == .videoSaved{
                 Button("OK", role: .cancel) {

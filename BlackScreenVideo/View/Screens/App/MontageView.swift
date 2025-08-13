@@ -6,6 +6,7 @@ struct MontageView: View {
     @Environment(\.dismiss) var dismiss
 
     @StateObject private var adViewModel = BannerAdVM()
+    var interstitialAdsManager = InterstitialAd.shared
     @StateObject var montageVM: MontageVM
     @State var showExitSheet : Bool = false
     @State var showAddNewTextSheet : Bool = false
@@ -17,7 +18,8 @@ struct MontageView: View {
     init(videoSize : VideoSize , initialSong : LocalSong){
         self.videoSize = videoSize
         self.initialSong = initialSong
-        _montageVM = .init(wrappedValue: .init())
+        _montageVM = .init(wrappedValue: .init(initialSong: initialSong, videoSize: videoSize))
+        
         
     }
     var body: some View {
@@ -164,7 +166,7 @@ struct MontageView: View {
                 }
                 GeometryReader { adGeo in
                     let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
-                    BannerView(adSize: adSize,isCollapsed: true, isTop: false)
+                    BannerView(adSize: adSize,isCollapsed: false, isTop: false)
                 }
                 .frame(height: 50)
                 SegmentsEditingBar(viewModel: montageVM)
@@ -175,10 +177,16 @@ struct MontageView: View {
             .frame(height: geometry.size.height)
             
         }
-        .onAppear(){
-            montageVM.addAudioSegment(song: initialSong)
-            montageVM.videoSize = videoSize
-        }
+        .onChange(of: montageVM.textTracks, { oldValue, newValue in
+            if montageVM.outputURL != nil {
+                montageVM.outputURL = nil
+            }
+        })
+        .onChange(of: montageVM.audioSegments, { oldValue, newValue in
+            if montageVM.outputURL != nil {
+                montageVM.outputURL = nil
+            }
+        })
         
         .sheet(isPresented: $showAddNewTextSheet, content: {
             AddNewTextSegmentView { text in

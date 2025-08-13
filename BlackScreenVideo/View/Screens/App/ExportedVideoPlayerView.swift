@@ -45,6 +45,7 @@ struct ExportedVideoPlayerView: View {
             
             .navigationBarBackButtonHidden(true)
             .onAppear{
+                
                 player.replaceCurrentItem(with: AVPlayerItem(url: videoURL))
                 
             }
