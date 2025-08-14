@@ -176,7 +176,9 @@ struct VideoPageView: View {
                                     toggleVideoLike()
                                     videoStatesVM.toggleVideoLike(videoId: video.id){ status in
                                         if !status {
-                                            toggleVideoLike()
+                                            DispatchQueue.main.async {
+                                                self.toggleVideoLike()
+                                            }
                                         }
                                     }
                                 } label: {
@@ -275,6 +277,10 @@ struct VideoPageView: View {
             likesCount += 1
             isLiked = true
         }
+            
+        
+        
+        
     }
     func togglePlayback() {
         if player.timeControlStatus == .playing {

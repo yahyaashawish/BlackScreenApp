@@ -19,7 +19,6 @@ class LikeVideoRequest {
             completion(.failure(NSError(domain: "Invalid URL", code: 400, userInfo: nil)))
             return nil
         }
-        print(url.absoluteString)
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

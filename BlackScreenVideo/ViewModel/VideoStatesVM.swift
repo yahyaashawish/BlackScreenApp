@@ -33,29 +33,41 @@ class VideoStatesVM: ObservableObject {
     func toggleVideoLike(videoId : Int , completion : @escaping (Bool) -> Void){
         errorHandler.resetError()
         if let userId = UserIdentifier.shared.getIdentifier(){
+            
+            
             currentTask = LikeVideoRequest.shared.toggleVideoLike(videoId: videoId,userId: userId) { result in
                 switch result{
                 case .success(_):
                     if self.checkIfLiked(videoId: videoId){
                         DispatchQueue.main.async {
-                            self.removeLikedVideo(videoId : videoId)
+                            do {
+                                try self.removeLikedVideo(videoId : videoId)
+                                completion(true)
+
+                            }catch{
+                                completion(false)
+                                self.errorHandler.presentError(error: .cannotRemoveLikeFromVideo)
+                            }
+                            
                         }
                     }else{
-                        let newLikedVideo = LikedVideo(context: self.coreDataHelper.persistentContainer.viewContext)
-                        newLikedVideo.video_id = String(videoId)
-                        self.coreDataHelper.saveContext()
                         DispatchQueue.main.async {
-                            self.likedVideos.append(newLikedVideo)
+                            do {
+                                try self.addLikedVideo(videoId: videoId)
+                                completion(true)
+                            }catch{
+                                self.errorHandler.presentError(error: .cannotAddLikeToVideo)
+                                completion(false)
+                            }
+                            
                         }
                     }
                     
-                    completion(true)
                     
                 case .failure(_):
                     DispatchQueue.main.async {
                         if self.checkIfLiked(videoId: videoId){
-                            self.errorHandler.presentError(error: .cannotAddLikeToVideo)
-
+                            self.errorHandler.presentError(error: .cannotRemoveLikeFromVideo)
                         }else{
                             self.errorHandler.presentError(error: .cannotAddLikeToVideo)
 
@@ -67,11 +79,9 @@ class VideoStatesVM: ObservableObject {
             }
         }else{
             if self.checkIfLiked(videoId: videoId){
-                self.errorHandler.presentError(error: .cannotAddLikeToVideo)
-                
+                self.errorHandler.presentError(error: .cannotRemoveLikeFromVideo)
             }else{
                 self.errorHandler.presentError(error: .cannotAddLikeToVideo)
-                
             }
         }
         
@@ -83,18 +93,23 @@ class VideoStatesVM: ObservableObject {
         return likedVideos.contains(where: { $0.video_id == stringId })
     }
     
-    func removeLikedVideo(videoId : Int){
+    func removeLikedVideo(videoId : Int) throws {
         let stringId = String(videoId)
         if let index = likedVideos.firstIndex(where: { $0.video_id == stringId }){
             let likedVideo = likedVideos[index]
             coreDataHelper.persistentContainer.viewContext.delete(likedVideo)
-            likedVideos.remove(at: index)
-            coreDataHelper.saveContext()
+            
+                try coreDataHelper.persistentContainer.viewContext.save()
+                likedVideos.remove(at: index)
+            
         }
     }
-    
-    
-    deinit {
-        currentTask?.cancel()
+    func addLikedVideo(videoId : Int) throws {
+        let stringId = String(videoId)
+        let newLikedVideo = LikedVideo(context: self.coreDataHelper.persistentContainer.viewContext)
+        newLikedVideo.video_id = stringId
+        try self.coreDataHelper.persistentContainer.viewContext.save()
+        self.likedVideos.append(newLikedVideo)
     }
+    
 }
