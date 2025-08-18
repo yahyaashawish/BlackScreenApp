@@ -17,6 +17,7 @@ struct VideosCard: View {
     let videos : [BlackScreenVideo]
     var isGrid : Bool = false
     var btnAction : (() -> Void)? = nil
+    var loadMoreAction : ((Bool) -> Void)? = nil
     @State var selectedVideoToPlay : BlackScreenVideo? = nil
     @State var showPlayer : Bool = false
     var body: some View {
@@ -82,6 +83,11 @@ struct VideosCard: View {
                                 selectedVideoToPlay = video
                                 showPlayer = true
 
+                            }
+                            .task {
+                                if video.id == videos.last?.id {
+                                    loadMoreAction?(false)
+                                }
                             }
                         }
                         

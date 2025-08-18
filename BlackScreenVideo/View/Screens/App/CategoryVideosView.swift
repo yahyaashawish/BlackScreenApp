@@ -36,17 +36,17 @@ struct CategoryVideosView: View {
                                     }
                                 }
                                 .padding(.vertical,20)
-                                GeometryReader { adGeo in
-                                    let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
-                                    BannerView(adSize: adSize,isCollapsed: true, isTop: true)
+                                if adViewModel.isAdReceived {
+                                    GeometryReader { adGeo in
+                                        let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)
+                                        BannerView(adSize: adSize,isCollapsed: false, isTop: false,bannerVM : adViewModel)
+                                    }
+                                    .frame(height: 80)
                                 }
-                                .frame(height: 80)
                                 VStack{
                                     if !viewModel.isFetchingVideos && !viewModel.selectedCategoryVideos.isEmpty{
-                                        VideosCard(localizedTitle: "Recently Added",videos: viewModel.selectedCategoryVideos,isGrid: true)
-                                        
-                                        
-                                    }
+                                        VideosCard(localizedTitle: "Recently Added",videos: viewModel.selectedCategoryVideos,isGrid: true,loadMoreAction: viewModel.fetchVideosForSelectedCategory)
+                                        }
                                     
                                     if viewModel.isFetchingVideos{
                                            
@@ -66,6 +66,9 @@ struct CategoryVideosView: View {
                             
                         }
                         .scrollIndicators(.hidden)
+                        .refreshable {
+                            viewModel.fetchVideosForSelectedCategory(isNewCategory: true)
+                        }
                     }
                     .padding(.top,10)
                     
@@ -77,14 +80,14 @@ struct CategoryVideosView: View {
                 }
 //                .padding(.horizontal,25)
             }
-            .onAppear {
-                viewModel.fetchVideosForSelectedCategory()
-            }
-            .onDisappear{
-                viewModel.cancelCurrentTask()
-            }
+            
         }
-        
+        .onAppear {
+            viewModel.fetchVideosForSelectedCategory(isNewCategory: true)
+        }
+        .onDisappear{
+            viewModel.cancelCurrentTask()
+        }
         .titleToolbar(staticTitle: viewModel.selectedCategory?.name ?? "All Videos")
         
         .navigationBarBackButtonHidden(true)

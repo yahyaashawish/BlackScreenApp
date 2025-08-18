@@ -15,7 +15,7 @@ class ErrorHandler: ObservableObject {
 
     static let shared = ErrorHandler()
     
-    func presentError(error: AppError, action: (() -> Void)? = nil) {
+    func presentError(error: AppError, action: (() -> (Void))? = nil) {
         resetError()
         self.error = error
         self.errorAction = action

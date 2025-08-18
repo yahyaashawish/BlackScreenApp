@@ -15,23 +15,7 @@ struct VideoCategoriesView: View {
                     VStack{
                         ScrollView(.vertical) {
                             VStack{
-                                if viewModel.isFetchingCategories{
-                                    VStack{
-                                        ForEach(0..<3, id: \.self) { _ in
-                                            VideosCardSkeleton(isGrid: false,isForHome: false,isDoubleTitle: true)
-                                                .padding(.vertical,10)
-
-                                        }
-                                       
-                                    }
-
-                                    .environment(\.layoutDirection,  layoutDirection)
-                                        
-                                    Spacer()
-                                    
-                                    
-                                    
-                                }
+                               
                                 
                                 let adPlacment = 3
                                 
@@ -50,6 +34,11 @@ struct VideoCategoriesView: View {
                                        
                                     }
                                     .padding(.vertical,10)
+                                    .onAppear {
+                                        if category.id == viewModel.categories.last?.id {
+                                            viewModel.fetchCategoriesForNextPage()
+                                        }
+                                    }
                                     if index % adPlacment == 0 {
                                         if adViewModel.isAdReceived {
                                             GeometryReader { adGeo in
@@ -61,10 +50,30 @@ struct VideoCategoriesView: View {
                                     }
                                     
                                 }
+                                if viewModel.isFetchingCategories{
+                                    VStack{
+                                        ForEach(0..<3, id: \.self) { _ in
+                                            VideosCardSkeleton(isGrid: false,isForHome: false,isDoubleTitle: true)
+                                                .padding(.vertical,10)
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                    .environment(\.layoutDirection,  layoutDirection)
+                                    
+                                    Spacer()
+                                    
+                                    
+                                    
+                                }
                                 
                                 
                             }
                             
+                        }
+                        .refreshable {
+                            viewModel.fetchCategoriesForNextPage(reloadData: true)
                         }
                         .scrollIndicators(.hidden)
                         
@@ -79,7 +88,9 @@ struct VideoCategoriesView: View {
                 
             }
             .onAppear {
-                viewModel.fetchCategories()
+                if viewModel.categories.isEmpty{
+                    viewModel.fetchCategoriesForNextPage()
+                }
             }
             
         }

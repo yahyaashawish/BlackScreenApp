@@ -42,5 +42,6 @@ class HomeReadyVideosVM: ObservableObject {
     
     deinit {
         currentTask?.cancel()
+        print("data fetcher deinit")
     }
 }

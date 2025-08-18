@@ -15,14 +15,13 @@ class VideoCategoryRequest {
         LanguageSetting.shared.getStoredLanguage()?.rawValue
     }
     // Fetch all folders
-    func fetchCatgories(completion: @escaping (Result<VideoCategoryResponse, Error>) -> Void) -> URLSessionDataTask?{
-        guard let url = URL(string: "\(categoriesURL)") else {
+    func fetchCatgories(page : Int ,completion: @escaping (Result<VideoCategoryResponse, Error>) -> Void) -> URLSessionDataTask?{
+        guard let url = URL(string: "\(categoriesURL)?page_number=\(page)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 400, userInfo: nil)))
             return nil
         }
         var request = URLRequest(url: url)
         request.addValue(locale ?? "en", forHTTPHeaderField: "language") // 👈 Language header
-
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
@@ -45,14 +44,13 @@ class VideoCategoryRequest {
         return task
     }
     
-    func fetchCatgoryVideos(for id : Int,completion: @escaping (Result<CategoryVideosResponse, Error>) -> Void) -> URLSessionDataTask?{
-        guard let url = URL(string: "\(categoryVideosURL)\(id)") else {
+    func fetchCatgoryVideos(for id : Int,page : Int ,completion: @escaping (Result<CategoryVideosResponse, Error>) -> Void) -> URLSessionDataTask?{
+        guard let url = URL(string: "\(categoryVideosURL)\(id)?page_number=\(page)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 400, userInfo: nil)))
             return nil
         }
         var request = URLRequest(url: url)
         request.addValue(locale ?? "en", forHTTPHeaderField: "language") // 👈 Language header
-        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))

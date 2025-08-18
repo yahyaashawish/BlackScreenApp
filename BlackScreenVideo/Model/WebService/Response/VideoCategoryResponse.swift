@@ -10,6 +10,8 @@ import Foundation
 struct VideoCategoryResponse: Codable {
     let status : RequestStatusResponse
     let data : [VideoCategory]
+    let page : PageInfoResponse
+
 }
 
 

@@ -191,7 +191,9 @@ struct MainView: View {
 
         .navigationBarBackButtonHidden(true)
         .onAppear{
-            homeVideosVM.fetchHomeVideos()
+            if homeVideosVM.videos.isEmpty {
+                homeVideosVM.fetchHomeVideos()
+            }
         }
         
         .onChange(of: showVideoCategories, { oldValue, newValue in
