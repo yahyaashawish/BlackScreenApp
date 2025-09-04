@@ -12,7 +12,11 @@ class VideoCategoryVM: ObservableObject {
     
     @Published var categories : [VideoCategory] = []
     @Published var selectedCategoryVideos : [BlackScreenVideo] = []
-    @Published var selectedCategory : VideoCategory? = nil
+    @Published var selectedCategory : VideoCategory? = nil {
+        didSet {
+            self.selectedCategoryVideos.removeAll()
+        }
+    }
     @Published var isFetchingCategories : Bool = false
     var currentCategoryPage : Int = 0
     var hasMoreCategories : Bool = true
@@ -26,6 +30,7 @@ class VideoCategoryVM: ObservableObject {
     
     
     func fetchCategoriesForNextPage(reloadData: Bool = false)  {
+        guard isFetchingCategories == false else { return }
         if reloadData {
             self.categories.removeAll()
             self.currentCategoryPage = 1
@@ -54,6 +59,7 @@ class VideoCategoryVM: ObservableObject {
         
     }
     func fetchVideosForSelectedCategory(isNewCategory: Bool = false)  {
+        guard isFetchingVideos == false else { return }
         if isNewCategory{
             self.selectedCategoryVideos.removeAll()
             self.currentCategoryVideosPage = 0

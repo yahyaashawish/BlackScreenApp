@@ -23,17 +23,11 @@ struct CategoryVideosView: View {
                         ScrollView(.vertical) {
                             VStack{
                                 VStack{
-                                    if !viewModel.isFetchingVideos && viewModel.selectedCategory != nil{
+                                    if viewModel.selectedCategory != nil{
                                         VideosCard(localizedTitle: "Most Popular",videos: viewModel.selectedCategory?.videos ?? [])
                                             .environment(\.layoutDirection,  layoutDirection)
                                     }
-                                    
-                                   
-                                    if viewModel.isFetchingVideos{
-                                        VideosCardSkeleton(isGrid: false,isForHome: false,isDoubleTitle: false)
-                                            .environment(\.layoutDirection, layoutDirection)
-                                        
-                                    }
+
                                 }
                                 .padding(.vertical,20)
                                 if adViewModel.isAdReceived {
@@ -44,12 +38,13 @@ struct CategoryVideosView: View {
                                     .frame(height: 80)
                                 }
                                 VStack{
-                                    if !viewModel.isFetchingVideos && !viewModel.selectedCategoryVideos.isEmpty{
+                                    if !viewModel.selectedCategoryVideos.isEmpty{
+                                        
                                         VideosCard(localizedTitle: "Recently Added",videos: viewModel.selectedCategoryVideos,isGrid: true,loadMoreAction: viewModel.fetchVideosForSelectedCategory)
                                         }
                                     
+                                    
                                     if viewModel.isFetchingVideos{
-                                           
                                             
                                             VideosCardSkeleton(isGrid: true,isForHome: true,isDoubleTitle: false)
                                                 .environment(\.layoutDirection, layoutDirection)
@@ -83,7 +78,9 @@ struct CategoryVideosView: View {
             
         }
         .onAppear {
-            viewModel.fetchVideosForSelectedCategory(isNewCategory: true)
+            if viewModel.selectedCategoryVideos.isEmpty{
+                viewModel.fetchVideosForSelectedCategory(isNewCategory: true)
+            }
         }
         .onDisappear{
             viewModel.cancelCurrentTask()

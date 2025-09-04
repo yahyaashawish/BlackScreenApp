@@ -36,7 +36,7 @@ struct VideoCategoriesView: View {
                                     .padding(.vertical,10)
                                     .onAppear {
                                         if category.id == viewModel.categories.last?.id {
-                                            viewModel.fetchCategoriesForNextPage()
+                                            
                                         }
                                     }
                                     if index % adPlacment == 0 {
@@ -70,7 +70,18 @@ struct VideoCategoriesView: View {
                                 
                                 
                             }
-                            
+                            GeometryReader { geometry in
+                                
+                                Color.clear
+                                
+                                    .onChange(of: geometry.frame(in: .global).minY) { _,newMinY in
+                                        let screenHeight = UIScreen.main.bounds.height
+                                        if newMinY <= screenHeight {
+                                            viewModel.fetchCategoriesForNextPage()
+                                        }
+                                    }
+                            }
+                            .frame(height: 1)
                         }
                         .refreshable {
                             viewModel.fetchCategoriesForNextPage(reloadData: true)

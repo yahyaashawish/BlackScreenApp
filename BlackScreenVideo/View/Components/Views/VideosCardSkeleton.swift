@@ -38,7 +38,7 @@ struct VideosCardSkeleton: View {
                 VStack{
                     ScrollView(.vertical) {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 140))], spacing: 10) {
-                            ForEach(0..<10, id: \.self) { _ in
+                            ForEach(0..<5, id: \.self) { _ in
                                 skeletonVideoItem
                                 
                             }
@@ -54,7 +54,7 @@ struct VideosCardSkeleton: View {
                 HStack{
                     ScrollView(.horizontal) {
                         HStack(spacing: 12) {
-                            ForEach(0..<10, id: \.self) { _ in
+                            ForEach(0..<5, id: \.self) { _ in
                                 skeletonVideoItem
                                 
                             }

@@ -84,14 +84,24 @@ struct VideosCard: View {
                                 showPlayer = true
 
                             }
-                            .task {
-                                if video.id == videos.last?.id {
-                                    loadMoreAction?(false)
-                                }
-                            }
+                           
                         }
                         
                     }
+                    
+                    GeometryReader { geometry in
+
+                        Color.clear
+                            
+                            .onChange(of: geometry.frame(in: .global).minY) { _,newMinY in
+                                let screenHeight = UIScreen.main.bounds.height
+                                if newMinY <= screenHeight {
+                                    loadMoreAction?(false)
+
+                                }
+                            }
+                    }
+                    .frame(height: 1)
                 }
                 .scrollIndicators(.hidden)
 
