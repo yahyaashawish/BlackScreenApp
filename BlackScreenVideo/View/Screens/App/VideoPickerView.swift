@@ -78,7 +78,7 @@ struct VideoPickerView: View {
 
         
         .sheet(isPresented: $showGalleryPicker) {
-            GalleryVideoPicker(onPicked: onSelectVideo)
+            FileVideoPicker(onPicked: onSelectVideo)
         }
         .sheet(isPresented: $showAppLibrary) {
             AppLibraryVideosPickerView(onSelectVideo: onSelectVideo)
