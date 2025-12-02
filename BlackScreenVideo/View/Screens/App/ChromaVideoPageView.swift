@@ -65,7 +65,7 @@ struct ChromaVideoPageView: View {
                         .foregroundStyle(Color("C3C3D8"))
                     Spacer()
                     
-                    if let videoURL = URL(string: video.video_url),
+                    if let videoURL = localVideoURL,
                        let thumbnailURL = URL(string: video.thumbnail_url) {
                         
                         AsyncImage(url: thumbnailURL) { phase in

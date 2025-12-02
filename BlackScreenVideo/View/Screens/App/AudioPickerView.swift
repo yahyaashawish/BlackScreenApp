@@ -4,7 +4,8 @@ struct AudioPickerView: View {
     @Environment(\.dismiss) var dismiss
 
     @ObservedObject var appPath = AppPath.shared
-    let onSelectSong: (LocalSong) -> Void
+    var isForNewProject: Bool = false
+    let onSelectSong: (LocalSong?) -> Void
     @StateObject var settingsVM : SettingsVM = SettingsVM()
     @State var showAppLibrary : Bool = false
     @State var showICloudPicker : Bool = false
@@ -16,6 +17,18 @@ struct AudioPickerView: View {
                     Text("Choose music")
                         .font(.medium18)
                         .foregroundStyle(Color("C3C3D8"))
+                    if isForNewProject {
+                        Button{
+                            onSelectSong(nil)
+                        }label: {
+                            Text("Skip")
+                                .font(Font.regular16)
+                                .foregroundStyle(Color("01B5FF"))
+                                .underline()
+                        }
+                        .padding(.horizontal,10)
+                    }
+                    
                     Spacer()
                     Button{
                         dismiss()
@@ -25,44 +38,8 @@ struct AudioPickerView: View {
                 }
                 
                 HStack(spacing:15){
-                    if settingsVM.showApplibrary{
-                        Button{
-                            showAppLibrary = true
-                            
-                        }label: {
-                            VStack{
-                                RoundedRectangle(cornerRadius: 15)
-                                    .fill(Color("27272F"))
-                                    .frame(height: 72)
-                                    .overlay {
-                                        Image("music-library")
-                                    }
-                                
-                                Text("App Library")
-                                    .font(.regular16)
-                                    .foregroundStyle(Color("A1A1B9"))
-                            }
-                        }
-                    }
+                    
                    
-                    
-                    
-                    Button{
-                        showICloudPicker = true
-                    }label: {
-                        VStack{
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(Color("27272F"))
-                                .frame(height: 72)
-                                .overlay {
-                                    Image("cloud-music")
-                                }
-                            
-                            Text("iCloud")
-                                .font(.regular16)
-                                .foregroundStyle(Color("A1A1B9"))
-                        }
-                    }
                     Button{
                         showGalleryPicker = true
                     }label: {
@@ -81,7 +58,50 @@ struct AudioPickerView: View {
                     }
                     
                     
+                    Button{
+                        showICloudPicker = true
+                    }label: {
+                        VStack{
+                            RoundedRectangle(cornerRadius: 15)
+                                .fill(Color("27272F"))
+                                .frame(height: 72)
+                                .overlay {
+                                    Image("cloud-music")
+                                }
+                            
+                            Text("iCloud")
+                                .font(.regular16)
+                                .foregroundStyle(Color("A1A1B9"))
+                        }
+                    }
+                    
+                    if settingsVM.showApplibrary{
+                        
+                        Button{
+                            showAppLibrary = true
+                            
+                        }label: {
+                            VStack{
+                                RoundedRectangle(cornerRadius: 15)
+                                    .fill(Color("27272F"))
+                                    .frame(height: 72)
+                                    .overlay {
+                                        Image("music-library")
+                                    }
+                                
+                                Text("App Library")
+                                    .font(.regular16)
+                                    .foregroundStyle(Color("A1A1B9"))
+                            }
+                        }
+                    }
+                    
+                    
+                    
                 }
+                
+               
+                
                 
             }
             .padding(20)

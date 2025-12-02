@@ -178,7 +178,9 @@ struct AudioSegmentsEditingBar: View {
             AudioPickerView{ song in
                 
                 showMusicPicker = false
-                viewModel.exchangeSelectedSegment(with: song)
+                if let song = song {
+                    viewModel.exchangeSelectedSegment(with: song)
+                }
                 
             }
             .presentationCornerRadius(20)

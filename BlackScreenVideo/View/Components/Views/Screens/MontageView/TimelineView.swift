@@ -141,7 +141,7 @@ struct TimelineView: View {
                 if let tapX = viewModel.tapX {
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color.white)
-                        .frame(width: 2,height: 220)
+                        .frame(width: 2,height: 240)
                         .offset(x: tapX)
                 }
 

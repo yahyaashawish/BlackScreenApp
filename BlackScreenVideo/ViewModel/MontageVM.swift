@@ -32,9 +32,10 @@ class MontageVM: ObservableObject {
     @Published var tapX: CGFloat? = 0
     @Published var scrollOffset: CGFloat = 0
     
-    init(initialSong: LocalSong, videoSize: VideoSize){
-        
-        self.addAudioSegment(song: initialSong)
+    init(initialSong: LocalSong?, videoSize: VideoSize){
+        if let initialSong {
+            self.addAudioSegment(song: initialSong)
+        }
         self.videoSize = videoSize
         $rawTimeScale
             .removeDuplicates()
@@ -216,7 +217,9 @@ class MontageVM: ObservableObject {
                             self.currentTimeVideoImage =  UIImage(cgImage: cgImage)
                         }
                     }else{
-                        self.currentTimeVideoImage = nil
+                        DispatchQueue.main.async{
+                            self.currentTimeVideoImage = nil
+                        }
                     }
 
                 }
@@ -428,29 +431,32 @@ class MontageVM: ObservableObject {
     }
     
     
-    func addAudioSegment(song : LocalSong){
-        let lastEndTime = audioSegments
-            .map { $0.timeLineStartTime + $0.timeLineDuration }
-            .max() ?? 0
-        
-        let newSegment = AudioSegment(
-            name: song.name,
-            fileURL: song.url,
-            audioOriginalDuration: TimeInterval(song.duration),
-            timeLineStartTime: lastEndTime == 0 ? 0 : lastEndTime + 1,
-            timeLineDuration: TimeInterval(song.duration),
-            fadeInDuration: 0,
-            fadeOutDuration: 0
-        )
-        
-        if audioSegments.isEmpty{
-            audioSegments.append(newSegment)
-
-        }else{
-            applyChangeWithRecordOldState {
+    func addAudioSegment(song : LocalSong?){
+        if let song = song {
+            let lastEndTime = audioSegments
+                .map { $0.timeLineStartTime + $0.timeLineDuration }
+                .max() ?? 0
+            
+            let newSegment = AudioSegment(
+                name: song.name,
+                fileURL: song.url,
+                audioOriginalDuration: TimeInterval(song.duration),
+                timeLineStartTime: lastEndTime == 0 ? 0 : lastEndTime + 1,
+                timeLineDuration: TimeInterval(song.duration),
+                fadeInDuration: 0,
+                fadeOutDuration: 0
+            )
+            
+            if audioSegments.isEmpty{
                 audioSegments.append(newSegment)
+                
+            }else{
+                applyChangeWithRecordOldState {
+                    audioSegments.append(newSegment)
+                }
             }
         }
+        
         
     }
     

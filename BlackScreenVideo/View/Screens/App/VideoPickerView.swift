@@ -7,6 +7,8 @@ struct VideoPickerView: View {
     let onSelectVideo: (LocalVideo) -> Void
     @State var showAppLibrary : Bool = false
     @State var showGalleryPicker : Bool = false
+    @State var showFilePicker : Bool = false
+    
     var body: some View {
         GeometryReader{ geometry in
             VStack{
@@ -39,7 +41,22 @@ struct VideoPickerView: View {
                                 .foregroundStyle(Color("A1A1B9"))
                         }
                     }
-                    
+                    Button{
+                        showFilePicker = true
+                    }label: {
+                        VStack{
+                            RoundedRectangle(cornerRadius: 15)
+                                .fill(Color("27272F"))
+                                .frame(height: 72)
+                                .overlay {
+                                    Image("cloud-music")
+                                }
+                            
+                            Text("iCloud")
+                                .font(.regular16)
+                                .foregroundStyle(Color("A1A1B9"))
+                        }
+                    }
                         Button{
                             showAppLibrary = true
                             
@@ -76,15 +93,22 @@ struct VideoPickerView: View {
         
         .navigationBarBackButtonHidden(true)
 
-        
         .sheet(isPresented: $showGalleryPicker) {
+            GalleryVideoPicker(onPicked: onSelectVideo)
+                .environment(\.layoutDirection, layoutDirection)
+            
+        }
+        .sheet(isPresented: $showFilePicker) {
             FileVideoPicker(onPicked: onSelectVideo)
+                .environment(\.layoutDirection, layoutDirection)
+
         }
         .sheet(isPresented: $showAppLibrary) {
             AppLibraryVideosPickerView(onSelectVideo: onSelectVideo)
                 .environment(\.layoutDirection, layoutDirection)
 
         }
+        
 
     }
     

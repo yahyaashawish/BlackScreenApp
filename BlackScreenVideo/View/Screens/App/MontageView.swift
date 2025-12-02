@@ -14,9 +14,9 @@ struct MontageView: View {
     @State var showMusicPickerView : Bool = false
     @State var showExportingView : Bool = false
     let videoSize : VideoSize
-    let initialSong : LocalSong
+    let initialSong : LocalSong?
     
-    init(videoSize : VideoSize , initialSong : LocalSong){
+    init(videoSize : VideoSize , initialSong : LocalSong?){
         self.videoSize = videoSize
         self.initialSong = initialSong
         _montageVM = .init(wrappedValue: .init(initialSong: initialSong, videoSize: videoSize))
@@ -66,6 +66,7 @@ struct MontageView: View {
                             Spacer()
                             
                             Button{
+                                self.montageVM.pausePreviewPlayback()
                                 showExportingView = true
                             }label:{
                                 HStack{
@@ -198,6 +199,8 @@ struct MontageView: View {
             }
         })
         .onChange(of: montageVM.videoTrack, { oldValue, newValue in
+            self.montageVM.getCurrentFrameForSegment()
+
             if montageVM.outputURL != nil {
                 montageVM.outputURL = nil
             }
@@ -205,10 +208,10 @@ struct MontageView: View {
         
         .sheet(isPresented: $showAddNewTextSheet, content: {
             AddNewTextSegmentView { text in
-                
+                self.montageVM.pausePreviewPlayback()
                 montageVM.addTextSegment(with: text)
             }
-            .environment(\.layoutDirection, LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight )
+            .environment(\.layoutDirection,  layoutDirection )
             .presentationCornerRadius(20)
             .presentationDetents([.height(150)])
 
@@ -219,10 +222,11 @@ struct MontageView: View {
             
             AudioPickerView{ song in
                 showMusicPickerView = false
+                self.montageVM.pausePreviewPlayback()
                 montageVM.addAudioSegment(song: song)
                 
             }
-            .environment(\.layoutDirection, LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight )
+            .environment(\.layoutDirection,  layoutDirection )
             .presentationDetents([.height(220)])
 
             .presentationCornerRadius(20)
@@ -233,9 +237,10 @@ struct MontageView: View {
             
             VideoPickerView{ video in
                 showVideoPickerSheet = false
+                self.montageVM.pausePreviewPlayback()
                 montageVM.addVideoSegment(video: video)
             }
-            .environment(\.layoutDirection, LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight )
+            .environment(\.layoutDirection,  layoutDirection )
 
             .presentationCornerRadius(20)
             .presentationDetents([.height(220)])
@@ -244,9 +249,10 @@ struct MontageView: View {
         .sheet(isPresented: $showExitSheet) {
             
             ExitMontageSheet(){
+                self.montageVM.pausePreviewPlayback()
                 dismiss()
             }
-            .environment(\.layoutDirection, LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight )
+            .environment(\.layoutDirection,  layoutDirection )
             .presentationCornerRadius(20)
             .presentationDetents([.height(200)])
             
@@ -277,7 +283,7 @@ struct MontageView: View {
 
 #Preview {
     NavigationStack{
-        MontageView(videoSize: .portrait9_16, initialSong: LocalSong(name: "test", duration: 20, url: URL.homeDirectory))
+        MontageView(videoSize: .portrait9_16, initialSong: nil)
     }
     .environment(\.locale, .init(identifier: "ar"))
     .environment(\.layoutDirection,  .rightToLeft )

@@ -61,8 +61,8 @@ struct NewVideoButton: View {
         })
         
         .navigationDestination(isPresented: $showMontageView, destination: {
-            if let videoSize = selectedVideoSize , let song = selectedSong{
-                MontageView(videoSize: videoSize, initialSong: song)
+            if let videoSize = selectedVideoSize {
+                MontageView(videoSize: videoSize, initialSong: selectedSong)
             }
         })
         .sheet(isPresented: $showVideoSizePicker) {
@@ -75,7 +75,7 @@ struct NewVideoButton: View {
         
         .sheet(isPresented: $showMusicPickerView) {
             
-            AudioPickerView{ song in
+            AudioPickerView(isForNewProject: true){ song in
                 showMusicPickerView = false
 
                 selectedSong = song
@@ -84,7 +84,8 @@ struct NewVideoButton: View {
             }
                 .presentationCornerRadius(20)
                 .presentationDetents([.height(200)])
-            
+                .environment(\.layoutDirection,  layoutDirection )
+
         }
         .onChange(of: selectedVideoSize) { oldValue, newValue in
             if newValue != nil {
