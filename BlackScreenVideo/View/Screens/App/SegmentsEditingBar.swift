@@ -14,16 +14,22 @@ struct SegmentsEditingBar: View {
    
     var body: some View {
         VStack(alignment:.center){
-            if viewModel.textSegmentSelectedID != nil && viewModel.audioSegmentSelectedID == nil{
+            if viewModel.textSegmentSelectedID != nil && viewModel.audioSegmentSelectedID == nil && viewModel.videoSegmentSelectedID == nil{
                 withAnimation {
                     TextSegmentsEditingBar(viewModel: viewModel)
                     
                 }
             }
-            if viewModel.audioSegmentSelectedID != nil && viewModel.textSegmentSelectedID == nil{
+            if viewModel.audioSegmentSelectedID != nil && viewModel.textSegmentSelectedID == nil && viewModel.videoSegmentSelectedID == nil{
                 withAnimation {
                     
                     AudioSegmentsEditingBar(viewModel: viewModel)
+                }
+            }
+            
+            if viewModel.audioSegmentSelectedID == nil && viewModel.textSegmentSelectedID == nil && viewModel.videoSegmentSelectedID != nil{
+                withAnimation {
+                    VideoSegmentsEditingBar(viewModel: viewModel)
                 }
             }
         }

@@ -12,16 +12,16 @@ class AppSongsLibraryVM: ObservableObject {
     @Published var isLoadingFolders = false
     @Published var folders: [SongsFolder] = []
     @Published var selectedFolder: SongsFolder? = nil
-    @Published var errorMessage: String? = nil
+    
     @Published var hasMorePages = true
     @Published var isMyDownloadsSelected = false
     @Published var isLoadingSongs = false
     @Published var songs: [Song] = []
-    @Published var songsErrorMessage: String? = nil
     @Published var songsHasMorePages = true
     @Published var searchSongName: String = ""
     let context = CoreDataHelper.shared.persistentContainer.viewContext
     var currentSongFetchTask: URLSessionDataTask?
+    let errorHandler = ErrorHandler.shared
 
     
     
@@ -39,7 +39,7 @@ class AppSongsLibraryVM: ObservableObject {
     func loadFolders() {
         guard !isLoadingFolders, hasMorePages else { return }
 
-        errorMessage = nil
+        errorHandler.resetError()
         isLoadingFolders = true
         MusicRequest.shared.fetchFolders() { result in
             DispatchQueue.main.async {
@@ -47,8 +47,8 @@ class AppSongsLibraryVM: ObservableObject {
                 case .success(let folderResponse):
                     self.folders.append(contentsOf: folderResponse.data)
                     self.isLoadingFolders = false
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
+                case .failure(_):
+                    self.errorHandler.presentError(error: .fetchSongsFaild,action: self.loadFolders)
                     self.isLoadingFolders = false
                 }
             }
@@ -69,7 +69,7 @@ class AppSongsLibraryVM: ObservableObject {
 
             guard !isLoadingSongs, songsHasMorePages else { return }
             
-            songsErrorMessage = nil
+            errorHandler.resetError()
             isLoadingSongs = true
             currentSongFetchTask = MusicRequest.shared.fetchSongs(for: folderID,page: songsCurrentPage) { result in
                 DispatchQueue.main.async {
@@ -81,8 +81,8 @@ class AppSongsLibraryVM: ObservableObject {
                         self.songsHasMorePages = self.songsCurrentPage <= songsRequest.page.TotalPages
                         self.songs.append(contentsOf: songsRequest.data)
                         self.isLoadingSongs = false
-                    case .failure(let error):
-                        self.songsErrorMessage = error.localizedDescription
+                    case .failure(_):
+                        self.errorHandler.presentError(error: .fetchSongsFaild,action: self.loadFolders)
                         self.isLoadingSongs = false
                     }
                 }
@@ -122,7 +122,7 @@ class AppSongsLibraryVM: ObservableObject {
         }
             guard !isLoadingSongs, searchHaseMorePages else { return }
             
-            songsErrorMessage = nil
+        errorHandler.resetError()
             isLoadingSongs = true
             currentSongFetchTask = MusicRequest.shared.fetchSongsWithName(with: name, page: searchCurrentPage) { result in
                 DispatchQueue.main.async {
@@ -133,8 +133,8 @@ class AppSongsLibraryVM: ObservableObject {
                         self.searchHaseMorePages = self.searchCurrentPage <= songsRequest.page.TotalPages
                         self.songs.append(contentsOf: songsRequest.data)
                         self.isLoadingSongs = false
-                    case .failure(let error):
-                        self.songsErrorMessage = error.localizedDescription
+                    case .failure(_):
+                        self.errorHandler.presentError(error: .fetchSongsFaild,action: self.loadFolders)
                         self.isLoadingSongs = false
                     }
                 }

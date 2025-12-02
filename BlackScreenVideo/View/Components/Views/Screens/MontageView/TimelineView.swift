@@ -9,6 +9,7 @@ import SwiftUI
 struct TimelineView: View {
     @ObservedObject var viewModel: MontageVM
     
+    
     @State private var scrollViewProxy: ScrollViewProxy?
     @State private var visibleWidth: CGFloat = UIScreen.main.bounds.width
     var body: some View {
@@ -70,11 +71,17 @@ struct TimelineView: View {
                                             viewModel.scrollToCurrentTime(proxy: proxy)
                                         
                                     }
+                                    
+                                    viewModel.getCurrentFrameForSegment()
                                 }
                                 // Text and audio tracks
                                 TextTrackView(viewModel: viewModel)
                                     .padding(.bottom,10)
+                                VideoTrackView(viewModel: viewModel)
+                                    .padding(.bottom,10)
                                 AudioTrackView(viewModel: viewModel)
+                                    .padding(.bottom,10)
+
                             }
 
                         }
@@ -134,7 +141,7 @@ struct TimelineView: View {
                 if let tapX = viewModel.tapX {
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color.white)
-                        .frame(width: 2,height: 180)
+                        .frame(width: 2,height: 220)
                         .offset(x: tapX)
                 }
 
@@ -153,3 +160,14 @@ struct TimelineView: View {
         }
     }
 }
+
+#Preview {
+    NavigationStack{
+        MontageView(videoSize: .portrait9_16, initialSong: LocalSong(name: "test", duration: 20, url: URL.homeDirectory))
+    }
+    .environment(\.locale, .init(identifier: "ar"))
+    .environment(\.layoutDirection,  .rightToLeft )
+    
+}
+
+

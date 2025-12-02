@@ -35,6 +35,7 @@ struct TextSegmentContentView : View {
                 Text(segment.content)
                 
                     .lineLimit(1)
+                    
                     .textSegmentStyle(segment: segment)
                     .overlay {
                         if isSelected {
@@ -68,10 +69,12 @@ struct TextSegmentContentView : View {
                             .onEnded { value in
                                 let rawX = segment.position.x + value.translation.width
                                 let rawY = segment.position.y + value.translation.height
-                                
+                                print("translation x: \(value.translation.width), translation y: \(value.translation.height)")
+                                print("raw x position: \(rawX), raw y position: \(rawY)")
                                 let clampedX = min(max(size.width / 2, rawX), previewSize.width - size.width / 2)
                                 let clampedY = min(max(size.height / 2, rawY), previewSize.height - size.height / 2)
-                                
+                                print("x position: \(clampedX), y position: \(clampedY)")
+                                print("with preview size: \(previewSize.width), \(previewSize.height)")
                                 onMove(CGPoint(x: clampedX, y: clampedY))
                             }
                     )
@@ -94,30 +97,33 @@ struct TextSegmentContentView : View {
 }
 struct TextSegmentStyleModifier: ViewModifier {
     let segment : TextSegment
-
+    var scale: CGFloat
     func body(content: Content) -> some View {
         content
+            .padding(.horizontal,10 * scale)
+            .padding(.vertical,5 * scale)
             .multilineTextAlignment(segment.alignment.textAlignment)
-
+        
             .foregroundStyle(Color(segment.textColor.color).opacity((segment.textColor.actualOpacity)))
             .customeStrok(color: Color(segment.textWrapping?.color ?? .clear), lineWidth: segment.textWrapping?.actualStrokeWidth ?? 0)
             .font(Font.custom(segment.font?.fontName ?? "", size: segment.fontSize))
-            .padding(.vertical,0)
-            .padding(.horizontal,0)
             .shadow(
                 color: Color(uiColor: segment.shadow?.color ?? .white).opacity(Double(segment.shadow?.actualOpacity ?? 1) ),
                 radius: CGFloat(segment.shadow?.actualRadius ?? 0),
                 x: segment.shadow?.angle.offset(with: Double(segment.shadow?.actualOffset ?? 0) ).width ?? 0,
                 y: segment.shadow?.angle.offset(with: Double(segment.shadow?.actualOffset ?? 0)).height ?? 0
             )
-            .background(Color(segment.backgroundColor?.color ?? .clear).opacity((Double(segment.backgroundColor?.actualOpacity ?? 100) )))
+            .background{
+                RoundedRectangle(cornerRadius: 8 * scale)
+                    .fill(Color(segment.backgroundColor?.color ?? .clear).opacity((Double(segment.backgroundColor?.actualOpacity ?? 100) )))
+            }
             .opacity(segment.actualOpacity)
             
     }
 }
 extension View {
-    func textSegmentStyle(segment : TextSegment) -> some View {
-        modifier(TextSegmentStyleModifier(segment: segment))
+    func textSegmentStyle(segment : TextSegment,scale: CGFloat = 1) -> some View {
+        modifier(TextSegmentStyleModifier(segment: segment,scale: scale))
     }
 }
 struct StrokeModifier: ViewModifier {

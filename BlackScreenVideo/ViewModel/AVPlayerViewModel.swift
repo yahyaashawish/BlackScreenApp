@@ -79,9 +79,7 @@ class AVPlayerViewModel: ObservableObject , SongCacheDelegate {
 
     func cancelDownload(songID: Int) {
         SongCacheManager.shared.cancelDownload(songID: songID)
-        print("download progress before cancel: \(downloadProgress)")
         downloadProgress.removeValue(forKey: songID) // delete song progress
-        print("download progress after cancel: \(downloadProgress)")
 
     }
     

@@ -17,9 +17,12 @@ class MontageVM: ObservableObject {
     @Published var previewSize : CGSize? = nil
     @Published var textTracks: [[TextSegment]] = [[]]
     @Published var audioSegments: [AudioSegment] = []
+    @Published var videoTrack: [VideoSegment] = []
     @Published var textSegmentSelectedID : UUID? = nil
     @Published var audioSegmentSelectedID : UUID? = nil
+    @Published var videoSegmentSelectedID : UUID? = nil
     @Published var shouldResetScroll: Bool = false
+    var canExportVideo: Bool { (textTracks.flatMap({ $0 } ).isEmpty && audioSegments.isEmpty && videoTrack.isEmpty )}
 
     @Published var currentTime: TimeInterval = 0
     @Published var rawTimeScale: CGFloat = PropertiesConstants.DefaultScaleTime
@@ -53,11 +56,13 @@ class MontageVM: ObservableObject {
             .store(in: &cancellables)
     }
     let pixelsPerSecond: CGFloat = 65
-    let timeLineTimeOffset: TimeInterval = 20
+    let timeLineTimeOffset: TimeInterval = 40
     var maxDuration: TimeInterval {
         let textMax = textTracks[0].map { $0.startTime + $0.duration }.max() ?? 0
         let audioMax = audioSegments.map { $0.timeLineStartTime + $0.timeLineDuration }.max() ?? 0
-        return max(textMax, audioMax)
+        let videoMax = videoTrack.map { $0.timeLineStartTime + $0.timeLineDuration }.max() ?? 0
+        
+        return max(textMax, audioMax,videoMax)
     }
     
     var textSegmentsDuration: TimeInterval {
@@ -73,6 +78,8 @@ class MontageVM: ObservableObject {
     func clearSegmentsSelection() {
         textSegmentSelectedID = nil
         audioSegmentSelectedID = nil
+        videoSegmentSelectedID = nil
+
     }
     func scrollToCurrentTime(proxy: ScrollViewProxy) {
         let anchor = UnitPoint.center // or .leading for left alignment
@@ -98,7 +105,65 @@ class MontageVM: ObservableObject {
         var isFadingOut : Bool = false
     }
 
+    
+    
+    @Published var previewVideoPlayer: AVQueuePlayer = AVQueuePlayer()
+    var currentSegmentVideoPlayerID: UUID? = nil
     @Published var isPreviewPlaying: Bool = false
+    let videoPreviewManager = VideoPreviewManager()
+    func handleCurrentVideoSegmentPlayer(currentTime: TimeInterval) {
+        guard let activeSegment = videoTrack.first(where: {
+            $0.timeLineStartTime <= currentTime &&
+            currentTime < $0.timeLineEndTime
+        }) else {
+            if currentSegmentVideoPlayerID != nil {
+                pauseVideoPlayback()
+                currentSegmentVideoPlayerID = nil
+            }
+            return
+        }
+        
+        // If we switched to a new video segment
+        if activeSegment.id != currentSegmentVideoPlayerID {
+            
+            pauseVideoPlayback()
+            previewVideoPlayer.removeAllItems()
+            
+            // Build repeated items
+          
+            
+            // MARK: --- SMART SEEK LOGIC ---
+            let relativeTime = currentTime - activeSegment.timeLineStartTime
+            let videoDuration = activeSegment.videoOriginalDuration
+            
+            // Which repetition index we're inside
+            let itemIndex = Int(relativeTime / videoDuration)
+            
+            // Position inside that repetition
+            let offsetTime = relativeTime.truncatingRemainder(dividingBy: videoDuration)
+            
+            // Move forward in the queue to the correct item
+            previewVideoPlayer.pause()
+            
+            previewVideoPlayer.removeAllItems()
+            let items = videoPreviewManager.buildActualSegmentPlayerItems(segment: activeSegment)
+            for item in items { previewVideoPlayer.insert(item, after: nil) }
+            
+            for _ in 0..<itemIndex {
+                previewVideoPlayer.advanceToNextItem()
+            }
+            
+            let seekTime = CMTime(seconds: offsetTime + activeSegment.videoStartTime, preferredTimescale: 600)
+            previewVideoPlayer.seek(to: seekTime)
+            previewVideoPlayer.volume = activeSegment.actualVolume
+
+            previewVideoPlayer.play()
+            currentSegmentVideoPlayerID = activeSegment.id
+        }
+        
+        
+    }
+
     var activeTexts: [TextSegment] {
         let activeTexts = self.textTracks
             .flatMap { $0 } // flatten all tracks into one array
@@ -107,34 +172,90 @@ class MontageVM: ObservableObject {
         return activeTexts
     }
     
+    var activeVideoSegment : VideoSegment? {
+        let segment = self.videoTrack.first(where: {$0.timeLineStartTime <= self.currentTime && self.currentTime <= $0.timeLineEndTime})
+        return segment
+    }
+    @Published var currentTimeVideoImage : UIImage? = nil
+
+    func getCurrentFrameForSegment(
+        maximumSize: CGSize? = nil
+    ) {
+        if let segment = self.activeVideoSegment {
+            guard currentTime >= segment.timeLineStartTime,
+                  currentTime <= segment.timeLineEndTime else {
+                currentTimeVideoImage = nil
+                return
+            }
+            
+            // 2. Convert TL time → segment-relative time
+            let segmentRelativeTime = currentTime - segment.timeLineStartTime
+            
+            // 3. Compute actual video time with looping
+            let original = segment.videoOriginalDuration
+            var videoTime = (segment.videoStartTime + segmentRelativeTime)
+                .truncatingRemainder(dividingBy: original)
+            
+            if videoTime < 0 { videoTime += original }  // safety
+            
+            // 4. Now extract the actual frame
+            let asset = AVURLAsset(url: segment.fileURL)
+            let generator = AVAssetImageGenerator(asset: asset)
+            
+            generator.appliesPreferredTrackTransform = true
+            
+            if let maxSize = maximumSize {
+                generator.maximumSize = maxSize
+            }
+            
+            let cmTime = CMTime(seconds: videoTime, preferredTimescale: 600)
+            
+                generator.generateCGImageAsynchronously(for: cmTime) { cgImage, time, error in
+                    if let cgImage = cgImage {
+                        DispatchQueue.main.async{
+                            self.currentTimeVideoImage =  UIImage(cgImage: cgImage)
+                        }
+                    }else{
+                        self.currentTimeVideoImage = nil
+                    }
+
+                }
+            
+        }else{
+            currentTimeVideoImage = nil
+        }
+        // 1. Ensure currentTime is inside this segment
+        
+    }
+
     var playingAudioPlayers: [AudioSegmentPlayer] = []
     var currentAudioPlayerID: UUID? = nil
     private var displayLink: CADisplayLink?
     private var playbackStartTime: TimeInterval = 0
     private var playbackStartDate: Date?
     
+    
+    
+
     func startPreviewPlayback() {
         guard !isPreviewPlaying else { return }
         
+
         isPreviewPlaying = true
         clearSegmentsSelection()
         playbackStartTime = currentTime == 0 ? -0.5 : currentTime
         playbackStartDate = Date()
-        
+        startAudioPlaybackFromCurrentTime()
         startDisplayLink()
         
-        // Play audio segments that should start at or after currentTime
-        startAudioPlaybackFromCurrentTime()
     }
     func startAudioPlaybackFromCurrentTime() {
         stopAllAudio() // Clean up previous players
         
         for segment in audioSegments {
             
-//            let seekTime = max(0, relativeTime + segment.audioStartTime)
             
             let player = AVPlayer(url: segment.fileURL)
-//            let time = CMTime(seconds: seekTime, preferredTimescale: 600)
             player.volume = segment.actualVolume
             let audioSegmentPlayer = AudioSegmentPlayer(id: UUID(),player: player,audioSegment: segment)
             playingAudioPlayers.append(audioSegmentPlayer)
@@ -154,6 +275,7 @@ class MontageVM: ObservableObject {
         if self.currentTime >= self.maxDuration {
             self.pausePreviewPlayback()
         }
+        handleCurrentVideoSegmentPlayer(currentTime: currentTime)
         if let active = playingAudioPlayers.first(where: {
             $0.audioSegment.timeLineStartTime <= currentTime && currentTime < $0.audioSegment.timeLineEndTime
         }) {
@@ -162,7 +284,7 @@ class MontageVM: ObservableObject {
                 if let previous = playingAudioPlayers.first(where: { $0.id == currentAudioPlayerID }) {
                     previous.player.pause()
                 }
-                
+               
                 // Start the new segment
                 currentAudioPlayerID = active.id
                 let seekTime = currentTime - active.audioSegment.timeLineStartTime + active.audioSegment.audioStartTime
@@ -267,13 +389,22 @@ class MontageVM: ObservableObject {
             }
         }
     }
-
+    func pauseVideoPlayback(){
+        previewVideoPlayer.pause()
+        previewVideoPlayer.removeAllItems()
+        currentSegmentVideoPlayerID = nil
+        print("video playback paused")
+    }
     func pausePreviewPlayback() {
-        isPreviewPlaying = false
-        displayLink?.invalidate()
-        displayLink = nil
-        playbackStartDate = nil
-        stopAllAudio()
+        if isPreviewPlaying {
+            pauseVideoPlayback()
+            stopAllAudio()
+            isPreviewPlaying = false
+            displayLink?.invalidate()
+            displayLink = nil
+            playbackStartDate = nil
+        }
+        
     }
     func stopAllAudio() {
         playingAudioPlayers.forEach { $0.player.pause() }
@@ -281,6 +412,7 @@ class MontageVM: ObservableObject {
     }
     
     func stopAndResetPreviewPlayback() {
+        pauseVideoPlayback()
         pausePreviewPlayback()
         currentTime = 0
         shouldResetScroll = true
@@ -339,7 +471,8 @@ class MontageVM: ObservableObject {
             audioSegmentSelectedID = segment.id
             
             textSegmentSelectedID = nil
-            
+            videoSegmentSelectedID = nil
+
         }
     }
     
@@ -381,7 +514,7 @@ class MontageVM: ObservableObject {
                 audioDuration: segment.audioDuration,
                 audioStartTime: segment.audioStartTime + timeIntoSegment,
                 timeLineStartTime: time,
-                timeLineDuration: segment.timeLineDuration - timeIntoSegment,
+                timeLineDuration: segment.timeLineDuration - timeIntoSegment ,
                 fadeInDuration: segment.fadeInDuration,
                 fadeOutDuration: segment.fadeOutDuration,
                 amplitudes: segment.amplitudes
@@ -391,6 +524,8 @@ class MontageVM: ObservableObject {
             // Insert the new segments back in the correct order
             audioSegments.insert(firstAudio, at: index)
             audioSegments.insert(secondAudio, at: index)
+            
+            
         }
     }
     
@@ -431,7 +566,175 @@ class MontageVM: ObservableObject {
         }
     }
 
+    //MARK: - Video Segments Functions
+    
+    
+    func addVideoSegment(video : LocalVideo){
+        let lastEndTime = videoTrack
+            .map { $0.timeLineStartTime + $0.timeLineDuration }
+            .max() ?? 0
+        
+             
+                 if let duration = video.duration{
+                    let newSegment = VideoSegment(
+                        name: video.name,
+                        fileURL: video.video_url,
+                        thumbnail: nil,
+                        videoOriginalDuration: duration,
+                        timeLineStartTime: lastEndTime == 0 ? 0 : lastEndTime + 1,
+                        timeLineDuration: duration
+                    )
+                     self.applyChangeWithRecordOldState {
+                         self.videoTrack.append(newSegment)
+                     }
+                     
+                     Task {
+                        video.getVideoThumb { thumb in
+                            if let thumb = thumb{
+                                let videoIndex = self.videoTrack.firstIndex { video in
+                                    video.id == newSegment.id
+                                }
+                                                            
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                                    if let videoIndex = videoIndex{
+                                        self.videoTrack[videoIndex].thumbnail = thumb
+                                    }
+                                }
+                            }
+                         }
+                     }
+                    
+                }
+            
+        
 
+        
+    }
+    func selectVideoSegment(segment : VideoSegment){
+        if !isPreviewPlaying{
+            if videoSegmentSelectedID == segment.id{
+                videoSegmentSelectedID = nil
+                return
+            }
+            videoSegmentSelectedID = segment.id
+            
+            audioSegmentSelectedID = nil
+            textSegmentSelectedID = nil
+        }
+        
+    }
+    
+    func deleteSelectedVideoSegment( segmentIndex : Int){
+        applyChangeWithRecordOldState {
+            self.videoTrack.remove(at: segmentIndex)
+            self.videoSegmentSelectedID = nil
+        }
+        
+    }
+    
+    func splitVideoSegment(at time: TimeInterval) {
+        guard let index = videoTrack.firstIndex(where: { segment in
+            time >= segment.timeLineStartTime && time <= segment.timeLineEndTime
+        }) else {
+            return
+        }
+        applyChangeWithRecordOldState {
+            
+            let segment = videoTrack[index]
+            let timeIntoSegment = time - segment.timeLineStartTime
+            
+            // Skip if trying to split at segment start or end
+            guard timeIntoSegment > 0, timeIntoSegment < segment.timeLineDuration else { return }
+            
+            // Remove the original segment
+            videoTrack.remove(at: index)
+            
+            // Create the two split segments
+            
+            let firstSegment = VideoSegment(
+                name: segment.name,
+                fileURL: segment.fileURL,
+                thumbnail: segment.thumbnail,
+                videoOriginalDuration: segment.videoOriginalDuration,
+                videoStartTime: segment.videoStartTime,
+                timeLineStartTime: segment.timeLineStartTime,
+                timeLineDuration: timeIntoSegment
+            )
+            let secondSegment = VideoSegment(
+                name: segment.name,
+                fileURL: segment.fileURL,
+                thumbnail: segment.thumbnail,
+                videoOriginalDuration: segment.videoOriginalDuration,
+                videoStartTime: segment.videoStartTime + timeIntoSegment,
+                timeLineStartTime: time,
+                timeLineDuration: segment.timeLineDuration - timeIntoSegment
+            )
+            
+            
+            
+            // Insert the new segments back in the correct order
+            videoTrack.insert(firstSegment, at: index)
+            videoTrack.insert(secondSegment, at: index)
+            print("new segments inserted \(firstSegment) and \(secondSegment)")
+
+        }
+    }
+    
+    func exchangeSelectedVideoSegment(with video : LocalVideo){
+        if let segmentId = self.videoSegmentSelectedID {
+            
+            if let segmentIndex =  self.videoTrack.firstIndex(where: { $0.id == segmentId }) {
+                
+                let oldSegment = self.videoTrack[segmentIndex]
+
+                if let duration = video.duration{
+                    let newSegment = VideoSegment(
+                        name: video.name,
+                        fileURL: video.video_url,
+                        thumbnail: nil,
+                        videoOriginalDuration: duration,
+                        timeLineStartTime: oldSegment.timeLineStartTime,
+                        timeLineDuration: duration
+                    )
+                    
+                    var newSegmentsArray : [VideoSegment] = [newSegment]
+                    applyChangeWithRecordOldState {
+                        for seg in videoTrack {
+                            guard seg.id != oldSegment.id else {
+                                continue
+                            }
+                            if seg.timeLineStartTime >= oldSegment.timeLineEndTime {
+                                var updatedSegment = seg
+                                updatedSegment.timeLineStartTime = newSegment.timeLineEndTime + (seg.timeLineStartTime - oldSegment.timeLineEndTime)
+                                newSegmentsArray.append(updatedSegment)
+                            }else{
+                                newSegmentsArray.append(seg)
+                            }
+                            
+                            
+                        }
+                        self.videoTrack = newSegmentsArray
+                        Task {
+                            video.getVideoThumb { thumb in
+                                if let thumb = thumb{
+                                    let videoIndex = self.videoTrack.firstIndex { video in
+                                        video.id == newSegment.id
+                                    }
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                                        if let videoIndex = videoIndex{
+                                            self.videoTrack[videoIndex].thumbnail = thumb
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
     
     //MARK: - Text Segments Functions
     
@@ -564,6 +867,7 @@ class MontageVM: ObservableObject {
                     // Insert the new segments back in the correct order
                         textTracks[trackIndex].insert(firstSegment, at: segmentIndex)
                         textTracks[trackIndex].insert(secondSegment, at: segmentIndex)
+                        
                     }
                     
                 }
@@ -659,6 +963,7 @@ class MontageVM: ObservableObject {
             textSegmentSelectedID = segment.id
             
             audioSegmentSelectedID = nil
+            videoSegmentSelectedID = nil
         }
 
     }
@@ -668,18 +973,18 @@ class MontageVM: ObservableObject {
     
     var undoStackIsEmpty: Bool { undoStack.isEmpty }
     var redoStackIsEmpty: Bool { redoStack.isEmpty }
-    private var undoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment])] = []
-    private var redoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment])] = []
+    private var undoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment],videoTrack:[VideoSegment])] = []
+    private var redoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment],videoTrack:[VideoSegment])] = []
     private let maxHistory = 5
     
-    func applyChangeWithRecordOldState(_ action : () -> Void) {
+    func applyChangeWithRecordOldState(_ action :  () -> Void) {
         // Save current state before the change
         recordStateForUndo()
         
         action()
     }
     func recordStateForUndo() {
-        undoStack.append((textTracks: textTracks, audioSegments: audioSegments))
+        undoStack.append((textTracks: textTracks, audioSegments: audioSegments,videoTrack:videoTrack))
         if undoStack.count > maxHistory {
             undoStack.removeFirst()
         }
@@ -688,7 +993,7 @@ class MontageVM: ObservableObject {
     
     func undo() {
         guard let lastState = undoStack.popLast() else { return }
-        redoStack.append((textTracks: textTracks, audioSegments: audioSegments))
+        redoStack.append((textTracks: textTracks, audioSegments: audioSegments,videoTrack:videoTrack))
         print("redoStack count : \(redoStack.count)")
         if redoStack.count > maxHistory {
             redoStack.removeFirst()
@@ -697,17 +1002,19 @@ class MontageVM: ObservableObject {
         print("last state textTracks count : \(textTracks)")
         audioSegments = lastState.audioSegments
         print("undo did made , AudioSegment count : \(audioSegments.count) , TextSegment count : \(textTracks.compactMap(\.count).reduce(0, +))")
-
+        videoTrack = lastState.videoTrack
     }
     
     func redo() {
         guard let nextState = redoStack.popLast() else { return }
-        undoStack.append((textTracks: textTracks, audioSegments: audioSegments))
+        undoStack.append((textTracks: textTracks, audioSegments: audioSegments,videoTrack:videoTrack))
         if undoStack.count > maxHistory {
             undoStack.removeFirst()
         }
         textTracks = nextState.textTracks
         audioSegments = nextState.audioSegments
+        videoTrack = nextState.videoTrack
+
     }
     func resetUnDoHistory() {
         undoStack.removeAll()
@@ -724,11 +1031,12 @@ class MontageVM: ObservableObject {
     @MainActor
     func exportVideo() async{
         
-        isExportingVideo = true
         if let videoSize = self.videoSize , let previewSize = self.previewSize{
+            isExportingVideo = true
+            exportProgress = 0
             exportManager = VideoExportManager(videoSize: videoSize.size,previewSize: previewSize)
             Task{
-                exportManager!.exportVideo(textSegments: self.textTracks, audioSegments: self.audioSegments,duration: Double(maxDuration)) { progress in
+                exportManager!.exportVideo(textSegments: self.textTracks, audioSegments: self.audioSegments, videoSegments: self.videoTrack,duration: Double(maxDuration)) { progress in
                     DispatchQueue.main.async {
                         self.exportProgress = progress
                     }
@@ -748,6 +1056,32 @@ class MontageVM: ObservableObject {
                         }
                     }
                 }
+//                exportManager?.exportVideoSegments(segments: videoTrack, fullDuration: maxDuration, renderSize: videoSize.size) { progress in
+//                    DispatchQueue.main.async {
+//                                                self.exportProgress = progress
+//                                            }
+//                } completion: { outputURL in
+//                    Task { @MainActor in
+//                        if let url = outputURL {
+//                            self.exportManager?.addTextOverlayToVideo(videoURL: url, textSegments: self.textTracks,renderSize: videoSize.size,previewSize : previewSize) { progress in
+//                                DispatchQueue.main.async {
+//                                    self.exportProgress = progress
+//                                    
+//                                }
+//                            } completion: { textURL in
+//                                DispatchQueue.main.async {
+//                                    
+//                                    self.outputURL = textURL
+//                                    self.isExportingVideo = false
+//                                }
+//                            }
+//                        }else{
+//                            self.outputURL = nil
+//                            self.presentAlert = true
+//                            self.isExportingVideo = false
+//                        }
+//                    }
+//                }
 
 
                 
@@ -755,12 +1089,13 @@ class MontageVM: ObservableObject {
 
         }
         
+        
     }
     
+    @MainActor
     func cancelVideoExporting(){
-        exportManager?.exportingTask?.cancel()
-        exportManager?.videoWriter?.cancelWriting()
-        
+        print("cancelling video export")
+        exportManager?.cancelExport()
     }
     
     //MARK: - Exported Video Functions

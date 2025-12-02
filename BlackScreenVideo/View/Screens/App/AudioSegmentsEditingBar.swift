@@ -10,11 +10,11 @@
 import SwiftUI
 enum AudioEditingTab : LocalizedStringKey , CaseIterable{
     case split = "Split"
+    case delete = "Delete"
     case volume = "Volume"
     case faders = "Fade"
     case cutter = "Cutter"
     case exchange = "Exchange"
-    case delete = "Delete"
     
     var icon : String {
         switch self {
@@ -52,7 +52,14 @@ struct AudioSegmentsEditingBar: View {
                 if let segmentIndex =  viewModel.audioSegments.firstIndex(where: { $0.id == segmentId }) {
                     
                     let segment = $viewModel.audioSegments[segmentIndex]
-                    
+                    let segmentBinding = Binding<AudioSegment?>(
+                        get: { viewModel.audioSegments[segmentIndex] },
+                        set: { newValue in
+                            if let newValue {
+                                viewModel.audioSegments[segmentIndex] = newValue
+                            }
+                        }
+                    )
                     
                     
                     if selectedTab != nil {
@@ -68,7 +75,7 @@ struct AudioSegmentsEditingBar: View {
                             case .split:
                                 EmptyView()
                             case .volume:
-                                AudioVolumeTabView(audioSegment: segment)
+                                MediaVolumeTabView(audioSegment: segmentBinding,videoSegment: .constant(nil))
                                 
                             case .faders:
                                 AudioFadersTabView(audioSegment: segment)
@@ -78,7 +85,7 @@ struct AudioSegmentsEditingBar: View {
                             case .exchange:
                                 EmptyView()
                             case .delete:
-                                DeleteSegmentTabView(segmentType: .audio) {
+                                DeleteSegmentTabView(segmentType: .media) {
                                     viewModel.deleteSelectedAudioSegment(segmentIndex: segmentIndex)
                                     selectedTab = nil
                                 } cancelAction: {

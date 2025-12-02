@@ -33,7 +33,10 @@ struct ExportedVideoView: View {
                 AppBackground()
                 VStack(spacing: 30){
                     HStack{
-                        AppBackButton()
+                        AppBackButton{
+                            viewModel.cancelVideoExporting()
+                            dismiss()
+                        }
                         Text("Video")
                             .font(Font.medium24)
                             .foregroundStyle(Color("C3C3D8"))

@@ -10,6 +10,7 @@ struct MontageView: View {
     @StateObject var montageVM: MontageVM
     @State var showExitSheet : Bool = false
     @State var showAddNewTextSheet : Bool = false
+    @State var showVideoPickerSheet : Bool = false
     @State var showMusicPickerView : Bool = false
     @State var showExportingView : Bool = false
     let videoSize : VideoSize
@@ -76,7 +77,15 @@ struct MontageView: View {
                                 }
                                 .background(Color("34CC99"))
                                 .clipShape(RoundedRectangle(cornerRadius: 15))
+                                .overlay {
+                                    if montageVM.canExportVideo {
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .fill(.black.opacity(0.5))
+                                    }
+                                }
                             }
+                            .disabled(montageVM.canExportVideo)
+                            
                         }
                         .padding(.bottom,20)
                         
@@ -124,12 +133,19 @@ struct MontageView: View {
                             .padding(.top,20)
                             HStack(alignment: .top){
                                 
-                                VStack{
+                                VStack(spacing:0){
                                     
                                     Button {
                                         showAddNewTextSheet = true
                                     } label: {
                                         Image("add-text")
+                                    }
+                                    
+                                    Button {
+                                        showVideoPickerSheet = true
+                                    } label: {
+                                        Image("add-video")
+                                           
                                     }
                                     
                                     Button {
@@ -145,6 +161,7 @@ struct MontageView: View {
                                 
                                 
                                 
+                                
                                 VStack(alignment: .leading){
                                     
                                     TimelineView(viewModel: montageVM)
@@ -155,11 +172,6 @@ struct MontageView: View {
                             }
 
                         }
-                        
-                            
-
-                    
-                    
                     .environment(\.layoutDirection,  .leftToRight )
 
 
@@ -170,9 +182,7 @@ struct MontageView: View {
                 }
                 .frame(height: 50)
                 SegmentsEditingBar(viewModel: montageVM)
-
                 
-
             }
             .frame(height: geometry.size.height)
             
@@ -187,15 +197,23 @@ struct MontageView: View {
                 montageVM.outputURL = nil
             }
         })
+        .onChange(of: montageVM.videoTrack, { oldValue, newValue in
+            if montageVM.outputURL != nil {
+                montageVM.outputURL = nil
+            }
+        })
         
         .sheet(isPresented: $showAddNewTextSheet, content: {
             AddNewTextSegmentView { text in
+                
                 montageVM.addTextSegment(with: text)
             }
+            .environment(\.layoutDirection, LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight )
             .presentationCornerRadius(20)
-            .presentationDetents([.height(120)])
+            .presentationDetents([.height(150)])
+
             .presentationBackground(.clear)
-            
+
         })
         .sheet(isPresented: $showMusicPickerView) {
             
@@ -204,8 +222,24 @@ struct MontageView: View {
                 montageVM.addAudioSegment(song: song)
                 
             }
+            .environment(\.layoutDirection, LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight )
+            .presentationDetents([.height(220)])
+
             .presentationCornerRadius(20)
             
+        }
+        
+        .sheet(isPresented: $showVideoPickerSheet) {
+            
+            VideoPickerView{ video in
+                showVideoPickerSheet = false
+                montageVM.addVideoSegment(video: video)
+            }
+            .environment(\.layoutDirection, LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight )
+
+            .presentationCornerRadius(20)
+            .presentationDetents([.height(220)])
+
         }
         .sheet(isPresented: $showExitSheet) {
             
@@ -215,6 +249,7 @@ struct MontageView: View {
             .environment(\.layoutDirection, LanguageSetting.shared.isRightToLeft ? .rightToLeft : .leftToRight )
             .presentationCornerRadius(20)
             .presentationDetents([.height(200)])
+            
             
         }
         .fullScreenCover(isPresented: $showExportingView, content: {

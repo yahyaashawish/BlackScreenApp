@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-struct AudioVolumeTabView: View {
-    @Binding var audioSegment : AudioSegment
+struct MediaVolumeTabView: View {
+    @Binding var audioSegment : AudioSegment?
+    @Binding var videoSegment : VideoSegment?
     @State var volume : Float = 100
     
     var body: some View {
@@ -47,11 +48,23 @@ struct AudioVolumeTabView: View {
             changeVolume(newValue)
         }
         .onAppear{
-            self.volume = audioSegment.volume
+            if audioSegment != nil{
+                self.volume = audioSegment!.volume
+            }
+            
+            if videoSegment != nil{
+                self.volume = videoSegment!.volume
+            }
         }
         
     }
     func changeVolume(_ volume: Float){
-        self.audioSegment.volume = volume
+        if audioSegment != nil{
+            self.audioSegment!.volume = volume
+        }
+        
+        if videoSegment != nil{
+            self.videoSegment!.volume = volume
+        }
     }
 }

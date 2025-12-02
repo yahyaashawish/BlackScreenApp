@@ -18,6 +18,7 @@ struct AddNewTextSegmentView: View {
             Color("27272F").ignoresSafeArea()
             
             HStack{
+                Spacer()
                 AppTextField(placeholder: placeholder, text: $text,radius: 10,bgColor: Color("474755"),placeholderColor: .white,height: 40,isFocused: $isFocused)
                     .onAppear{
                         isFocused = true
@@ -37,6 +38,7 @@ struct AddNewTextSegmentView: View {
                                 .font(.bold20)
                         }
                 }
+                Spacer()
 
             }
             .padding(.horizontal,20)

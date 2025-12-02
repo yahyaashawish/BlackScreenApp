@@ -41,22 +41,9 @@ struct FolderSongsView: View {
                 if songsVM.isLoadingSongs {
                     Spinner()
                 }
-            if let error = songsVM.errorMessage {
-                if !songsVM.isMyDownloadsSelected {
-                    VStack(spacing: 10){
-                        Text(error)
-                            .font(Font.medium9)
-                            .foregroundStyle(.red)
-                        
-                        Button("Try Again!") {
-                            songsVM.loadSongs(isForNewFolder: false)
-                        }
-                        .font(Font.medium9)
-                        .foregroundStyle(.cyan)
-                    }
-                }
+            
                 
-            }else if songsVM.songs.isEmpty && !songsVM.isLoadingSongs{
+            if songsVM.songs.isEmpty && !songsVM.isLoadingSongs{
                 Text("No songs Available")
                     .font(Font.medium14)
                     .foregroundStyle(Color("9191A8"))

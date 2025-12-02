@@ -82,6 +82,7 @@ struct MainView: View {
                                 }
                                 .padding(.horizontal,20)
                                 
+                                
                                 if adViewModel.isAdReceived {
                                     GeometryReader { adGeo in
                                         let adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(adGeo.size.width)

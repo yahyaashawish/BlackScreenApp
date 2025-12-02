@@ -9,6 +9,7 @@ import SwiftUI
 struct VideoPreviewView: View {
     @Environment(\.layoutDirection) var layoutDirection
     @ObservedObject var viewModel : MontageVM
+    
     var body: some View {
         HStack(alignment: .bottom,spacing: 0) {
             
@@ -19,7 +20,7 @@ struct VideoPreviewView: View {
                         
                         let scale = min(containerSize.width / videoSize.width,
                                         containerSize.height / videoSize.height)
-                        
+                       
                         let displaySize = CGSize(
                             width: videoSize.width * scale,
                             height: videoSize.height * scale
@@ -30,6 +31,24 @@ struct VideoPreviewView: View {
                             Rectangle()
                                 .fill(Color.black)
                                 .frame(maxWidth: .infinity)
+                            
+                            if let image = viewModel.currentTimeVideoImage {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                            }
+                            
+                            if viewModel.isPreviewPlaying {
+                                CustomVideoPlayer(player: viewModel.previewVideoPlayer)
+                                    .frame(width: displaySize.width,height: displaySize.height,alignment: .center)
+                            }
+                           
+                            
+                            
+                            
+                            
+                            
+                            
                             if let segmentId = viewModel.textSegmentSelectedID  {
                                 let segment = viewModel.textTracks
                                     .flatMap { $0 }.first { seg in
@@ -49,12 +68,16 @@ struct VideoPreviewView: View {
                                 }
                                 
                                 
+                                
+                                
                             }else{
+                                
                                 
                                 ForEach(viewModel.activeTexts, id: \.id) { segment in
 
                                     TextSegmentContentView(segment: segment,previewSize: displaySize,isSelected: segment.id == viewModel.textSegmentSelectedID,isPreviewPlaying : viewModel.isPreviewPlaying){ pos in
                                             viewModel.updateTextSegmentPosition(id: segment.id, to: pos)
+                                            print(pos)
                                         }
                                         
                                         .onTapGesture {
@@ -89,7 +112,7 @@ struct VideoPreviewView: View {
             
         }
         .environment(\.layoutDirection,  .leftToRight )
-        .frame(height: 350)
+        .frame(height: 320)
         
         
     }

@@ -107,6 +107,7 @@ struct BlackScreenVideoPlayerView: View {
 
 
 
+
 struct VideoPageView: View {
     let video: BlackScreenVideo
     let player: AVPlayer

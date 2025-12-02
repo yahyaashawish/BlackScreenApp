@@ -19,16 +19,20 @@ class ErrorHandler: ObservableObject {
         resetError()
         self.error = error
         self.errorAction = action
-        withAnimation(.easeInOut) {
-            self.isThereAnError = true
+        DispatchQueue.main.async{
+            withAnimation(.easeInOut) {
+                self.isThereAnError = true
+            }
         }
     }
     
     func pushAlert(alert: AppError) {
         resetError()
         self.error = alert
-        withAnimation(.easeInOut) {
-            self.isThereAnError = true
+        DispatchQueue.main.async{
+            withAnimation(.easeInOut) {
+                self.isThereAnError = true
+            }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
             self.resetError()
@@ -36,9 +40,12 @@ class ErrorHandler: ObservableObject {
     }
     
     func dismissError() {
-        withAnimation(.easeInOut) {
-            self.isThereAnError = false
+        DispatchQueue.main.async{
+            withAnimation(.easeInOut) {
+                self.isThereAnError = false
+            }
         }
+        
     }
     
     func resetError() {
@@ -54,6 +61,9 @@ enum AppError {
     case fetchVideosFailed
     case cannotAddLikeToVideo
     case cannotRemoveLikeFromVideo
+    case fetchSongsFaild
+    case fetchChromaVideosFaild
+    case somethingWentWrong
     var title : LocalizedStringKey {
         switch self {
         case .noInternet:
@@ -69,7 +79,16 @@ enum AppError {
             
         case .cannotRemoveLikeFromVideo:
             return "Removing Like Failed!"
+            
+        case .fetchSongsFaild:
+            return "Fetching Songs Failed!"
 
+        case .fetchChromaVideosFaild:
+            return "Fetching Chroma Videos Failed!"
+         
+        case .somethingWentWrong:
+            return "Something Went Wrong!"
+            
         }
     }
     
@@ -77,15 +96,15 @@ enum AppError {
         switch self {
         case .noInternet:
             return ""
-        case .fetchVideosFailed:
-            return "Make Sure Your Internet Connection Is Active"
-        case .cannotAddLikeToVideo:
-            return "Make Sure Your Internet Connection Is Active"
         case .internetBecomeActive:
             return ""
 
-        case .cannotRemoveLikeFromVideo:
+        case .somethingWentWrong:
+            return ""
+            
+        default:
             return "Make Sure Your Internet Connection Is Active"
+
         }
     }
     
@@ -95,16 +114,11 @@ enum AppError {
             Image(systemName: "wifi.slash")
                 .foregroundColor(.gray)
             
-        case .fetchVideosFailed:
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.yellow)
-        case .cannotAddLikeToVideo:
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.yellow)
         case .internetBecomeActive:
             Image(systemName: "wifi")
                 .foregroundColor(.green)
-        case .cannotRemoveLikeFromVideo:
+
+        default:
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(.yellow)
 

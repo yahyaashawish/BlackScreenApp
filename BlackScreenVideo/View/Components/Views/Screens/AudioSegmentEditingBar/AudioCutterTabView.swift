@@ -1,5 +1,5 @@
 //
-//  AudioVolumeTabView.swift
+//  AudioCutterTabView.swift
 //  BlackScreenVideo
 //
 //  Created by Yahya A Shawish on 21/06/2025.
@@ -104,7 +104,8 @@ struct AudioCutterTabView: View {
                                         }
                                         .onEnded { _ in
                                             segment.audioStartTime = min(liveCrop, segment.audioOriginalDuration - 35)
-                                            segment.audioDuration = max(35, min(liveDur, segment.audioOriginalDuration - segment.audioStartTime))
+                                            print("segment audio start time: \(segment.audioStartTime)")
+//                                            segment.audioDuration = max(35, min(liveDur, segment.audioOriginalDuration - segment.audioStartTime))
 
                                             leftDX = 0
                                             dur0 = 0

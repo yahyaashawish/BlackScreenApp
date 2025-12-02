@@ -8,7 +8,7 @@
 import SwiftUI
 enum SegmentType {
     case text
-    case audio
+    case media
 }
 struct DeleteSegmentTabView: View {
     let segmentType:SegmentType
@@ -17,7 +17,7 @@ struct DeleteSegmentTabView: View {
     var body: some View {
         VStack{
             VStack{
-                Text(segmentType == .text ? "Are you sure that you are want to delete this text clip ?" : "Are you sure that you are want to delete this audio clip ?")
+                Text(segmentType == .text ? "Are you sure that you are want to delete this text clip ?" : "Are you sure that you are want to delete this media clip ?")
                     .foregroundStyle(Color("9191A8"))
                     .font(.medium16)
                 
@@ -60,7 +60,7 @@ struct DeleteSegmentTabView: View {
 }
 
 #Preview {
-    DeleteSegmentTabView(segmentType: .audio, action: {
+    DeleteSegmentTabView(segmentType: .media, action: {
         
     }, cancelAction: {
         
