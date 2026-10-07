@@ -51,13 +51,24 @@ struct AudioSegmentsEditingBar: View {
                 
                 if let segmentIndex =  viewModel.audioSegments.firstIndex(where: { $0.id == segmentId }) {
                     
-                    let segment = $viewModel.audioSegments[segmentIndex]
-                    let segmentBinding = Binding<AudioSegment?>(
-                        get: { viewModel.audioSegments[segmentIndex] },
+                    let selectedSegment = viewModel.audioSegments[segmentIndex]
+                    let segment = Binding<AudioSegment>(
+                        get: {
+                            viewModel.audioSegments.first(where: { $0.id == segmentId }) ?? selectedSegment
+                        },
                         set: { newValue in
-                            if let newValue {
-                                viewModel.audioSegments[segmentIndex] = newValue
+                            guard let currentIndex = viewModel.audioSegments.firstIndex(where: { $0.id == segmentId }) else {
+                                return
                             }
+                            viewModel.audioSegments[currentIndex] = newValue
+                        }
+                    )
+                    let segmentBinding = Binding<AudioSegment?>(
+                        get: { viewModel.audioSegments.first(where: { $0.id == segmentId }) },
+                        set: { newValue in
+                            guard let newValue,
+                                  let currentIndex = viewModel.audioSegments.firstIndex(where: { $0.id == segmentId }) else { return }
+                            viewModel.audioSegments[currentIndex] = newValue
                         }
                     )
                     
@@ -203,6 +214,5 @@ struct AudioSegmentsEditingBar: View {
     
     
 }
-
 
 

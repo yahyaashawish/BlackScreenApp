@@ -1524,7 +1524,10 @@ extension VideoExportManager {
             guard let sourceTrack = try? await asset.loadTracks(withMediaType: .audio).first else { continue }
             
             let startTime = CMTime(seconds: segment.audioStartTime, preferredTimescale: 600)
-            let duration = CMTime(seconds: segment.audioDuration, preferredTimescale: 600)
+            let availableDuration = max(0, segment.audioOriginalDuration - segment.audioStartTime)
+            let playableDuration = min(segment.timeLineDuration, availableDuration)
+            guard playableDuration > 0 else { continue }
+            let duration = CMTime(seconds: playableDuration, preferredTimescale: 600)
             let timelineStart = CMTime(seconds: segment.timeLineStartTime, preferredTimescale: 600)
             
             guard let audioTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) else { continue }

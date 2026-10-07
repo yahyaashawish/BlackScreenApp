@@ -504,7 +504,7 @@ class MontageVM: ObservableObject {
                 name: segment.name,
                 fileURL: segment.fileURL,
                 audioOriginalDuration: segment.audioOriginalDuration,
-                audioDuration: segment.audioDuration,
+                audioDuration: timeIntoSegment,
                 audioStartTime: segment.audioStartTime,
                 timeLineStartTime: segment.timeLineStartTime,
                 timeLineDuration: timeIntoSegment,
@@ -517,7 +517,7 @@ class MontageVM: ObservableObject {
                 name: segment.name,
                 fileURL: segment.fileURL,
                 audioOriginalDuration: segment.audioOriginalDuration,
-                audioDuration: segment.audioDuration,
+                audioDuration: segment.timeLineDuration - timeIntoSegment,
                 audioStartTime: segment.audioStartTime + timeIntoSegment,
                 timeLineStartTime: time,
                 timeLineDuration: segment.timeLineDuration - timeIntoSegment ,
@@ -1179,5 +1179,4 @@ class MontageVM: ObservableObject {
         }
     }
 }
-
 

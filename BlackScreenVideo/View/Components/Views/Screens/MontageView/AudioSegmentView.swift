@@ -33,7 +33,10 @@ struct AudioSegmentView: View {
                            segment.audioStartTime + Double(leftDX / pxPS * scale)
         )
         
-        let maxCrop = segment.audioDuration - liveCrop
+        let maxCrop = min(
+            segment.audioDuration,
+            max(0, segment.audioOriginalDuration - liveCrop)
+        )
         let liveDur = min(
             max(0.2, segment.timeLineDuration - Double(leftDX / pxPS * scale) + Double(rightDX / pxPS * scale)),
             maxCrop
@@ -82,6 +85,7 @@ struct AudioSegmentView: View {
                                 segment.timeLineStartTime = liveStart
                                 segment.audioStartTime = liveCrop
                                 segment.timeLineDuration = liveDur
+                                segment.audioDuration = liveDur
                                 leftDX = 0
                                 dur0 = 0
                             }
@@ -176,7 +180,10 @@ struct AudioSegmentView: View {
                                 var proposedDuration = dur0 + Double(proposedDX / vm.pixelsPerSecond * vm.timeScale)
                                 
                                 // Limit to remaining audio duration
-                                let maxAudioDuration = segment.audioDuration - segment.audioStartTime
+                                let maxAudioDuration = min(
+                                    segment.audioDuration,
+                                    max(0, segment.audioOriginalDuration - segment.audioStartTime)
+                                )
                                 
                                 // Limit to next segment start if exists
                                 if let nextSegment = vm.audioSegments
@@ -196,7 +203,11 @@ struct AudioSegmentView: View {
                             }
                             .onEnded { _ in
                                 let finalDuration = dur0 + Double(rightDX / vm.pixelsPerSecond * vm.timeScale)
-                                segment.timeLineDuration = min(segment.audioDuration - segment.audioStartTime, max(0.2, finalDuration))
+                                let maxAudioDuration = min(
+                                    segment.audioDuration,
+                                    max(0, segment.audioOriginalDuration - segment.audioStartTime)
+                                )
+                                segment.timeLineDuration = min(maxAudioDuration, max(0.2, finalDuration))
                                 rightDX = 0
                                 dur0 = 0
                             }
@@ -253,4 +264,3 @@ struct WaveformView: View {
         .frame(width: width, height: height, alignment: .center)
     }
 }
-

@@ -12,6 +12,7 @@ struct AudioCutterTabView: View {
     @Binding var segment : AudioSegment
     @State private var player: AVPlayer?
     @State private var isPlaying = false
+    @State private var playbackEndTask: Task<Void, Never>?
 
     let waveformHeight: CGFloat = 54
 
@@ -19,9 +20,9 @@ struct AudioCutterTabView: View {
     
     @State private var leftDX: CGFloat = 0
     @State private var rightDX: CGFloat = 0
-    @State private var dur0: TimeInterval = 0
-    @State private var crop0: TimeInterval = 0
+    @State private var selectionDX: CGFloat = 0
     let handleWidth: Double = 20
+    private let minimumDuration: TimeInterval = 0.2
     var body: some View {
         VStack {
             VStack(spacing: 30){
@@ -48,18 +49,27 @@ struct AudioCutterTabView: View {
                 
                 // Waveform with trimming overlay
                 GeometryReader { geo in
-                    let pxPS = geo.size.width / segment.audioOriginalDuration
-
-
-                    let liveCrop = max(0,
-                                       segment.audioStartTime + Double(leftDX / pxPS )
+                    let sourceDuration = max(0, segment.audioOriginalDuration)
+                    let effectiveMinimumDuration = min(minimumDuration, sourceDuration)
+                    let pxPS = max(
+                        geo.size.width / max(sourceDuration, minimumDuration),
+                        .leastNonzeroMagnitude
                     )
-                    
-                    let maxCrop = segment.audioOriginalDuration - liveCrop
-                    let liveDur = min(
-                        max(0.2, segment.audioDuration - Double(leftDX / pxPS ) + Double(rightDX / pxPS )),
-                        maxCrop
+
+                    let requestedCrop = segment.audioStartTime + Double(leftDX / pxPS)
+                    let maximumCrop = max(0, sourceDuration - effectiveMinimumDuration)
+                    let resizedCrop = min(max(0, requestedCrop), maximumCrop)
+                    let maxDuration = max(0, sourceDuration - resizedCrop)
+                    let resizedDuration = min(
+                        max(effectiveMinimumDuration, segment.audioDuration - (resizedCrop - segment.audioStartTime) + Double(rightDX / pxPS)),
+                        maxDuration
                     )
+                    let requestedSelectionCrop = resizedCrop + Double(selectionDX / pxPS)
+                    let liveCrop = min(
+                        max(0, requestedSelectionCrop),
+                        max(0, sourceDuration - resizedDuration)
+                    )
+                    let liveDur = resizedDuration
                     let width = (liveDur * pxPS)
                     let centerX = liveCrop * pxPS  + width / 2
                     let leftX = centerX - width / 2 + handleWidth
@@ -95,20 +105,13 @@ struct AudioCutterTabView: View {
                                 .gesture(
                                     DragGesture(coordinateSpace: .global)
                                         .onChanged { g in
-                                            if dur0 == 0 {
-                                                dur0 = segment.audioDuration
-                                                crop0 = segment.audioStartTime
-                                            }
                                             let proposedLeftDX = g.location.x - g.startLocation.x
-                                                leftDX = proposedLeftDX
+                                            leftDX = proposedLeftDX
                                         }
                                         .onEnded { _ in
-                                            segment.audioStartTime = min(liveCrop, segment.audioOriginalDuration - 35)
-                                            print("segment audio start time: \(segment.audioStartTime)")
-//                                            segment.audioDuration = max(35, min(liveDur, segment.audioOriginalDuration - segment.audioStartTime))
+                                            commitTrim(startTime: liveCrop, duration: liveDur)
 
                                             leftDX = 0
-                                            dur0 = 0
                                         }
                                 )
                                
@@ -117,15 +120,26 @@ struct AudioCutterTabView: View {
                             Rectangle()
                                 .fill(.clear)
                                 .frame(height: waveformHeight-2)
+                                .contentShape(Rectangle())
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 0)
                                         .stroke(Color("FFC72C"), lineWidth: 2)
                                 )
                                 .overlay {
-                                    Text(formatSecondsToMinutes(liveDur))
+                                    Text(formatDuration(liveDur))
                                         .foregroundColor(Color("FFC72C"))
                                         .font(.medium12)
                                 }
+                                .gesture(
+                                    DragGesture(coordinateSpace: .global)
+                                        .onChanged { gesture in
+                                            selectionDX = gesture.location.x - gesture.startLocation.x
+                                        }
+                                        .onEnded { _ in
+                                            commitTrim(startTime: liveCrop, duration: liveDur)
+                                            selectionDX = 0
+                                        }
+                                )
                             
                             
                             SingleCornerRoundedRectangle(cornerRadius: 5, corners: [.topRight,.bottomRight])
@@ -140,20 +154,14 @@ struct AudioCutterTabView: View {
                                 .gesture(
                                     DragGesture(coordinateSpace: .global)
                                         .onChanged { g in
-                                            if dur0 == 0 {
-                                                dur0 = segment.audioDuration
-                                                crop0 = segment.audioStartTime
-                                            }
                                             let proposedDX = g.location.x - g.startLocation.x
                                             rightDX = proposedDX
 
                                         }
                                         .onEnded { _ in
-                                            segment.audioDuration = max(35, min(liveDur, segment.audioOriginalDuration - segment.audioStartTime))
-                                            
-                                          
+                                            commitTrim(startTime: liveCrop, duration: liveDur)
+
                                             rightDX = 0
-                                            dur0 = 0
                                         }
                                 )
                             
@@ -161,11 +169,12 @@ struct AudioCutterTabView: View {
                         }
                         .frame(width: max(width,0))
                         .position(x: centerX, y: 32)
+                        .animation(nil, value: selectionDX)
 
                     }
                     .overlay(alignment: .leading) {
 
-                        Text(formatSecondsToMinutes(liveCrop))
+                        Text(formatDuration(liveCrop))
                             .foregroundStyle(.black)
                             .font(.medium10)
                             .padding(.horizontal, 5)
@@ -192,29 +201,67 @@ struct AudioCutterTabView: View {
         .background(Color("27272F"))
 
         .onDisappear {
-            player?.pause()
+            stopPlayback()
         }
+    }
+
+    private func commitTrim(startTime: TimeInterval, duration: TimeInterval) {
+        stopPlayback()
+
+        let sourceDuration = max(0, segment.audioOriginalDuration)
+        let effectiveMinimumDuration = min(minimumDuration, sourceDuration)
+        let safeStart = min(max(0, startTime), max(0, sourceDuration - effectiveMinimumDuration))
+        let safeDuration = min(
+            max(effectiveMinimumDuration, duration),
+            max(0, sourceDuration - safeStart)
+        )
+
+        segment.audioStartTime = safeStart
+        segment.audioDuration = safeDuration
+        segment.timeLineDuration = safeDuration
+    }
+
+    private func stopPlayback() {
+        playbackEndTask?.cancel()
+        playbackEndTask = nil
+        player?.pause()
+        isPlaying = false
     }
     
     private func togglePlay() {
         if isPlaying {
-            player?.pause()
+            stopPlayback()
         } else {
             let start = segment.audioStartTime
             let duration = segment.audioDuration
+            guard duration > 0 else { return }
+
+            playbackEndTask?.cancel()
             player = AVPlayer(url: segment.fileURL)
             player?.seek(to: CMTime(seconds: start, preferredTimescale: 600))
             player?.play()
-            DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-                player?.pause()
-                isPlaying = false
+            isPlaying = true
+
+            playbackEndTask = Task { @MainActor in
+                do {
+                    try await Task.sleep(for: .seconds(duration))
+                    guard !Task.isCancelled else { return }
+                    stopPlayback()
+                } catch {
+                    // Cancellation is expected when playback is paused or restarted.
+                }
             }
         }
-        isPlaying.toggle()
     }
-    func formatSecondsToMinutes(_ seconds: TimeInterval) -> String {
-        let minutes = seconds / 60.0
-        return String(format: "%.3f", minutes)
+    private func formatDuration(_ duration: TimeInterval) -> String {
+        guard duration.isFinite, duration >= 0 else {
+            return "0:00"
+        }
+
+        let totalSeconds = Int(duration.rounded())
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
+        return String(format: "%d:%02d", minutes, seconds)
     }
 }
 #Preview {
