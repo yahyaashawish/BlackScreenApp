@@ -92,7 +92,13 @@ struct AudioSegmentsEditingBar: View {
                                 AudioFadersTabView(audioSegment: segment)
                                 
                             case .cutter:
-                                AudioCutterTabView(segment: segment)
+                                AudioCutterTabView(segment: segment) { audioStartTime, timeLineDuration in
+                                    viewModel.applyAudioCut(
+                                        segmentID: segmentId,
+                                        audioStartTime: audioStartTime,
+                                        timeLineDuration: timeLineDuration
+                                    )
+                                }
                             case .exchange:
                                 EmptyView()
                             case .delete:
@@ -214,5 +220,4 @@ struct AudioSegmentsEditingBar: View {
     
     
 }
-
 

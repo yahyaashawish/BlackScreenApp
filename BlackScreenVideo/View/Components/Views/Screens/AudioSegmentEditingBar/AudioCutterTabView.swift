@@ -10,6 +10,7 @@ import AVFoundation
 
 struct AudioCutterTabView: View {
     @Binding var segment : AudioSegment
+    var onCommit: (_ audioStartTime: TimeInterval, _ timeLineDuration: TimeInterval) -> Void = { _, _ in }
     @State private var player: AVPlayer?
     @State private var isPlaying = false
     @State private var playbackEndTask: Task<Void, Never>?
@@ -56,12 +57,23 @@ struct AudioCutterTabView: View {
                         .leastNonzeroMagnitude
                     )
 
+                    let availableDuration = min(
+                        max(0, segment.audioDuration),
+                        max(0, sourceDuration - segment.audioStartTime)
+                    )
+                    let currentDuration = min(
+                        max(effectiveMinimumDuration, segment.timeLineDuration),
+                        availableDuration
+                    )
                     let requestedCrop = segment.audioStartTime + Double(leftDX / pxPS)
                     let maximumCrop = max(0, sourceDuration - effectiveMinimumDuration)
                     let resizedCrop = min(max(0, requestedCrop), maximumCrop)
-                    let maxDuration = max(0, sourceDuration - resizedCrop)
+                    let maxDuration = min(
+                        max(0, segment.audioDuration),
+                        max(0, sourceDuration - resizedCrop)
+                    )
                     let resizedDuration = min(
-                        max(effectiveMinimumDuration, segment.audioDuration - (resizedCrop - segment.audioStartTime) + Double(rightDX / pxPS)),
+                        max(effectiveMinimumDuration, currentDuration - (resizedCrop - segment.audioStartTime) + Double(rightDX / pxPS)),
                         maxDuration
                     )
                     let requestedSelectionCrop = resizedCrop + Double(selectionDX / pxPS)
@@ -73,6 +85,7 @@ struct AudioCutterTabView: View {
                     let width = (liveDur * pxPS)
                     let centerX = liveCrop * pxPS  + width / 2
                     let leftX = centerX - width / 2 + handleWidth
+                    let selectionHitExpansion = max(0, (44 - width) / 2)
                     
                     ZStack(alignment: .leading) {
                         Rectangle()
@@ -102,7 +115,7 @@ struct AudioCutterTabView: View {
                                         .frame(width: 3 , height: 10)
                                     
                                 )
-                                .gesture(
+                                .highPriorityGesture(
                                     DragGesture(coordinateSpace: .global)
                                         .onChanged { g in
                                             let proposedLeftDX = g.location.x - g.startLocation.x
@@ -130,16 +143,6 @@ struct AudioCutterTabView: View {
                                         .foregroundColor(Color("FFC72C"))
                                         .font(.medium12)
                                 }
-                                .gesture(
-                                    DragGesture(coordinateSpace: .global)
-                                        .onChanged { gesture in
-                                            selectionDX = gesture.location.x - gesture.startLocation.x
-                                        }
-                                        .onEnded { _ in
-                                            commitTrim(startTime: liveCrop, duration: liveDur)
-                                            selectionDX = 0
-                                        }
-                                )
                             
                             
                             SingleCornerRoundedRectangle(cornerRadius: 5, corners: [.topRight,.bottomRight])
@@ -151,7 +154,7 @@ struct AudioCutterTabView: View {
                                         .frame(width: 3 , height: 10)
                                 )
                             
-                                .gesture(
+                                .highPriorityGesture(
                                     DragGesture(coordinateSpace: .global)
                                         .onChanged { g in
                                             let proposedDX = g.location.x - g.startLocation.x
@@ -164,10 +167,21 @@ struct AudioCutterTabView: View {
                                             rightDX = 0
                                         }
                                 )
-                            
+                        
                             
                         }
                         .frame(width: max(width,0))
+                        .contentShape(Rectangle().inset(by: -selectionHitExpansion))
+                        .gesture(
+                            DragGesture(coordinateSpace: .global)
+                                .onChanged { gesture in
+                                    selectionDX = gesture.location.x - gesture.startLocation.x
+                                }
+                                .onEnded { _ in
+                                    commitTrim(startTime: liveCrop, duration: liveDur)
+                                    selectionDX = 0
+                                }
+                        )
                         .position(x: centerX, y: 32)
                         .animation(nil, value: selectionDX)
 
@@ -211,20 +225,23 @@ struct AudioCutterTabView: View {
         let sourceDuration = max(0, segment.audioOriginalDuration)
         let effectiveMinimumDuration = min(minimumDuration, sourceDuration)
         let safeStart = min(max(0, startTime), max(0, sourceDuration - effectiveMinimumDuration))
-        let safeDuration = min(
-            max(effectiveMinimumDuration, duration),
+        let availableDuration = min(
+            max(0, segment.audioDuration),
             max(0, sourceDuration - safeStart)
         )
+        let safeDuration = min(
+            max(effectiveMinimumDuration, duration),
+            availableDuration
+        )
 
-        segment.audioStartTime = safeStart
-        segment.audioDuration = safeDuration
-        segment.timeLineDuration = safeDuration
+        onCommit(safeStart, safeDuration)
     }
 
     private func stopPlayback() {
         playbackEndTask?.cancel()
         playbackEndTask = nil
         player?.pause()
+        player = nil
         isPlaying = false
     }
     
@@ -233,8 +250,13 @@ struct AudioCutterTabView: View {
             stopPlayback()
         } else {
             let start = segment.audioStartTime
-            let duration = segment.audioDuration
-            guard duration > 0 else { return }
+            let sourceRemainingDuration = max(0, segment.audioOriginalDuration - start)
+            let duration = min(
+                max(0, segment.timeLineDuration),
+                max(0, segment.audioDuration),
+                sourceRemainingDuration
+            )
+            guard start.isFinite, duration.isFinite, duration > 0 else { return }
 
             playbackEndTask?.cancel()
             player = AVPlayer(url: segment.fileURL)

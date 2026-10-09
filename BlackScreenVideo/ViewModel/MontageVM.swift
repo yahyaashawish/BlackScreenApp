@@ -467,6 +467,63 @@ class MontageVM: ObservableObject {
         }
         
     }
+
+    func applyAudioCut(
+        segmentID: UUID,
+        audioStartTime: TimeInterval,
+        timeLineDuration: TimeInterval
+    ) {
+        guard let segmentIndex = audioSegments.firstIndex(where: { $0.id == segmentID }) else {
+            return
+        }
+
+        let currentSegment = audioSegments[segmentIndex]
+        let sourceDuration = max(0, currentSegment.audioOriginalDuration)
+        let minimumDuration = min(0.2, sourceDuration)
+        let safeStartTime = min(
+            max(0, audioStartTime),
+            max(0, sourceDuration - minimumDuration)
+        )
+        let availableSourceDuration = min(
+            max(0, currentSegment.audioDuration),
+            max(0, sourceDuration - safeStartTime)
+        )
+        let durationBeforeNextSegment = audioSegments
+            .filter {
+                $0.id != segmentID &&
+                $0.timeLineStartTime >= currentSegment.timeLineStartTime
+            }
+            .map { $0.timeLineStartTime - currentSegment.timeLineStartTime }
+            .min() ?? .greatestFiniteMagnitude
+        let maximumDuration = min(availableSourceDuration, durationBeforeNextSegment)
+        let requestedDuration = max(minimumDuration, timeLineDuration)
+        let safeTimeLineDuration = min(requestedDuration, max(0, maximumDuration))
+        let currentFadeInDuration = max(0, currentSegment.fadeInDuration)
+        let currentFadeOutDuration = max(0, currentSegment.fadeOutDuration)
+        let combinedFadeDuration = currentFadeInDuration + currentFadeOutDuration
+        let fadeScale = combinedFadeDuration > safeTimeLineDuration && combinedFadeDuration > 0
+            ? safeTimeLineDuration / combinedFadeDuration
+            : 1
+        let safeFadeInDuration = currentFadeInDuration * fadeScale
+        let safeFadeOutDuration = currentFadeOutDuration * fadeScale
+
+        guard currentSegment.audioStartTime != safeStartTime ||
+                currentSegment.timeLineDuration != safeTimeLineDuration ||
+                currentSegment.fadeInDuration != safeFadeInDuration ||
+                currentSegment.fadeOutDuration != safeFadeOutDuration else {
+            return
+        }
+
+        pausePreviewPlayback()
+        stopAllAudio()
+        applyChangeWithRecordOldState {
+            audioSegments[segmentIndex].audioStartTime = safeStartTime
+            audioSegments[segmentIndex].timeLineDuration = safeTimeLineDuration
+            audioSegments[segmentIndex].fadeInDuration = safeFadeInDuration
+            audioSegments[segmentIndex].fadeOutDuration = safeFadeOutDuration
+        }
+    }
+
     func selectAudioSegment(segment : AudioSegment){
         if !isPreviewPlaying{
             if audioSegmentSelectedID == segment.id{
@@ -1179,4 +1236,3 @@ class MontageVM: ObservableObject {
         }
     }
 }
-

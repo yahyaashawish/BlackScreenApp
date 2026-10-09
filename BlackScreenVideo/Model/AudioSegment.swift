@@ -13,10 +13,16 @@ struct AudioSegment: Identifiable, Equatable {
     let id: UUID
     var name : String
     var fileURL: URL
+    /// Total duration of the underlying source file.
     let audioOriginalDuration: TimeInterval
-    var audioDuration: TimeInterval  // actual duration of audio
+    /// Maximum source-audio length available to this segment.
+    /// This is a capacity, not necessarily the length currently shown on the timeline.
+    var audioDuration: TimeInterval
+    /// Start offset, in seconds, inside the source audio file.
     var audioStartTime: TimeInterval
+    /// Position, in seconds, where the segment begins in the montage timeline.
     var timeLineStartTime: TimeInterval
+    /// Audio length currently used for timeline layout, preview, and export.
     var timeLineDuration: TimeInterval
     var timeLineEndTime: TimeInterval {
         timeLineStartTime + timeLineDuration
