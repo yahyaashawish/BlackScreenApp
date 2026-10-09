@@ -86,13 +86,25 @@ struct AudioSegmentsEditingBar: View {
                             case .split:
                                 EmptyView()
                             case .volume:
-                                MediaVolumeTabView(audioSegment: segmentBinding,videoSegment: .constant(nil))
+                                MediaVolumeTabView(
+                                    audioSegment: segmentBinding,
+                                    videoSegment: .constant(nil),
+                                    onEditingBegan: viewModel.beginAudioSegmentAdjustment
+                                )
                                 
                             case .faders:
-                                AudioFadersTabView(audioSegment: segment)
+                                AudioFadersTabView(
+                                    audioSegment: segment,
+                                    onEditingBegan: viewModel.beginAudioSegmentAdjustment
+                                )
                                 
                             case .cutter:
-                                AudioCutterTabView(segment: segment) { audioStartTime, timeLineDuration in
+                                AudioCutterTabView(
+                                    segment: segment,
+                                    maximumTimelineDuration: viewModel.maximumTimelineDuration(
+                                        forAudioSegmentID: segmentId
+                                    )
+                                ) { audioStartTime, timeLineDuration in
                                     viewModel.applyAudioCut(
                                         segmentID: segmentId,
                                         audioStartTime: audioStartTime,
@@ -220,4 +232,3 @@ struct AudioSegmentsEditingBar: View {
     
     
 }
-

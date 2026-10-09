@@ -43,21 +43,21 @@ struct MontageView: View {
                                     montageVM.undo()
                                 }label:{
                                     Image("undoicon")
-                                        .foregroundStyle(montageVM.undoStackIsEmpty ? Color("474755") : Color("9191A8"))
+                                        .foregroundStyle(montageVM.canUndo ? Color("9191A8") : Color("474755"))
 
                                         .flipsForRightToLeftLayoutDirection(true)
                                 }
-                                .disabled(montageVM.undoStackIsEmpty)
+                                .disabled(!montageVM.canUndo)
 
                                 .frame(width:40,height:40)
                                 Button{
                                     montageVM.redo()
                                 }label:{
                                     Image("redoicon")
-                                        .foregroundStyle(montageVM.redoStackIsEmpty ? Color("474755") : Color("9191A8"))
+                                        .foregroundStyle(montageVM.canRedo ? Color("9191A8") : Color("474755"))
                                         .flipsForRightToLeftLayoutDirection(true)
                                 }
-                                .disabled(montageVM.redoStackIsEmpty)
+                                .disabled(!montageVM.canRedo)
 
                                 .frame(width:40,height:40)
 
@@ -289,6 +289,5 @@ struct MontageView: View {
     .environment(\.layoutDirection,  .rightToLeft )
     
 }
-
 
 

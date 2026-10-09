@@ -10,6 +10,7 @@ struct AudioFadersTabView: View {
     @Binding var audioSegment : AudioSegment
     @State var fadeIn : Float = 0
     @State var fadeOut : Float = 0
+    var onEditingBegan: () -> Void = {}
     
     var body: some View {
         VStack{
@@ -30,7 +31,13 @@ struct AudioFadersTabView: View {
                     .foregroundStyle(Color("9191A8"))
                     .font(.medium16)
                     .frame(width: 100,alignment: .leading)
-                Slider(value: $fadeIn, in: 0...PropertiesConstants.MaximumFadeInOut)
+                Slider(
+                    value: $fadeIn,
+                    in: 0...PropertiesConstants.MaximumFadeInOut,
+                    onEditingChanged: { isEditing in
+                        if isEditing { onEditingBegan() }
+                    }
+                )
                     .accentColor(Color("4A4AFF"))
                 HStack(spacing:0){
                     Text(String(format: "%.1f", fadeIn))
@@ -51,7 +58,13 @@ struct AudioFadersTabView: View {
                     .font(.medium16)
                     .frame(width: 100,alignment: .leading)
 
-                Slider(value: $fadeOut, in: 0...PropertiesConstants.MaximumFadeInOut)
+                Slider(
+                    value: $fadeOut,
+                    in: 0...PropertiesConstants.MaximumFadeInOut,
+                    onEditingChanged: { isEditing in
+                        if isEditing { onEditingBegan() }
+                    }
+                )
                     .accentColor(Color("4A4AFF"))
                 HStack(spacing:0){
                     Text(String(format: "%.1f", fadeOut))
@@ -76,6 +89,12 @@ struct AudioFadersTabView: View {
         }
         .onChange(of: fadeOut) { oldValue , newValue in
             changeFadeOut(newValue)
+        }
+        .onChange(of: audioSegment.fadeInDuration) { _, newValue in
+            fadeIn = Float(newValue)
+        }
+        .onChange(of: audioSegment.fadeOutDuration) { _, newValue in
+            fadeOut = Float(newValue)
         }
         .onAppear{
             self.fadeIn = Float(self.audioSegment.fadeInDuration)

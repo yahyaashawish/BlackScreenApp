@@ -48,6 +48,7 @@ enum TextEditingTab : LocalizedStringKey , CaseIterable{
 struct TextSegmentsEditingBar: View {
     @Environment(\.layoutDirection) var layoutDirection
     @State var selectedTab : TextEditingTab? = nil
+    @State private var recordedCurrentEditorChange = false
     @ObservedObject var viewModel : MontageVM
     //    @State var segment : TextSegment? = TextSegment(content: "test", startTime: 30, duration: 555)
     var body: some View {
@@ -56,10 +57,36 @@ struct TextSegmentsEditingBar: View {
             if let segmentId = viewModel.textSegmentSelectedID {
                 if let trackIndex = viewModel.textTracks.firstIndex(where: { $0.contains(where: { $0.id == segmentId }) }){
                     
-                    if let segmentIndex = $viewModel.textTracks[trackIndex].firstIndex(where: { seg in
-                        seg.id == segmentId
-                    }){
-                        let segment = $viewModel.textTracks[trackIndex][segmentIndex]
+                    if let segmentIndex = viewModel.textTracks[trackIndex].firstIndex(where: { $0.id == segmentId }) {
+                        let selectedSegment = viewModel.textTracks[trackIndex][segmentIndex]
+                        let segment = Binding<TextSegment>(
+                            get: {
+                                for track in viewModel.textTracks {
+                                    if let currentSegment = track.first(where: { $0.id == segmentId }) {
+                                        return currentSegment
+                                    }
+                                }
+                                return selectedSegment
+                            },
+                            set: { newValue in
+                                guard let currentTrackIndex = viewModel.textTracks.firstIndex(where: {
+                                    $0.contains(where: { $0.id == segmentId })
+                                }),
+                                let currentSegmentIndex = viewModel.textTracks[currentTrackIndex].firstIndex(where: {
+                                    $0.id == segmentId
+                                }) else {
+                                    return
+                                }
+
+                                let currentValue = viewModel.textTracks[currentTrackIndex][currentSegmentIndex]
+                                guard currentValue != newValue else { return }
+                                if !recordedCurrentEditorChange {
+                                    viewModel.beginTextSegmentAdjustment()
+                                    recordedCurrentEditorChange = true
+                                }
+                                viewModel.textTracks[currentTrackIndex][currentSegmentIndex] = newValue
+                            }
+                        )
                         
                         if selectedTab != nil {
                             
@@ -186,6 +213,12 @@ struct TextSegmentsEditingBar: View {
             
         }
         .background(Color.clear)
+        .onChange(of: selectedTab) { _, _ in
+            recordedCurrentEditorChange = false
+        }
+        .onChange(of: viewModel.textSegmentSelectedID) { _, _ in
+            recordedCurrentEditorChange = false
+        }
         
     }
         
@@ -206,6 +239,5 @@ struct TextSegmentsEditingBar: View {
     
     
 }
-
 
 

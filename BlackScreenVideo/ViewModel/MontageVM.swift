@@ -447,13 +447,8 @@ class MontageVM: ObservableObject {
                 fadeOutDuration: 0
             )
             
-            if audioSegments.isEmpty{
+            applyChangeWithRecordOldState {
                 audioSegments.append(newSegment)
-                
-            }else{
-                applyChangeWithRecordOldState {
-                    audioSegments.append(newSegment)
-                }
             }
         }
         
@@ -473,13 +468,68 @@ class MontageVM: ObservableObject {
         audioStartTime: TimeInterval,
         timeLineDuration: TimeInterval
     ) {
+        guard let segment = audioSegments.first(where: { $0.id == segmentID }) else {
+            return
+        }
+
+        applyAudioTimingChange(
+            segmentID: segmentID,
+            timeLineStartTime: segment.timeLineStartTime,
+            audioStartTime: audioStartTime,
+            timeLineDuration: timeLineDuration
+        )
+    }
+
+    func maximumTimelineDuration(forAudioSegmentID segmentID: UUID) -> TimeInterval {
+        guard let segment = audioSegments.first(where: { $0.id == segmentID }) else {
+            return 0
+        }
+
+        return audioSegments
+            .filter {
+                $0.id != segmentID &&
+                $0.timeLineStartTime >= segment.timeLineStartTime
+            }
+            .map { $0.timeLineStartTime - segment.timeLineStartTime }
+            .min() ?? .greatestFiniteMagnitude
+    }
+
+    func applyAudioTimelineTrim(
+        segmentID: UUID,
+        timeLineStartTime: TimeInterval,
+        audioStartTime: TimeInterval,
+        timeLineDuration: TimeInterval
+    ) {
+        applyAudioTimingChange(
+            segmentID: segmentID,
+            timeLineStartTime: timeLineStartTime,
+            audioStartTime: audioStartTime,
+            timeLineDuration: timeLineDuration
+        )
+    }
+
+    private func applyAudioTimingChange(
+        segmentID: UUID,
+        timeLineStartTime: TimeInterval,
+        audioStartTime: TimeInterval,
+        timeLineDuration: TimeInterval
+    ) {
         guard let segmentIndex = audioSegments.firstIndex(where: { $0.id == segmentID }) else {
             return
         }
 
         let currentSegment = audioSegments[segmentIndex]
+        guard timeLineStartTime.isFinite,
+              audioStartTime.isFinite,
+              timeLineDuration.isFinite,
+              currentSegment.audioOriginalDuration.isFinite,
+              currentSegment.audioDuration.isFinite else {
+            return
+        }
+
         let sourceDuration = max(0, currentSegment.audioOriginalDuration)
         let minimumDuration = min(0.2, sourceDuration)
+        let safeTimeLineStartTime = max(0, timeLineStartTime)
         let safeStartTime = min(
             max(0, audioStartTime),
             max(0, sourceDuration - minimumDuration)
@@ -488,39 +538,98 @@ class MontageVM: ObservableObject {
             max(0, currentSegment.audioDuration),
             max(0, sourceDuration - safeStartTime)
         )
-        let durationBeforeNextSegment = audioSegments
+        let otherSegments = audioSegments.filter { $0.id != segmentID }
+        let overlapsPreviousSegment = otherSegments.contains {
+            $0.timeLineStartTime < safeTimeLineStartTime &&
+            $0.timeLineEndTime > safeTimeLineStartTime
+        }
+        guard !overlapsPreviousSegment else {
+            return
+        }
+
+        let durationBeforeNextSegment = otherSegments
             .filter {
-                $0.id != segmentID &&
-                $0.timeLineStartTime >= currentSegment.timeLineStartTime
+                $0.timeLineStartTime >= safeTimeLineStartTime
             }
-            .map { $0.timeLineStartTime - currentSegment.timeLineStartTime }
+            .map { $0.timeLineStartTime - safeTimeLineStartTime }
             .min() ?? .greatestFiniteMagnitude
         let maximumDuration = min(availableSourceDuration, durationBeforeNextSegment)
+        guard maximumDuration > 0, maximumDuration >= minimumDuration else {
+            return
+        }
         let requestedDuration = max(minimumDuration, timeLineDuration)
         let safeTimeLineDuration = min(requestedDuration, max(0, maximumDuration))
-        let currentFadeInDuration = max(0, currentSegment.fadeInDuration)
-        let currentFadeOutDuration = max(0, currentSegment.fadeOutDuration)
-        let combinedFadeDuration = currentFadeInDuration + currentFadeOutDuration
-        let fadeScale = combinedFadeDuration > safeTimeLineDuration && combinedFadeDuration > 0
-            ? safeTimeLineDuration / combinedFadeDuration
-            : 1
-        let safeFadeInDuration = currentFadeInDuration * fadeScale
-        let safeFadeOutDuration = currentFadeOutDuration * fadeScale
+        let safeFades = clampedAudioFades(
+            fadeInDuration: currentSegment.fadeInDuration,
+            fadeOutDuration: currentSegment.fadeOutDuration,
+            maximumCombinedDuration: safeTimeLineDuration
+        )
 
-        guard currentSegment.audioStartTime != safeStartTime ||
+        guard currentSegment.timeLineStartTime != safeTimeLineStartTime ||
+                currentSegment.audioStartTime != safeStartTime ||
                 currentSegment.timeLineDuration != safeTimeLineDuration ||
-                currentSegment.fadeInDuration != safeFadeInDuration ||
-                currentSegment.fadeOutDuration != safeFadeOutDuration else {
+                currentSegment.fadeInDuration != safeFades.fadeIn ||
+                currentSegment.fadeOutDuration != safeFades.fadeOut else {
             return
         }
 
         pausePreviewPlayback()
         stopAllAudio()
         applyChangeWithRecordOldState {
+            audioSegments[segmentIndex].timeLineStartTime = safeTimeLineStartTime
             audioSegments[segmentIndex].audioStartTime = safeStartTime
             audioSegments[segmentIndex].timeLineDuration = safeTimeLineDuration
-            audioSegments[segmentIndex].fadeInDuration = safeFadeInDuration
-            audioSegments[segmentIndex].fadeOutDuration = safeFadeOutDuration
+            audioSegments[segmentIndex].fadeInDuration = safeFades.fadeIn
+            audioSegments[segmentIndex].fadeOutDuration = safeFades.fadeOut
+        }
+    }
+
+    private func clampedAudioFades(
+        fadeInDuration: TimeInterval,
+        fadeOutDuration: TimeInterval,
+        maximumCombinedDuration: TimeInterval
+    ) -> (fadeIn: TimeInterval, fadeOut: TimeInterval) {
+        let fadeIn = max(0, fadeInDuration)
+        let fadeOut = max(0, fadeOutDuration)
+        let combinedDuration = fadeIn + fadeOut
+        let safeMaximumDuration = max(0, maximumCombinedDuration)
+
+        guard combinedDuration > safeMaximumDuration, combinedDuration > 0 else {
+            return (fadeIn, fadeOut)
+        }
+
+        let scale = safeMaximumDuration / combinedDuration
+        return (fadeIn * scale, fadeOut * scale)
+    }
+
+    func moveAudioSegment(segmentID: UUID, to requestedStartTime: TimeInterval) {
+        guard requestedStartTime.isFinite,
+              let segmentIndex = audioSegments.firstIndex(where: { $0.id == segmentID }) else {
+            return
+        }
+
+        let segment = audioSegments[segmentIndex]
+        let otherSegments = audioSegments
+            .filter { $0.id != segmentID }
+            .sorted { $0.timeLineStartTime < $1.timeLineStartTime }
+        var safeStartTime = max(0, requestedStartTime)
+        var safeEndTime = safeStartTime + segment.timeLineDuration
+
+        while let conflict = otherSegments.first(where: {
+            !(safeEndTime <= $0.timeLineStartTime || safeStartTime >= $0.timeLineEndTime)
+        }) {
+            safeStartTime = conflict.timeLineEndTime + 0.01
+            safeEndTime = safeStartTime + segment.timeLineDuration
+        }
+
+        guard segment.timeLineStartTime != safeStartTime else {
+            return
+        }
+
+        pausePreviewPlayback()
+        stopAllAudio()
+        applyChangeWithRecordOldState {
+            audioSegments[segmentIndex].timeLineStartTime = safeStartTime
         }
     }
 
@@ -545,18 +654,27 @@ class MontageVM: ObservableObject {
         }) else {
             return
         }
+        let segment = audioSegments[index]
+        let timeIntoSegment = time - segment.timeLineStartTime
+        let remainingDuration = segment.timeLineDuration - timeIntoSegment
+        let minimumSplitDuration: TimeInterval = 1
+
+        // Both resulting segments must be at least one second long.
+        guard timeIntoSegment >= minimumSplitDuration,
+              remainingDuration >= minimumSplitDuration else {
+            return
+        }
+
         applyChangeWithRecordOldState {
-            
-            let segment = audioSegments[index]
-            let timeIntoSegment = time - segment.timeLineStartTime
-            
-            // Skip if trying to split at segment start or end
-            guard timeIntoSegment > 0, timeIntoSegment < segment.timeLineDuration else { return }
-            
             // Remove the original segment
             audioSegments.remove(at: index)
             
             // Create the two split segments
+            let firstFades = clampedAudioFades(
+                fadeInDuration: segment.fadeInDuration,
+                fadeOutDuration: segment.fadeOutDuration,
+                maximumCombinedDuration: timeIntoSegment
+            )
             let firstAudio = AudioSegment(
                 name: segment.name,
                 fileURL: segment.fileURL,
@@ -565,21 +683,27 @@ class MontageVM: ObservableObject {
                 audioStartTime: segment.audioStartTime,
                 timeLineStartTime: segment.timeLineStartTime,
                 timeLineDuration: timeIntoSegment,
-                fadeInDuration: segment.fadeInDuration,
-                fadeOutDuration: segment.fadeOutDuration,
+                fadeInDuration: firstFades.fadeIn,
+                fadeOutDuration: firstFades.fadeOut,
                 amplitudes: segment.amplitudes
             )
             
+            let secondDuration = remainingDuration
+            let secondFades = clampedAudioFades(
+                fadeInDuration: segment.fadeInDuration,
+                fadeOutDuration: segment.fadeOutDuration,
+                maximumCombinedDuration: secondDuration
+            )
             let secondAudio = AudioSegment(
                 name: segment.name,
                 fileURL: segment.fileURL,
                 audioOriginalDuration: segment.audioOriginalDuration,
-                audioDuration: segment.timeLineDuration - timeIntoSegment,
+                audioDuration: secondDuration,
                 audioStartTime: segment.audioStartTime + timeIntoSegment,
                 timeLineStartTime: time,
-                timeLineDuration: segment.timeLineDuration - timeIntoSegment ,
-                fadeInDuration: segment.fadeInDuration,
-                fadeOutDuration: segment.fadeOutDuration,
+                timeLineDuration: secondDuration,
+                fadeInDuration: secondFades.fadeIn,
+                fadeOutDuration: secondFades.fadeOut,
                 amplitudes: segment.amplitudes
             )
             
@@ -1034,11 +1158,12 @@ class MontageVM: ObservableObject {
     //MARK: - UnDo / ReDo System functions
     
     
-    var undoStackIsEmpty: Bool { undoStack.isEmpty }
-    var redoStackIsEmpty: Bool { redoStack.isEmpty }
-    private var undoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment],videoTrack:[VideoSegment])] = []
-    private var redoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment],videoTrack:[VideoSegment])] = []
-    private let maxHistory = 5
+    @Published private var undoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment], videoTrack: [VideoSegment])] = []
+    @Published private var redoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment], videoTrack: [VideoSegment])] = []
+    private let maxHistory = 50
+
+    var canUndo: Bool { !undoStack.isEmpty }
+    var canRedo: Bool { !redoStack.isEmpty }
     
     func applyChangeWithRecordOldState(_ action :  () -> Void) {
         // Save current state before the change
@@ -1053,9 +1178,19 @@ class MontageVM: ObservableObject {
         }
         redoStack.removeAll() // once we make a change, redo history is invalid
     }
+
+    func beginAudioSegmentAdjustment() {
+        recordStateForUndo()
+    }
+
+    func beginTextSegmentAdjustment() {
+        recordStateForUndo()
+    }
     
     func undo() {
         guard let lastState = undoStack.popLast() else { return }
+        pausePreviewPlayback()
+        stopAllAudio()
         redoStack.append((textTracks: textTracks, audioSegments: audioSegments,videoTrack:videoTrack))
         print("redoStack count : \(redoStack.count)")
         if redoStack.count > maxHistory {
@@ -1070,6 +1205,8 @@ class MontageVM: ObservableObject {
     
     func redo() {
         guard let nextState = redoStack.popLast() else { return }
+        pausePreviewPlayback()
+        stopAllAudio()
         undoStack.append((textTracks: textTracks, audioSegments: audioSegments,videoTrack:videoTrack))
         if undoStack.count > maxHistory {
             undoStack.removeFirst()

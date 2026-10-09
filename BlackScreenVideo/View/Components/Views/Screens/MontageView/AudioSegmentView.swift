@@ -82,10 +82,12 @@ struct AudioSegmentView: View {
                                 }
                             }
                             .onEnded { _ in
-                                segment.timeLineStartTime = liveStart
-                                segment.audioStartTime = liveCrop
-                                segment.timeLineDuration = liveDur
-                                segment.audioDuration = liveDur
+                                vm.applyAudioTimelineTrim(
+                                    segmentID: segment.id,
+                                    timeLineStartTime: liveStart,
+                                    audioStartTime: liveCrop,
+                                    timeLineDuration: liveDur
+                                )
                                 leftDX = 0
                                 dur0 = 0
                             }
@@ -125,29 +127,8 @@ struct AudioSegmentView: View {
                         }
                         .onEnded { _ in
                             var proposedStart = start0 + Double(dragDX / vm.pixelsPerSecond * vm.timeScale)
-                            var proposedEnd = proposedStart + segment.timeLineDuration
-                            
-                            let currentSegmentID = segment.id
-                            
-                            // Keep looping until no conflicts
-                            while true {
-                                // Check for any overlap
-                                let conflict = vm.audioSegments.first {
-                                    $0.id != currentSegmentID &&
-                                    !(proposedEnd <= $0.timeLineStartTime || proposedStart >= $0.timeLineEndTime)
-                                }
-                                
-                                if let conflict = conflict {
-                                    // Move it after the conflicting one
-                                    proposedStart = conflict.timeLineStartTime + conflict.timeLineDuration + 0.01
-                                    proposedEnd = proposedStart + segment.timeLineDuration
-                                } else {
-                                    // No conflict – finalize
-                                    break
-                                }
-                            }
-                            
-                            segment.timeLineStartTime = max(0, proposedStart)
+                            proposedStart = max(0, proposedStart)
+                            vm.moveAudioSegment(segmentID: segment.id, to: proposedStart)
                             dragDX = 0
                             start0 = 0
                         }
@@ -207,7 +188,11 @@ struct AudioSegmentView: View {
                                     segment.audioDuration,
                                     max(0, segment.audioOriginalDuration - segment.audioStartTime)
                                 )
-                                segment.timeLineDuration = min(maxAudioDuration, max(0.2, finalDuration))
+                                vm.applyAudioCut(
+                                    segmentID: segment.id,
+                                    audioStartTime: segment.audioStartTime,
+                                    timeLineDuration: min(maxAudioDuration, max(0.2, finalDuration))
+                                )
                                 rightDX = 0
                                 dur0 = 0
                             }

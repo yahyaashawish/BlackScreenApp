@@ -19,6 +19,9 @@ struct TextSegmentView: View {
     // snapshots captured at drag start
     @State private var start0: TimeInterval = 0
     @State private var dur0  : TimeInterval = 0
+    @State private var recordedLeftResize = false
+    @State private var recordedMove = false
+    @State private var recordedRightResize = false
     
     var body: some View {
         
@@ -48,6 +51,10 @@ struct TextSegmentView: View {
                     .gesture(
                         DragGesture(coordinateSpace: .global)
                             .onChanged { g in
+                                if !recordedLeftResize {
+                                    vm.beginTextSegmentAdjustment()
+                                    recordedLeftResize = true
+                                }
                                 if dur0 == 0 { start0 = seg.startTime; dur0 = seg.duration }
                                 leftDX = g.location.x - g.startLocation.x
                             }
@@ -66,6 +73,7 @@ struct TextSegmentView: View {
                                     vm.move(seg, toTrack: vm.textTracks.count) // New track
                                 }
                                 leftDX = .zero; dur0 = 0
+                                recordedLeftResize = false
     
                             }
                     )
@@ -99,12 +107,17 @@ struct TextSegmentView: View {
                     DragGesture(coordinateSpace: .global)
                         .onChanged { g in
                             vm.pausePreviewPlayback()
+                            if !recordedMove {
+                                vm.beginTextSegmentAdjustment()
+                                recordedMove = true
+                            }
                             if start0 == 0 { start0 = seg.startTime }
                             dragDX = g.translation.width
                         }
                         .onEnded { _ in
                             seg.startTime = liveStart
                             dragDX = .zero; start0 = 0
+                            recordedMove = false
                             
                             let newStart = seg.startTime
                             let newEnd = seg.endTime
@@ -131,6 +144,10 @@ struct TextSegmentView: View {
                     .gesture(
                         DragGesture(coordinateSpace: .global)
                             .onChanged { g in
+                                if !recordedRightResize {
+                                    vm.beginTextSegmentAdjustment()
+                                    recordedRightResize = true
+                                }
                                 if dur0 == 0 { dur0 = seg.duration }
                                 rightDX = g.location.x - g.startLocation.x
                             }
@@ -148,6 +165,7 @@ struct TextSegmentView: View {
                                     vm.move(seg, toTrack: vm.textTracks.count) // New track
                                 }
                                 rightDX = .zero; dur0 = 0
+                                recordedRightResize = false
 
                             }
                     )

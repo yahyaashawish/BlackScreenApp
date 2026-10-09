@@ -10,6 +10,7 @@ import AVFoundation
 
 struct AudioCutterTabView: View {
     @Binding var segment : AudioSegment
+    var maximumTimelineDuration: TimeInterval = .greatestFiniteMagnitude
     var onCommit: (_ audioStartTime: TimeInterval, _ timeLineDuration: TimeInterval) -> Void = { _, _ in }
     @State private var player: AVPlayer?
     @State private var isPlaying = false
@@ -59,7 +60,8 @@ struct AudioCutterTabView: View {
 
                     let availableDuration = min(
                         max(0, segment.audioDuration),
-                        max(0, sourceDuration - segment.audioStartTime)
+                        max(0, sourceDuration - segment.audioStartTime),
+                        max(0, maximumTimelineDuration)
                     )
                     let currentDuration = min(
                         max(effectiveMinimumDuration, segment.timeLineDuration),
@@ -70,7 +72,8 @@ struct AudioCutterTabView: View {
                     let resizedCrop = min(max(0, requestedCrop), maximumCrop)
                     let maxDuration = min(
                         max(0, segment.audioDuration),
-                        max(0, sourceDuration - resizedCrop)
+                        max(0, sourceDuration - resizedCrop),
+                        max(0, maximumTimelineDuration)
                     )
                     let resizedDuration = min(
                         max(effectiveMinimumDuration, currentDuration - (resizedCrop - segment.audioStartTime) + Double(rightDX / pxPS)),
@@ -217,6 +220,11 @@ struct AudioCutterTabView: View {
         .onDisappear {
             stopPlayback()
         }
+        .onChange(of: segment.audioStartTime) { _, _ in stopPlayback() }
+        .onChange(of: segment.timeLineDuration) { _, _ in stopPlayback() }
+        .onChange(of: segment.fadeInDuration) { _, _ in stopPlayback() }
+        .onChange(of: segment.fadeOutDuration) { _, _ in stopPlayback() }
+        .onChange(of: segment.fileURL) { _, _ in stopPlayback() }
     }
 
     private func commitTrim(startTime: TimeInterval, duration: TimeInterval) {
@@ -227,7 +235,8 @@ struct AudioCutterTabView: View {
         let safeStart = min(max(0, startTime), max(0, sourceDuration - effectiveMinimumDuration))
         let availableDuration = min(
             max(0, segment.audioDuration),
-            max(0, sourceDuration - safeStart)
+            max(0, sourceDuration - safeStart),
+            max(0, maximumTimelineDuration)
         )
         let safeDuration = min(
             max(effectiveMinimumDuration, duration),
@@ -257,24 +266,77 @@ struct AudioCutterTabView: View {
                 sourceRemainingDuration
             )
             guard start.isFinite, duration.isFinite, duration > 0 else { return }
+            let baseVolume = segment.actualVolume
+            let fadeInDuration = min(max(0, segment.fadeInDuration), duration)
+            let fadeOutDuration = min(max(0, segment.fadeOutDuration), duration)
 
             playbackEndTask?.cancel()
-            player = AVPlayer(url: segment.fileURL)
-            player?.seek(to: CMTime(seconds: start, preferredTimescale: 600))
-            player?.play()
+            let previewPlayer = AVPlayer(url: segment.fileURL)
+            previewPlayer.volume = fadeInDuration > 0 ? 0 : baseVolume
+            player = previewPlayer
             isPlaying = true
 
-            playbackEndTask = Task { @MainActor in
-                do {
-                    try await Task.sleep(for: .seconds(duration))
-                    guard !Task.isCancelled else { return }
-                    stopPlayback()
-                } catch {
-                    // Cancellation is expected when playback is paused or restarted.
+            previewPlayer.seek(
+                to: CMTime(seconds: start, preferredTimescale: 600),
+                toleranceBefore: .zero,
+                toleranceAfter: .zero
+            ) { finished in
+                Task { @MainActor in
+                    guard finished,
+                          let currentPlayer = player,
+                          currentPlayer === previewPlayer,
+                          isPlaying else {
+                        if !finished {
+                            stopPlayback()
+                        }
+                        return
+                    }
+
+                    previewPlayer.play()
+                    playbackEndTask = Task { @MainActor in
+                        let playbackStartedAt = Date()
+                        do {
+                            while !Task.isCancelled {
+                                let elapsed = Date().timeIntervalSince(playbackStartedAt)
+                                guard elapsed < duration else { break }
+
+                                previewPlayer.volume = previewVolume(
+                                    elapsed: elapsed,
+                                    duration: duration,
+                                    baseVolume: baseVolume,
+                                    fadeInDuration: fadeInDuration,
+                                    fadeOutDuration: fadeOutDuration
+                                )
+                                try await Task.sleep(for: .milliseconds(50))
+                            }
+                            guard !Task.isCancelled else { return }
+                            stopPlayback()
+                        } catch {
+                            // Cancellation is expected when playback is paused or restarted.
+                        }
+                    }
                 }
             }
         }
     }
+
+    private func previewVolume(
+        elapsed: TimeInterval,
+        duration: TimeInterval,
+        baseVolume: Float,
+        fadeInDuration: TimeInterval,
+        fadeOutDuration: TimeInterval
+    ) -> Float {
+        let fadeInProgress = fadeInDuration > 0
+            ? min(max(elapsed / fadeInDuration, 0), 1)
+            : 1
+        let remainingDuration = max(0, duration - elapsed)
+        let fadeOutProgress = fadeOutDuration > 0
+            ? min(max(remainingDuration / fadeOutDuration, 0), 1)
+            : 1
+        return baseVolume * Float(min(fadeInProgress, fadeOutProgress))
+    }
+
     private func formatDuration(_ duration: TimeInterval) -> String {
         guard duration.isFinite, duration >= 0 else {
             return "0:00"

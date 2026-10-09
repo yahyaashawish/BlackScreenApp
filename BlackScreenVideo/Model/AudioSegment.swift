@@ -45,21 +45,29 @@ struct AudioSegment: Identifiable, Equatable {
     var amplitudes: [CGFloat] = []
     
     var croppedAmplitudes: [CGFloat] {
-        let totalSamples = self.amplitudes.count
-        let totalDuration = self.audioOriginalDuration
-        let cropStart = self.audioStartTime
-        let cropEnd = cropStart + self.timeLineDuration
+        let totalSamples = amplitudes.count
+        let totalDuration = audioOriginalDuration
+        guard totalSamples > 0,
+              totalDuration.isFinite,
+              totalDuration > 0,
+              audioStartTime.isFinite,
+              timeLineDuration.isFinite,
+              timeLineDuration > 0 else {
+            return []
+        }
+
+        let cropStart = min(max(0, audioStartTime), totalDuration)
+        let cropEnd = min(max(cropStart, cropStart + timeLineDuration), totalDuration)
         
         // Fractional positions in the full waveform
-        let startRatio = cropStart / totalDuration
-        let endRatio = min(cropEnd / totalDuration, 1.0)
+        let startRatio = min(max(cropStart / totalDuration, 0), 1)
+        let endRatio = min(max(cropEnd / totalDuration, startRatio), 1)
         
         // Slice of waveform to show
-        let startIndex = Int(CGFloat(totalSamples) * CGFloat(startRatio))
-        let endIndex = Int(CGFloat(totalSamples) * CGFloat(endRatio))
+        let startIndex = min(max(Int(CGFloat(totalSamples) * CGFloat(startRatio)), 0), totalSamples)
+        let endIndex = min(max(Int(CGFloat(totalSamples) * CGFloat(endRatio)), startIndex), totalSamples)
         
-        let visibleAmplitudes = Array(self.amplitudes[startIndex..<min(endIndex, totalSamples)])
-        return visibleAmplitudes
+        return Array(amplitudes[startIndex..<endIndex])
     }
 
     init(

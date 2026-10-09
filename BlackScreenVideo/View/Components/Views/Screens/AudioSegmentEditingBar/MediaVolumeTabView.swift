@@ -10,6 +10,7 @@ struct MediaVolumeTabView: View {
     @Binding var audioSegment : AudioSegment?
     @Binding var videoSegment : VideoSegment?
     @State var volume : Float = 100
+    var onEditingBegan: () -> Void = {}
     
     var body: some View {
         VStack{
@@ -27,7 +28,13 @@ struct MediaVolumeTabView: View {
 
             HStack{
                 
-                Slider(value: $volume, in: 0...100)
+                Slider(
+                    value: $volume,
+                    in: 0...100,
+                    onEditingChanged: { isEditing in
+                        if isEditing { onEditingBegan() }
+                    }
+                )
                     .accentColor(Color("4A4AFF"))
                 Text(String(Int(volume)))
                     .foregroundStyle(.white)
@@ -46,6 +53,12 @@ struct MediaVolumeTabView: View {
 
         .onChange(of: volume) { oldValue , newValue in
             changeVolume(newValue)
+        }
+        .onChange(of: audioSegment?.volume) { _, newValue in
+            if let newValue { volume = newValue }
+        }
+        .onChange(of: videoSegment?.volume) { _, newValue in
+            if let newValue { volume = newValue }
         }
         .onAppear{
             if audioSegment != nil{
