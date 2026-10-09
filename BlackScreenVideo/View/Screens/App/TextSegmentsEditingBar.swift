@@ -214,10 +214,22 @@ struct TextSegmentsEditingBar: View {
         }
         .background(Color.clear)
         .onChange(of: selectedTab) { _, _ in
+            if recordedCurrentEditorChange {
+                viewModel.endTextSegmentAdjustment()
+            }
             recordedCurrentEditorChange = false
         }
         .onChange(of: viewModel.textSegmentSelectedID) { _, _ in
+            if recordedCurrentEditorChange {
+                viewModel.endTextSegmentAdjustment()
+            }
             recordedCurrentEditorChange = false
+        }
+        .onDisappear {
+            if recordedCurrentEditorChange {
+                viewModel.endTextSegmentAdjustment()
+                recordedCurrentEditorChange = false
+            }
         }
         
     }
@@ -239,5 +251,4 @@ struct TextSegmentsEditingBar: View {
     
     
 }
-
 

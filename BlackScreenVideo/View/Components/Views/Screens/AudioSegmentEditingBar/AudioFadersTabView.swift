@@ -11,6 +11,7 @@ struct AudioFadersTabView: View {
     @State var fadeIn : Float = 0
     @State var fadeOut : Float = 0
     var onEditingBegan: () -> Void = {}
+    var onEditingEnded: () -> Void = {}
     
     var body: some View {
         VStack{
@@ -35,7 +36,11 @@ struct AudioFadersTabView: View {
                     value: $fadeIn,
                     in: 0...PropertiesConstants.MaximumFadeInOut,
                     onEditingChanged: { isEditing in
-                        if isEditing { onEditingBegan() }
+                        if isEditing {
+                            onEditingBegan()
+                        } else {
+                            onEditingEnded()
+                        }
                     }
                 )
                     .accentColor(Color("4A4AFF"))
@@ -62,7 +67,11 @@ struct AudioFadersTabView: View {
                     value: $fadeOut,
                     in: 0...PropertiesConstants.MaximumFadeInOut,
                     onEditingChanged: { isEditing in
-                        if isEditing { onEditingBegan() }
+                        if isEditing {
+                            onEditingBegan()
+                        } else {
+                            onEditingEnded()
+                        }
                     }
                 )
                     .accentColor(Color("4A4AFF"))

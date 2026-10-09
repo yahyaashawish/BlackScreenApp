@@ -12,11 +12,24 @@ import AVFoundation
 import CoreImage
 import Combine
 
+final class MontageHistoryAvailability: ObservableObject {
+    @Published fileprivate(set) var canUndo = false
+    @Published fileprivate(set) var canRedo = false
+}
+
 class MontageVM: ObservableObject {
     @Published var videoSize : VideoSize?
     @Published var previewSize : CGSize? = nil
-    @Published var textTracks: [[TextSegment]] = [[]]
-    @Published var audioSegments: [AudioSegment] = []
+    @Published var textTracks: [[TextSegment]] = [[]] {
+        willSet {
+            captureImplicitHistoryIfNeeded(textTracksChanged: newValue != textTracks)
+        }
+    }
+    @Published var audioSegments: [AudioSegment] = [] {
+        willSet {
+            captureImplicitHistoryIfNeeded(audioSegmentsChanged: !audioHistoryContentEquals(newValue, audioSegments))
+        }
+    }
     @Published var videoTrack: [VideoSegment] = []
     @Published var textSegmentSelectedID : UUID? = nil
     @Published var audioSegmentSelectedID : UUID? = nil
@@ -1158,67 +1171,164 @@ class MontageVM: ObservableObject {
     //MARK: - UnDo / ReDo System functions
     
     
-    @Published private var undoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment], videoTrack: [VideoSegment])] = []
-    @Published private var redoStack: [(textTracks: [[TextSegment]], audioSegments: [AudioSegment], videoTrack: [VideoSegment])] = []
-    private let maxHistory = 50
+    private struct MontageSnapshot: Equatable {
+        let textTracks: [[TextSegment]]
+        let audioSegments: [AudioSegment]
+        let videoTrack: [VideoSegment]
+    }
 
-    var canUndo: Bool { !undoStack.isEmpty }
-    var canRedo: Bool { !redoStack.isEmpty }
+    private var undoStack: [MontageSnapshot] = []
+    private var redoStack: [MontageSnapshot] = []
+    private let maxHistory = 50
+    let historyAvailability = MontageHistoryAvailability()
+    private var isApplyingUndoableChange = false
+    private var isRestoringHistory = false
+    private var continuousHistoryTransactionCount = 0
+
+    var canUndo: Bool { historyAvailability.canUndo }
+    var canRedo: Bool { historyAvailability.canRedo }
     
     func applyChangeWithRecordOldState(_ action :  () -> Void) {
-        // Save current state before the change
         recordStateForUndo()
-        
+        isApplyingUndoableChange = true
         action()
+        isApplyingUndoableChange = false
     }
+
     func recordStateForUndo() {
-        undoStack.append((textTracks: textTracks, audioSegments: audioSegments,videoTrack:videoTrack))
+        let snapshot = currentSnapshot()
+        guard undoStack.last != snapshot else {
+            updateHistoryAvailability()
+            return
+        }
+
+        undoStack.append(snapshot)
         if undoStack.count > maxHistory {
             undoStack.removeFirst()
         }
         redoStack.removeAll() // once we make a change, redo history is invalid
+        updateHistoryAvailability()
+#if DEBUG
+        print("[History] recorded undo=\(undoStack.count) redo=\(redoStack.count)")
+#endif
     }
 
     func beginAudioSegmentAdjustment() {
-        recordStateForUndo()
+        beginContinuousHistoryTransaction()
+    }
+
+    func endAudioSegmentAdjustment() {
+        endContinuousHistoryTransaction()
     }
 
     func beginTextSegmentAdjustment() {
-        recordStateForUndo()
+        beginContinuousHistoryTransaction()
+    }
+
+    func endTextSegmentAdjustment() {
+        endContinuousHistoryTransaction()
     }
     
     func undo() {
+#if DEBUG
+        print("[History] undo requested undo=\(undoStack.count) redo=\(redoStack.count)")
+#endif
         guard let lastState = undoStack.popLast() else { return }
         pausePreviewPlayback()
         stopAllAudio()
-        redoStack.append((textTracks: textTracks, audioSegments: audioSegments,videoTrack:videoTrack))
-        print("redoStack count : \(redoStack.count)")
+        redoStack.append(currentSnapshot())
         if redoStack.count > maxHistory {
             redoStack.removeFirst()
         }
+        isRestoringHistory = true
         textTracks = lastState.textTracks
-        print("last state textTracks count : \(textTracks)")
         audioSegments = lastState.audioSegments
-        print("undo did made , AudioSegment count : \(audioSegments.count) , TextSegment count : \(textTracks.compactMap(\.count).reduce(0, +))")
         videoTrack = lastState.videoTrack
+        isRestoringHistory = false
+        continuousHistoryTransactionCount = 0
+        updateHistoryAvailability()
+#if DEBUG
+        print("[History] undo completed undo=\(undoStack.count) redo=\(redoStack.count)")
+#endif
     }
     
     func redo() {
+#if DEBUG
+        print("[History] redo requested undo=\(undoStack.count) redo=\(redoStack.count)")
+#endif
         guard let nextState = redoStack.popLast() else { return }
         pausePreviewPlayback()
         stopAllAudio()
-        undoStack.append((textTracks: textTracks, audioSegments: audioSegments,videoTrack:videoTrack))
+        undoStack.append(currentSnapshot())
         if undoStack.count > maxHistory {
             undoStack.removeFirst()
         }
+        isRestoringHistory = true
         textTracks = nextState.textTracks
         audioSegments = nextState.audioSegments
         videoTrack = nextState.videoTrack
+        isRestoringHistory = false
+        continuousHistoryTransactionCount = 0
+        updateHistoryAvailability()
+#if DEBUG
+        print("[History] redo completed undo=\(undoStack.count) redo=\(redoStack.count)")
+#endif
 
     }
     func resetUnDoHistory() {
         undoStack.removeAll()
         redoStack.removeAll()
+        continuousHistoryTransactionCount = 0
+        updateHistoryAvailability()
+    }
+
+    private func currentSnapshot() -> MontageSnapshot {
+        MontageSnapshot(
+            textTracks: textTracks,
+            audioSegments: audioSegments,
+            videoTrack: videoTrack
+        )
+    }
+
+    private func beginContinuousHistoryTransaction() {
+        if continuousHistoryTransactionCount == 0 {
+            recordStateForUndo()
+        }
+        continuousHistoryTransactionCount += 1
+    }
+
+    private func endContinuousHistoryTransaction() {
+        continuousHistoryTransactionCount = max(0, continuousHistoryTransactionCount - 1)
+    }
+
+    private func captureImplicitHistoryIfNeeded(
+        textTracksChanged: Bool = false,
+        audioSegmentsChanged: Bool = false
+    ) {
+        guard textTracksChanged || audioSegmentsChanged,
+              !isRestoringHistory,
+              !isApplyingUndoableChange,
+              continuousHistoryTransactionCount == 0 else {
+            return
+        }
+        recordStateForUndo()
+    }
+
+    private func audioHistoryContentEquals(_ lhs: [AudioSegment], _ rhs: [AudioSegment]) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+
+        return zip(lhs, rhs).allSatisfy { left, right in
+            var leftWithoutWaveform = left
+            var rightWithoutWaveform = right
+            leftWithoutWaveform.amplitudes = []
+            rightWithoutWaveform.amplitudes = []
+            return leftWithoutWaveform == rightWithoutWaveform
+        }
+    }
+
+    private func updateHistoryAvailability() {
+        historyAvailability.canUndo = !undoStack.isEmpty
+        historyAvailability.canRedo = !redoStack.isEmpty
     }
     
     //MARK: - Export Video Section

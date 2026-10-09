@@ -74,6 +74,7 @@ struct TextSegmentView: View {
                                 }
                                 leftDX = .zero; dur0 = 0
                                 recordedLeftResize = false
+                                vm.endTextSegmentAdjustment()
     
                             }
                     )
@@ -130,6 +131,7 @@ struct TextSegmentView: View {
                             } else {
                                 vm.move(seg, toTrack: vm.textTracks.count) // New track
                             }
+                            vm.endTextSegmentAdjustment()
 
                         }
                 )
@@ -166,6 +168,7 @@ struct TextSegmentView: View {
                                 }
                                 rightDX = .zero; dur0 = 0
                                 recordedRightResize = false
+                                vm.endTextSegmentAdjustment()
 
                             }
                     )

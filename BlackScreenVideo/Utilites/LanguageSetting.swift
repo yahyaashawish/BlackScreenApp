@@ -10,11 +10,13 @@ enum AppLanguage : String {
 class LanguageSetting {
     
     static let shared = LanguageSetting()
-    var locale = Locale(identifier: "ar")
+    var locale: Locale
     
     
-    private init(locale: Locale = Locale(identifier: "ar")) {
-        self.locale = locale
+    private init() {
+        let storedLanguage = UserDefaults.standard.string(forKey: "language")
+        let language = AppLanguage(rawValue: storedLanguage ?? "") ?? .ar
+        self.locale = Locale(identifier: language.rawValue)
     }
     
      var isRightToLeft: Bool {
@@ -39,15 +41,10 @@ class LanguageSetting {
     }
     
      func getStoredLanguage() -> AppLanguage? {
-        if let language = UserDefaults.standard.string(forKey: "language") {
-            self.locale = Locale(identifier: language)
-            if language == "ar" {
-                return .ar
-            }else{
-                return .en
-            }
+        guard let language = UserDefaults.standard.string(forKey: "language") else {
+            return nil
         }
-        return nil
+        return AppLanguage(rawValue: language)
     }
     
     func getCurrentLanguage() -> AppLanguage {

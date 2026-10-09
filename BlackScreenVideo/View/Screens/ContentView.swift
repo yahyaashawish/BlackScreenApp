@@ -81,10 +81,6 @@ struct ContentView: View {
             .appDestinationRouteModifier()
         }
         
-         .onAppear{
-                 languageSetting.setLocaleArabic()
-            
-        }
          .safeAreaInset(edge: .bottom,alignment: .trailing) {
              if errorHandler.isThereAnError{
                  ErrorToastView(error:errorHandler.error ,retryAction: errorHandler.errorAction)

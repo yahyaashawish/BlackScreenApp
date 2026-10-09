@@ -89,13 +89,15 @@ struct AudioSegmentsEditingBar: View {
                                 MediaVolumeTabView(
                                     audioSegment: segmentBinding,
                                     videoSegment: .constant(nil),
-                                    onEditingBegan: viewModel.beginAudioSegmentAdjustment
+                                    onEditingBegan: viewModel.beginAudioSegmentAdjustment,
+                                    onEditingEnded: viewModel.endAudioSegmentAdjustment
                                 )
                                 
                             case .faders:
                                 AudioFadersTabView(
                                     audioSegment: segment,
-                                    onEditingBegan: viewModel.beginAudioSegmentAdjustment
+                                    onEditingBegan: viewModel.beginAudioSegmentAdjustment,
+                                    onEditingEnded: viewModel.endAudioSegmentAdjustment
                                 )
                                 
                             case .cutter:

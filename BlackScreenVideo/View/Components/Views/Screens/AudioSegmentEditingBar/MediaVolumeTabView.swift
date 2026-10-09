@@ -11,6 +11,7 @@ struct MediaVolumeTabView: View {
     @Binding var videoSegment : VideoSegment?
     @State var volume : Float = 100
     var onEditingBegan: () -> Void = {}
+    var onEditingEnded: () -> Void = {}
     
     var body: some View {
         VStack{
@@ -32,7 +33,11 @@ struct MediaVolumeTabView: View {
                     value: $volume,
                     in: 0...100,
                     onEditingChanged: { isEditing in
-                        if isEditing { onEditingBegan() }
+                        if isEditing {
+                            onEditingBegan()
+                        } else {
+                            onEditingEnded()
+                        }
                     }
                 )
                     .accentColor(Color("4A4AFF"))

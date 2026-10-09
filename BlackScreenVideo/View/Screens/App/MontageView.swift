@@ -38,30 +38,8 @@ struct MontageView: View {
                                 Image("close-rect")
                             }
                             
-                            HStack(spacing:0){
-                                Button{
-                                    montageVM.undo()
-                                }label:{
-                                    Image("undoicon")
-                                        .foregroundStyle(montageVM.canUndo ? Color("9191A8") : Color("474755"))
-
-                                        .flipsForRightToLeftLayoutDirection(true)
-                                }
-                                .disabled(!montageVM.canUndo)
-
-                                .frame(width:40,height:40)
-                                Button{
-                                    montageVM.redo()
-                                }label:{
-                                    Image("redoicon")
-                                        .foregroundStyle(montageVM.canRedo ? Color("9191A8") : Color("474755"))
-                                        .flipsForRightToLeftLayoutDirection(true)
-                                }
-                                .disabled(!montageVM.canRedo)
-
-                                .frame(width:40,height:40)
-
-                            }
+                            UndoRedoControls(viewModel: montageVM)
+                            .environment(\.layoutDirection, .leftToRight)
                             .padding(.horizontal,30)
                             Spacer()
                             
@@ -273,6 +251,38 @@ struct MontageView: View {
     
 }
 
+private struct UndoRedoControls: View {
+    let viewModel: MontageVM
+    @ObservedObject private var availability: MontageHistoryAvailability
+
+    init(viewModel: MontageVM) {
+        self.viewModel = viewModel
+        _availability = ObservedObject(wrappedValue: viewModel.historyAvailability)
+    }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Button {
+                viewModel.undo()
+            } label: {
+                Image("undoIcon")
+                    .foregroundStyle(availability.canUndo ? Color("9191A8") : Color("474755"))
+            }
+            .frame(width: 40, height: 40)
+            .contentShape(Rectangle())
+
+            Button {
+                viewModel.redo()
+            } label: {
+                Image("redoicon")
+                    .foregroundStyle(availability.canRedo ? Color("9191A8") : Color("474755"))
+            }
+            .frame(width: 40, height: 40)
+            .contentShape(Rectangle())
+        }
+    }
+}
+
 
 
 
@@ -289,5 +299,3 @@ struct MontageView: View {
     .environment(\.layoutDirection,  .rightToLeft )
     
 }
-
-
