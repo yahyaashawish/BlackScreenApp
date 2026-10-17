@@ -6,8 +6,10 @@ import AdSupport
 import VungleAdsSDK
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        
-        InterfaceOrientationCoordinator.shared.supportedOrientations
+        // iPad (scene-based lifecycle) requires support for all orientations;
+        // returning a restricted mask here traps with "Support for all orientations will soon be required".
+        guard UIDevice.current.userInterfaceIdiom != .pad else { return .all }
+        return InterfaceOrientationCoordinator.shared.supportedOrientations
     }
     
     func application(

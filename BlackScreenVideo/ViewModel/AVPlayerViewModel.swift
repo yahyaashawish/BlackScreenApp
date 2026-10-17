@@ -33,6 +33,8 @@ class AVPlayerViewModel: ObservableObject , SongCacheDelegate {
         guard isSongCached(songID: song.id) == false else { return }
         guard let songURL = URL(string: song.file) else { return }
         
+        // Publish an initial value so the row reflects the active download immediately.
+        downloadProgress[song.id] = 0
         cacheManager.downloadAndCacheSong(from: songURL, songID: song.id)
         saveSongToCoreData(song: song)
 

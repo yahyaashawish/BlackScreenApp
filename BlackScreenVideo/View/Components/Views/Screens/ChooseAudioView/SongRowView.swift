@@ -13,8 +13,10 @@ struct SongRowView: View {
     @ObservedObject var audioPlayerVM : AVPlayerViewModel
     
 
-    @State var isSongDownloading : Bool = false
     @State var isSongPlaying : Bool = false
+    private var isSongDownloading: Bool {
+        audioPlayerVM.downloadProgress[song.id] != nil
+    }
     var isSongDownloaded : Bool {
         return SongCacheManager.shared.isSongCached(songID: song.id)
     }
@@ -34,8 +36,6 @@ struct SongRowView: View {
                                     audioPlayerVM.cancelDownload(songID: song.id)
                                 }else{
                                     audioPlayerVM.downloadSong(song: song)
-                                    self.isSongDownloading = true
-
                                 }
                             }
                             
@@ -116,15 +116,6 @@ struct SongRowView: View {
             }
             
             .padding(.vertical, 8)
-            .onChange(of: audioPlayerVM.downloadProgress) { oldValue, newValue in
-                if newValue[song.id] != nil{
-                    self.isSongDownloading = true
-                }else{
-                    self.isSongDownloading = false
-                }
-            }
-            
-            
         }
         
         
